@@ -1,0 +1,19 @@
+#PKG_CPPFLAGS=-DWin32
+
+#all: $(SHLIB) proxy
+all: proxy doc
+
+proxy:
+ifeq "$(WIN)" "64"
+	rm -f rarcproxy*.dll
+	cp ../../../bin64/rarcproxy*.dll .
+else
+	rm -f rarcproxy*.dll
+	cp ../../../bin/rarcproxy*.dll .
+endif
+
+doc:
+	#cp ../../arcgisbinding.pdf ../inst/doc/
+
+clean:
+	rm -f *~ *.o *.dll

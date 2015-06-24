@@ -1,0 +1,119 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="arc">
+      <UniqueIdentifier>{de7e831e-09b3-4e1b-9053-4cd0ec9ac25a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="arc\R">
+      <UniqueIdentifier>{7826f441-daee-45dc-9080-78a35b44629d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="arc\man">
+      <UniqueIdentifier>{016bb61d-1e66-4286-be7e-55739afc7a08}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="arc\src">
+      <UniqueIdentifier>{6f7bd900-04df-4e0e-b7a4-7d8b7330c36e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="arc\DESCRIPTION">
+      <Filter>arc</Filter>
+    </None>
+    <None Include="arc\NAMESPACE">
+      <Filter>arc</Filter>
+    </None>
+    <None Include="arc\R\arc.env.R">
+      <Filter>arc\R</Filter>
+    </None>
+    <None Include="arc\R\arc.open.R">
+      <Filter>arc\R</Filter>
+    </None>
+    <None Include="arc\R\arc.select.R">
+      <Filter>arc\R</Filter>
+    </None>
+    <None Include="arc\R\arc.shape.R">
+      <Filter>arc\R</Filter>
+    </None>
+    <None Include="arc\R\arc.sp2data.R">
+      <Filter>arc\R</Filter>
+    </None>
+    <None Include="arc\R\arc.write.R">
+      <Filter>arc\R</Filter>
+    </None>
+    <None Include="arc\man\00.arc.Rd">
+      <Filter>arc\man</Filter>
+    </None>
+    <None Include="arc\man\arc.open.Rd">
+      <Filter>arc\man</Filter>
+    </None>
+    <None Include="arc\src\Makevars.win">
+      <Filter>arc\src</Filter>
+    </None>
+    <None Include="arc\R\arc.P4_WKT.R">
+      <Filter>arc\R</Filter>
+    </None>
+    <None Include="arc\R\arc.data2sp.R">
+      <Filter>arc\R</Filter>
+    </None>
+    <None Include="arc\R\arc.init.R">
+      <Filter>arc\R</Filter>
+    </None>
+    <None Include="arc\man\arc.select.Rd">
+      <Filter>arc\man</Filter>
+    </None>
+    <None Include="arc\man\arc.write.Rd">
+      <Filter>arc\man</Filter>
+    </None>
+    <None Include="arc\R\arc.dataset.R">
+      <Filter>arc\R</Filter>
+    </None>
+    <None Include="arc\R\A.arc.classes.R">
+      <Filter>arc\R</Filter>
+    </None>
+    <None Include="arc\man\arc.shapeinfo.Rd">
+      <Filter>arc\man</Filter>
+    </None>
+    <None Include="arc\man\arc.check_product.Rd">
+      <Filter>arc\man</Filter>
+    </None>
+    <None Include="arc\man\arc.progress_label.Rd">
+      <Filter>arc\man</Filter>
+    </None>
+    <None Include="arc\man\arc.progress_pos.Rd">
+      <Filter>arc\man</Filter>
+    </None>
+    <None Include="arc\man\arc.data2sp.Rd">
+      <Filter>arc\man</Filter>
+    </None>
+    <None Include="arc\man\arc.sp2data.Rd">
+      <Filter>arc\man</Filter>
+    </None>
+    <None Include="arc\man\arc.shape-class.Rd">
+      <Filter>arc\man</Filter>
+    </None>
+    <None Include="arc\man\arc.dataset-class.Rd">
+      <Filter>arc\man</Filter>
+    </None>
+    <None Include="arc\man\arc.shape.Rd">
+      <Filter>arc\man</Filter>
+    </None>
+    <None Include="arc\man\arc.shape2sp.Rd">
+      <Filter>arc\man</Filter>
+    </None>
+    <None Include="arc\man\arc.fromP4ToWkt.Rd">
+      <Filter>arc\man</Filter>
+    </None>
+    <None Include="arc\man\arc.fromWktToP4.Rd">
+      <Filter>arc\man</Filter>
+    </None>
+    <None Include="arc\man\arc.env.Rd">
+      <Filter>arc\man</Filter>
+    </None>
+    <None Include="check.bat" />
+    <None Include="arc\R\arc.shapeinfo.R">
+      <Filter>arc\R</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="build.bat" />
+  </ItemGroup>
+</Project>

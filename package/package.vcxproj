@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{4D291BC3-66DB-4413-AC61-B694F6727867}</ProjectGuid>
+    <RootNamespace>arc</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <PlatformToolset>v110</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>11.0.61030.0</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>..\..\</OutDir>
+    <IntDir>.\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <PreBuildEvent>
+      <Message>Compiling R package</Message>
+      <Command>build.bat</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <None Include="arc\DESCRIPTION" />
+    <None Include="arc\man\arc.check_product.Rd" />
+    <None Include="arc\man\arc.data2sp.Rd" />
+    <None Include="arc\man\arc.dataset-class.Rd" />
+    <None Include="arc\man\arc.env.Rd" />
+    <None Include="arc\man\arc.fromP4ToWkt.Rd" />
+    <None Include="arc\man\arc.fromWktToP4.Rd" />
+    <None Include="arc\man\arc.progress_label.Rd" />
+    <None Include="arc\man\arc.progress_pos.Rd" />
+    <None Include="arc\man\arc.select.Rd" />
+    <None Include="arc\man\arc.shape-class.Rd" />
+    <None Include="arc\man\arc.shape.Rd" />
+    <None Include="arc\man\arc.shape2sp.Rd" />
+    <None Include="arc\man\arc.shapeinfo.Rd" />
+    <None Include="arc\man\arc.sp2data.Rd" />
+    <None Include="arc\man\arc.write.Rd" />
+    <None Include="arc\NAMESPACE" />
+    <None Include="arc\R\A.arc.classes.R" />
+    <None Include="arc\R\arc.data2sp.R" />
+    <None Include="arc\R\arc.dataset.R" />
+    <None Include="arc\R\arc.env.R" />
+    <None Include="arc\R\arc.init.R" />
+    <None Include="arc\R\arc.P4_WKT.R" />
+    <None Include="arc\R\arc.open.R" />
+    <None Include="arc\R\arc.select.R" />
+    <None Include="arc\R\arc.shape.R" />
+    <None Include="arc\R\arc.shapeinfo.R" />
+    <None Include="arc\R\arc.sp2data.R" />
+    <None Include="arc\R\arc.write.R" />
+    <None Include="arc\man\00.arc.Rd" />
+    <None Include="arc\man\arc.open.Rd" />
+    <None Include="arc\src\Makevars.win" />
+    <CustomBuild Include="build.bat">
+      <FileType>Document</FileType>
+    </CustomBuild>
+    <None Include="check.bat" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
