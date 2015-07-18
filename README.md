@@ -38,7 +38,7 @@ tool_exec <- function (in_params, out_params)
 
 ######Documentation dependencies:
 - [roxygen2](https://github.com/yihui/roxygen2), install from R: `install.packages('roxygen2')`
-- [MiKTeX 2.9](http://miktex.org/) - to build package PDF
+- [MiKTeX 2.9](http://miktex.org/), to build package PDF
 
 ###Repository layout
 - .\package  
