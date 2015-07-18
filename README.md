@@ -33,10 +33,12 @@ tool_exec <- function (in_params, out_params)
 - Open `R-bridge.sln` (Visual Studio 2012) and build solution
 
 ######Build dependencies:
-- ArcObjectsSDKCPP10.3.1
-- Rtools (http://cran.r-project.org/bin/windows/Rtools)
-- [roxygen2](https://github.com/yihui/roxygen2) to build documentation: `install.packages('roxygen2')`
-- [MiKTeX 2.9](http://miktex.org/) - (optional) to build package PDF
+- ArcObjects SDK for C++ 10.3.1 ([requirements](http://desktop.arcgis.com/en/desktop/latest/get-started/system-requirements/arcobjects-sdk-system-requirements.htm))
+- [Rtools 3.1 or 3.2](http://cran.r-project.org/bin/windows/Rtools)
+
+######Documentation dependencies:
+- [roxygen2](https://github.com/yihui/roxygen2), install from R: `install.packages('roxygen2')`
+- [MiKTeX 2.9](http://miktex.org/) - to build package PDF
 
 ###Repository layout
 - .\package  
