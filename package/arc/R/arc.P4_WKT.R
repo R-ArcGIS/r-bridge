@@ -69,7 +69,8 @@ arc.fromP4ToWkt <- function (proj4)
 #'                           package="arcgisbinding"))
 #' arc.fromWktToP4(d@@shapeinfo$WKT)
 #'
-#' arc.fromWktToP4(4326) # use a WKID for
+#' arc.fromWktToP4(4326) # use a WKID for WGS 1984, a widely
+#'                       # used standard for geographic coordinates
 #' @export
 arc.fromWktToP4 <- function (wkt)
 {
