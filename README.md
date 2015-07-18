@@ -29,7 +29,7 @@ tool_exec <- function (in_params, out_params)
 ####Build from source
 - Create new folder `<ArcGIS>\R-bridge`
 - Set as current directory and clone repository  
-`git clone https://github.com/Esri/r-bridge.git ./src`
+`git clone https://github.com/R-ArcGIS/r-bridge.git ./src`
 - Open `R-bridge.sln` (Visual Studio 2012) and build solution
 
 ######Build dependencies:
