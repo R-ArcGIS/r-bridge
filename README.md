@@ -56,3 +56,6 @@ This package depends on the R Statistical Computing Software:
 
 > Copyright (C) 2015 The R Foundation for Statistical Computing
 > R is free software and comes with ABSOLUTELY NO WARRANTY.
+
+## License
+[Apache 2.0](LICENSE)
