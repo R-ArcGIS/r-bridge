@@ -33,7 +33,8 @@ d <- arc.open(system.file("extdata", "ca_ozone_pts.shp",
                           package="arcgisbinding"))
 arc.fromWktToP4(d@shapeinfo$WKT)
 
-arc.fromWktToP4(4326) # use a WKID for
+arc.fromWktToP4(4326) # use a WKID for WGS 1984, a widely
+                      # used standard for geographic coordinates
 }
 \seealso{
 \code{\link{arc.fromP4ToWkt}}

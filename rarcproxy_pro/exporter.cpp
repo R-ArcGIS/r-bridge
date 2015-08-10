@@ -108,7 +108,8 @@ long shape_extractor::init(SEXP sh, SEXP sinfo)
   else
     m_len = tools::size(sh);
 
-  if (!tools::copy_to(shape_info.at("WKID"), m_geometry_info.second.second))
+  tools::copy_to(shape_info.at("WKID"), m_geometry_info.second.second);
+  if (m_geometry_info.second.second <= 0)
   {
     std::wstring wkt;
     if (tools::copy_to(shape_info.at("WKT"), wkt))

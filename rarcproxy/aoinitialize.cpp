@@ -22,9 +22,9 @@ SEXP R_AoInitialize()
     if (ipVersion == NULL)
       return showError<true>();
 #ifdef _WIN64
-    HRESULT hr = ipVersion->LoadVersion(esriArcGISEngine, CComBSTR(L"10.3"), &vb);
+    HRESULT hr = ipVersion->LoadVersion(esriArcGISEngine, NULL, &vb);
 #else
-    HRESULT hr = ipVersion->LoadVersion(esriArcGISDesktop, CComBSTR(L"10.3"), &vb);
+    HRESULT hr = ipVersion->LoadVersion(esriArcGISDesktop, NULL, &vb);
 #endif
     if (hr != S_OK)
       return showError<true>();

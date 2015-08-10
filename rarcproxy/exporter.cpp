@@ -518,7 +518,7 @@ SEXP R_export2dataset(SEXP path, SEXP dataframe, SEXP shape, SEXP shape_info)
     ATLASSERT(cols.name.empty());
   }
 
-  if (n == 0)
+  if (isShape == false && n == 0)
     return showError<false>(L"nothing to save"), R_NilValue;
 
   if (isShape && n != extractor.size() )

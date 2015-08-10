@@ -385,7 +385,8 @@ long shape_extractor::init(SEXP sh, SEXP sinfo)
   int srid = 0;
   std::wstring wkt;
   m_ipSR.Release();
-  if (!tools::copy_to(shape_info.at("WKID"), srid))
+  tools::copy_to(shape_info.at("WKID"), srid);
+  if (srid <= 0)
     tools::copy_to(shape_info.at("WKT"), wkt);
 
   create_sr(srid, wkt, &m_ipSR);

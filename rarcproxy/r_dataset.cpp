@@ -229,8 +229,6 @@ SEXP table::get_fields()
 
 SEXP construct_named_list(const std::vector<fl_base*> &retColumns)
 {
-  //tools::protect pt;
-  //std::vector<SEXP> result_list(retColumns.size());
   tools::listGeneric result_list(retColumns.size());// + pSRNew == nullptr ? 0 : 1);
   std::vector<std::wstring> column_names(retColumns.size());
   for (size_t i = 0, n = retColumns.size(); i < n; i++)
@@ -239,54 +237,10 @@ SEXP construct_named_list(const std::vector<fl_base*> &retColumns)
     //result_list[i] = pt.add(retColumns[i]->getSEXP());
     result_list.push_back(retColumns[i]->getSEXP());
   }
-  /*if (pSRNew)
-  {
-    result_list.push_back(spatial_reference2wkt(pSRNew));
-    column_names.push_back()
-  }*/
-  //SEXP list = tools::newVal(result_list, pt);
   return tools::nameIt(result_list.get(), column_names);
 }
 
 void extractSS(IDisplayTable* pDT, ISelectionSet **ppSS, BSTR *where_);
-
-/*static bool create_sr(std::wstring wkt, int spid, ISpatialReference **ppSR)
-{
-  CComPtr<ISpatialReference> ipSR;
-  CComPtr<ISpatialReferenceFactory3> ipSpatialRefFactory; ipSpatialRefFactory.CoCreateInstance(CLSID_SpatialReferenceEnvironment);
-
-  if (spid > 0)
-  {
-    ipSpatialRefFactory->CreateSpatialReference(spid, &ipSR);
-  }
-  if (ipSR == NULL && !wkt.empty())
-  {
-    struct eq
-    {
-      static bool op(const wchar_t &c) { return c == L'\''; }
-    };
-
-    std::replace_if(wkt.begin(), wkt.end(), eq::op, L'\"');
-    CComBSTR bstr(wkt.c_str());
-
-    long dw = 0;
-    HRESULT hr = ipSpatialRefFactory->CreateESRISpatialReference(bstr, &ipSR, &dw);
-    if (FAILED(hr))
-    {
-      CComPtr<ISpatialReferenceInfo> ipSRInfo;
-      if (ipSpatialRefFactory->CreateESRISpatialReferenceInfoFromPRJ(bstr, &ipSRInfo) == S_OK)
-      {
-        long fcode = 0;
-        ipSRInfo->get_FactoryCode(&fcode);
-        ipSpatialRefFactory->CreateSpatialReference(fcode, &ipSR);
-      }
-    }
-  }
-  if (ipSR == NULL)
-    return false;
-  *ppSR = ipSR.Detach();
-  return true;
-}*/
 
 SEXP table::select(SEXP fields, SEXP args)
 {
@@ -301,8 +255,6 @@ SEXP table::select(SEXP fields, SEXP args)
 
   bool use_selection = true;
   std::wstring where_clause;
-  //std::vector<std::string> args_name;
-  //tools::getNames(args, args_name);
 
   CComPtr<ISpatialReference> ipSRNew;
   size_t i = 0;
@@ -350,7 +302,7 @@ SEXP table::select(SEXP fields, SEXP args)
   }
   else
     ipTable = m_ipTable;
-  
+
   if (!ipTable)
     return error_Ret("arc.table");
 

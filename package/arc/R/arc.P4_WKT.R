@@ -40,6 +40,9 @@ arc.fromP4ToWkt <- function (proj4)
   else
     str <- as.character(proj4)
 
+  if (length(str) == 0)
+    return(as.character(NA))
+
   .call_proxy("arc_fromP42Wkt", str)
 }
 

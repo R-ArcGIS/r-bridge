@@ -9,27 +9,25 @@ extern DWORD g_main_TID;
 
 SEXP arc_progress_label(SEXP arg)
 {
-  /* not impl
   if (current_connect)
   {
     std::wstring msg;
     if (!tools::copy_to(arg, msg))
       return R_NilValue;
     current_connect->progress_title(msg.c_str());
-  }*/
+  }
   return R_NilValue;
 }
 
 SEXP arc_progress_pos(SEXP arg)
 {
-  /* not impl
   if (current_connect)
   {
     int pos = -1;
     if (!tools::copy_to(arg, pos))
       return R_NilValue;
     current_connect->progress(pos);
-  }*/
+  }
   return R_NilValue;
 }
 
