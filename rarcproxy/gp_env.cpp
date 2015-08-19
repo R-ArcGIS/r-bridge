@@ -300,19 +300,20 @@ bool any2gpvalue(SEXP r, IGPValue* pVal)
   }
   else
   {
-    SEXP x = pt.add(Rf_asChar(r));
     std::wstring str;
-    if (tools::copy_to(x, str))
+    if (!Rf_isNull(r))
     {
-      CComQIPtr<IGPVariant> ipGPVar(pVal);
-      if (ipGPVar)
-        hr = ipGPVar->put_Variant(CComVariant(str.c_str()));
-      else
-        hr = pVal->SetAsText(CComBSTR(str.c_str()), NULL);
-      return hr == S_OK;
+      SEXP x = pt.add(Rf_asChar(r));
+      if (!tools::copy_to(x, str))
+        return false;
     }
+    CComQIPtr<IGPVariant> ipGPVar(pVal);
+    if (ipGPVar)
+      hr = ipGPVar->put_Variant(CComVariant(str.c_str()));
+    else
+      hr = pVal->SetAsText(CComBSTR(str.c_str()), NULL);
+    return hr == S_OK;
   }
-  return false;
 }
 
 SEXP R_getEnv()
