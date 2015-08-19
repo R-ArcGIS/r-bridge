@@ -1,8 +1,10 @@
 R-bridge for ArcGIS
 =========
 #### Requirements
-- R-3.1.3 for Windows ([http://cran.r-project.org/bin/windows/base/old/3.1.3/](http://cran.r-project.org/bin/windows/base/old/3.1.3/))
-- ArcGIS Pro 1.1 or ArcGIS 10.3.1
+ - [ArcGIS 10.3.1](http://desktop.arcgis.com/en/desktop/) or [ArcGIS Pro 1.1](http://pro.arcgis.com/en/pro-app/) ([don't have it? try a 60 day trial](http://www.esri.com/software/arcgis/arcgis-for-desktop/free-trial))
+ - [R Statistical Computing Software, 3.1.0 or later](http://cran.cnr.berkeley.edu/bin/windows/base/) ([What is R?](http://www.r-project.org/about.html))
+  + 32-bit version required for ArcMap, 64-bit version required for ArcGIS Pro (Note: the installer installs both by default).
+  + 64-bit version can be used with ArcMap by installing [Background Geoprocessing](http://desktop.arcgis.com/en/desktop/latest/analyze/executing-tools/64bit-background.htm) and configuring scripts to [run in the background](http://desktop.arcgis.com/en/desktop/latest/analyze/executing-tools/foreground-and-background-processing.htm).
 
 ####Installation
 #####Update command:
@@ -56,6 +58,7 @@ This package depends on the R Statistical Computing Software:
 
 > Copyright (C) 2015 The R Foundation for Statistical Computing
 > R is free software and comes with ABSOLUTELY NO WARRANTY.
+> See the [COPYRIGHTS file](https://github.com/wch/r-source/blob/trunk/doc/COPYRIGHTS) for details.
 
 ## License
 [Apache 2.0](LICENSE)
