@@ -7,7 +7,9 @@ R-bridge for ArcGIS
   + 64-bit version can be used with ArcMap by installing [Background Geoprocessing](http://desktop.arcgis.com/en/desktop/latest/analyze/executing-tools/64bit-background.htm) and configuring scripts to [run in the background](http://desktop.arcgis.com/en/desktop/latest/analyze/executing-tools/foreground-and-background-processing.htm).
 
 ####Installation
-#####Update command:
+
+For most users, the easiest way to install is using the [installation toolbox](https://github.com/R-ArcGIS/r-bridge-install) which will install and configure the bridge for ArcGIS 10.3.1+ and Pro 1.1+. Alternatively, [downloading the release](https://github.com/R-ArcGIS/r-bridge/releases/latest) can be manually installed into R, as shown [in this screencast](https://4326.us/R/zipinst/).
+
 ####Basic GP Tool script
 ```R
 tool_exec <- function (in_params, out_params)
@@ -28,7 +30,7 @@ tool_exec <- function (in_params, out_params)
 > arc.check_product()
 ```
 
-####Build from source
+####Building from source
 - Create new folder `<ArcGIS>\R-bridge`
 - Set as current directory and clone repository  
 `git clone https://github.com/R-ArcGIS/r-bridge.git ./src`
@@ -51,6 +53,10 @@ tool_exec <- function (in_params, out_params)
   C++, Bridge between ArcGIS Pro and `arcgisbinding`.
 - .\libarcobjects  
   (private) - Static library for rarcproxy_pro. Wrapper classes for ArcObjects API.
+
+##Project Details
+
+Check out the [R-ArcGIS Website](https://r-arcgis.github.io) for related projects and extensions built on this library.
 
 ##Credits
 
