@@ -38,7 +38,7 @@ arc.check_product <- function()
   prod <- .call_proxy("arc_AoInitialize")
   class(prod) <- append(class(prod), "arc.product")
   prod$dll <- .arc$dll
-  prod$app <- if (.arc$dll == "rarcproxy_pro") "ArcGIS Pro" else "ArcGIS"
+  prod$app <- if (.arc$dll == "rarcproxy_pro") "ArcGIS Pro" else "ArcGIS Desktop"
 #TODO: test more i386
 #  if (!is.null(prod$path) && is.na(Sys.getenv("GDAL_DATA",unset=NA)))
 #  {

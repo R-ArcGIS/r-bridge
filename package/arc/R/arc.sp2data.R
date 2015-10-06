@@ -67,7 +67,8 @@ arc.sp2data <- function (sp.df)
   stopifnot(inherits(sp.df, "Spatial"))
   if (inherits(sp.df, "SpatialPoints"))
   {
-    shape <- sp.df@coords
+    xy <- sp.df@coords
+    shape <- lapply(seq_len(ncol(xy)), function(i) xy[,i])
   }
   else if (inherits(sp.df, "SpatialPolygons"))
   {
