@@ -32,7 +32,7 @@ setClass("arc.object",
 #' attribute "shape". Each element corresponds to one record in
 #' the input data frame. Points are presented as an array of lists, with
 #' each list containing (\code{x}, \code{y}, \code{Z}, \code{M}), where
-#  Z and M are optional dimensions.
+#' Z and M are optional dimensions.
 #' @keywords classes shape geometry
 #' @examples
 #'
