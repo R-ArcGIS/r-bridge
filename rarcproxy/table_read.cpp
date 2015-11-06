@@ -36,20 +36,29 @@ template<>
 void fl<int>::push(CComVariant &v)
 {
   if (v.vt == VT_EMPTY || v.vt == VT_NULL)
-    v = -std::numeric_limits<long>::max();
+    vect1.push_back(std::numeric_limits<int>::min());
   else
+  {
     v.ChangeType(VT_I4);
-  vect1.push_back(v.lVal);
+    vect1.push_back(v.lVal);
+  }
 }
 
 template<>
 void fl<double>::push(CComVariant &v)
 {
   if (v.vt == VT_EMPTY || v.vt == VT_NULL)
-    v = std::numeric_limits<double>::quiet_NaN();
+  {
+    const static auto iNA = 0x7FF00000000007A2LL;
+    const static auto dRNA = reinterpret_cast<const double&>(iNA);
+    vect1.push_back(dRNA);
+    //v = std::numeric_limits<double>::quiet_NaN();
+  }
   else
+  {
     v.ChangeType(VT_R8);
-  vect1.push_back(v.dblVal);
+    vect1.push_back(v.dblVal);
+  }
 }
 
 template<>

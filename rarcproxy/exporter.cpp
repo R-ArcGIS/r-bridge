@@ -73,8 +73,11 @@ long createField(const wchar_t *name, esriFieldType ft, IFieldsEdit* pFields)
 
 class cols_base
 {
+protected:
+  cols_base(){ vNULL.vt = VT_NULL; }
 public:
   long pos;
+  CComVariant vNULL;
   std::wstring* name_ref;
   virtual bool get(size_t i, VARIANT &v) const = 0;
 };
@@ -128,7 +131,7 @@ bool cols_wrap<double>::get(size_t i, VARIANT &v) const
   {
     v.vt = VT_R8;
     v.dblVal = REAL(vect)[i];
-    if (ISNAN(v.dblVal))
+    if (ISNA(v.dblVal))
       v.vt = VT_NULL;
   }
   return true;
@@ -672,8 +675,32 @@ SEXP R_export2dataset(SEXP path, SEXP dataframe, SEXP shape, SEXP shape_info)
     return showError<true>(L"Insert cursor failed"), R_NilValue;
   
   //re-map fields
+  CComPtr<IFields> ipRealFields;
+  ipCursor->get_Fields(&ipRealFields);
   for (size_t c = 0; c < cols.c.size(); c++)
-    ipCursor->FindField(CComBSTR(cols.c[c]->name_ref->c_str()), &(cols.c[c]->pos));
+  {
+    ipRealFields->FindField(CComBSTR(cols.c[c]->name_ref->c_str()), &(cols.c[c]->pos));
+    CComPtr<IField> ipField;
+    ipRealFields->get_Field(cols.c[c]->pos, &ipField);
+    VARIANT_BOOL b = VARIANT_FALSE;
+    ipField->get_IsNullable(&b);
+    if (b == VARIANT_FALSE)
+    {
+      esriFieldType ft = esriFieldTypeInteger;
+      ipField->get_Type(&ft);
+      switch(ft)
+      {
+        case esriFieldTypeInteger:
+          cols.c[c]->vNULL = 0;//std::numeric_limits<int>::min();
+          break;
+        case esriFieldTypeDouble:
+          cols.c[c]->vNULL = 0.0;//-std::numeric_limits<double>::max();
+          break;
+        case esriFieldTypeString:
+          cols.c[c]->vNULL = L"";
+      }
+    }
+  }
 
   CComQIPtr<IFeatureBuffer> ipFBuffer(ipRowBuffer);
   for (R_len_t i = 0; i < n; i++)
@@ -685,7 +712,10 @@ SEXP R_export2dataset(SEXP path, SEXP dataframe, SEXP shape, SEXP shape_info)
         continue;
       CComVariant val;
       cols.c[c]->get(i, val);
-      hr = ipRowBuffer->put_Value(cols.c[c]->pos, val);
+      if (val.vt == VT_NULL)
+        hr = ipRowBuffer->put_Value(cols.c[c]->pos, cols.c[c]->vNULL);
+      else
+        hr = ipRowBuffer->put_Value(cols.c[c]->pos, val);
       if (FAILED(hr))
         return showError<true>(L"insert row value failed"), R_NilValue;
     }
