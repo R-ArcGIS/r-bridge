@@ -165,6 +165,73 @@ SEXP extent2r(const std::vector<double> &ext)
   return tools::nameIt(tools::newVal(ext), names);
 }
 
+//#define USE_MS_TIME_API // accurate and slower
+
+#ifdef USE_MS_TIME_API
+
+double ole2epoch(double d)
+{
+  if (ISNAN(d)) return d;
+
+  SYSTEMTIME st;
+  VariantTimeToSystemTime(d, &st);
+  FILETIME ftime;
+  SystemTimeToFileTime(&st, &ftime);
+  ULARGE_INTEGER ul = { ftime.dwLowDateTime, ftime.dwHighDateTime };
+  return (double)(__int64)(ul.QuadPart / 10000000ULL - 11644473600ULL);
+}
+
+double epoch2ole(double d)
+{
+  if (ISNAN(d)) return d;
+
+  ULARGE_INTEGER ul;
+  ul.QuadPart = (11644473600ULL + (__int64)d) * 10000000ULL;
+  FILETIME ftime = { ul.LowPart, ul.HighPart };
+  SYSTEMTIME st;
+  FileTimeToSystemTime(&ftime, &st);
+  SystemTimeToVariantTime(&st, &d);
+  return d;
+}
+#else
+
+double ole2epoch(double value)
+{
+  if (ISNAN(value)) return value;
+
+  const int daysTo1970 = 25569;
+  const int secPerDay = 86400;
+
+  int days = (int)value;
+  long double frac = std::fabs(value - days);   //fractional part of the day
+  int sec = (int)(frac * secPerDay + 0.5);
+  __int64 epoch = (__int64)(days - daysTo1970) * secPerDay + sec;
+  return (double)epoch;
+}
+
+double epoch2ole(double epoch)
+{
+  if (ISNAN(epoch)) return epoch;
+
+  const double daysTo1970 = 25569.0;
+  const double secPerDay = 86400.0;
+  if (epoch >= -2209075199.0) //31 Dec 1899 00:00:00
+    return daysTo1970 + epoch / secPerDay;
+
+  double days = -epoch / secPerDay;
+  double frac = days - (int)days;
+
+  days = daysTo1970 - std::ceil(days);
+  if (frac > 1.0e-6)
+    frac -= 1.0;
+  else
+    frac = 0.0;
+
+  return days + frac;
+}
+
+#endif
+
 VARIANT r2variant(SEXP r, VARTYPE vt)
 {
   VARIANT v;
@@ -186,6 +253,9 @@ VARIANT r2variant(SEXP r, VARTYPE vt)
       return v;
     case VT_R8:
       v.dblVal = Rf_asReal(r);
+      return v;
+    case VT_DATE:
+      v.dblVal = epoch2ole(Rf_asReal(r));
       return v;
     default:
       ATLASSERT(0);
@@ -295,7 +365,7 @@ SEXP R_AoInitialize()
   }
   const arcobject::product_info &info= arcobject::AoInitialize();
   if (info.license == L"-")
-    showError<true>("Could not bind to a valid ArcGIS installation");
+    showError<true>("Could not bind to a valid ArcGIS Pro installation");
 
   SEXP ns = R_FindNamespace(Rf_mkString("arcgisbinding"));
   ATLTRACE("SEXP type:%s", Rf_type2char(TYPEOF(ns)));

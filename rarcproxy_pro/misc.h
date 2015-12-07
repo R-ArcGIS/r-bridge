@@ -12,4 +12,5 @@ bool r2variant(SEXP r, VARIANT &v);
 SEXP R_getEnv();
 SEXP R_fromWkt2P4(SEXP str);
 SEXP R_fromP42Wkt(SEXP str);
-
+double ole2epoch(double d);
+double epoch2ole(double d);

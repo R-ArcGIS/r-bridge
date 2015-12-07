@@ -55,6 +55,7 @@ namespace arcobject
         eNone = 0,
         eInt,
         eDouble,
+        eDate,
         eString,
         eGeometry_point,
         eGeometry_multipoint,
@@ -67,7 +68,7 @@ namespace arcobject
       column_t(ct e, const wchar_t* n, void* ptr):t(e),name(n),vals(ptr),sr(L"", 0){}
       virtual ~column_t(){ }
       static std::vector<int>& get_ints(column_t &c) { ATLASSERT(c.t == eInt); return *static_cast<std::vector<int>*>(c.vals); }
-      static std::vector<double>& get_doubles(column_t &c) { ATLASSERT(c.t == eDouble); return *static_cast<std::vector<double>*>(c.vals); }
+      static std::vector<double>& get_doubles(column_t &c) { ATLASSERT(c.t == eDouble || c.t == eDate); return *static_cast<std::vector<double>*>(c.vals); }
       static std::vector<std::string>& get_strings(column_t &c) { ATLASSERT(c.t == eString); return *static_cast<std::vector<std::string>*>(c.vals); }
       static std::vector<std::vector<double>>& get_points(column_t &c) { ATLASSERT(c.t == eGeometry_point); return *static_cast<std::vector<std::vector<double>>*>(c.vals); }
       static std::vector<std::vector<byte>>& get_shapes(column_t &c)

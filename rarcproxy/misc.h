@@ -7,4 +7,5 @@ SEXP arc_warning(SEXP e);
 void arc_browsehelp(char ** url);
 SEXP arc_progress_pos(SEXP arg);
 SEXP arc_progress_label(SEXP arg);
-
+double ole2epoch(double d);
+double epoch2ole(double d);

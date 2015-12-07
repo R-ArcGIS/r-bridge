@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "exporter.h"
 #include "tools.h"
-//#include "rconnect.h"
+#include "misc.h"
 #include <limits>
 #include <memory>
 
@@ -199,7 +199,7 @@ public:
   virtual bool get(size_t i, VARIANT &v) const = 0;
 };
 
-template <class T>
+template <class T, int sub = 0>
 class cols_wrap : public cols_base
 {
   SEXP vect;
@@ -240,7 +240,7 @@ bool cols_wrap<int>::get(size_t i, VARIANT &v) const
   return true;
 }
 template <>
-bool cols_wrap<double>::get(size_t i, VARIANT &v) const
+bool cols_wrap<double, VT_R8>::get(size_t i, VARIANT &v) const
 {
   if (i >= len)
     v.vt = VT_NULL;
@@ -250,6 +250,23 @@ bool cols_wrap<double>::get(size_t i, VARIANT &v) const
     v.dblVal = REAL(vect)[i];
     if (ISNAN(v.dblVal))
       v.vt = VT_NULL;
+  }
+  return true;
+}
+
+template <>
+bool cols_wrap<double, VT_DATE>::get(size_t i, VARIANT &v) const
+{
+  if (i >= len)
+    v.vt = VT_NULL;
+  else
+  {
+    v.vt = VT_DATE;
+    v.date = REAL(vect)[i];
+    if (ISNAN(v.date))
+      v.vt = VT_NULL;
+    else
+      v.date = epoch2ole(v.date);
   }
   return true;
 }
@@ -292,9 +309,17 @@ static cols_base* setup_field(arcobject::cursor* cur, SEXP it, const std::wstrin
        item = new cols_wrap<int>(it);
        item->pos = cur->add_field(str, "Integer");
        break;
-     case REALSXP: 
-       item = new cols_wrap<double>(it);
-       item->pos = cur->add_field(str, "Double");
+     case REALSXP:
+       if (Rf_inherits(it, "POSIXct"))
+       {
+         item = new cols_wrap<double, VT_DATE>(it);
+         item->pos = cur->add_field(str, "Date");
+       }
+       else
+       {
+         item = new cols_wrap<double, VT_R8>(it);
+         item->pos = cur->add_field(str, "Double");
+       }
        break;
      case STRSXP:
      case CHARSXP:

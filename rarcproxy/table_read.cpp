@@ -2,6 +2,48 @@
 #include "table_read.h"
 #include "tools.h"
 #include "r_geometry.h"
+#include "misc.h"
+
+template<class  T>
+class fl : public fl_base
+{
+public:
+  std::vector<T> vect1;
+  fl(esriFieldType t, long id, const wchar_t* str)
+  {
+    ft = t;
+    name = str;
+    idx = id;
+  }
+  virtual void push(CComVariant &v) override;
+  virtual void move_to(SEXP df) override;
+  virtual SEXP getSEXP() const override;
+};
+
+class fdate : public fl<double>
+{
+public:
+  fdate(long id, const wchar_t* str) :fl<double>(esriFieldTypeDate, id, str){}
+  void push(CComVariant &v) override sealed
+  {
+    if (v.vt != VT_NULL)
+    {
+      v.ChangeType(VT_DATE);
+      v.date = ole2epoch(v.date);
+    }
+    fl<double>::push(v);
+  }
+  SEXP getSEXP() const override sealed
+  {
+    tools::protect pt;
+    auto ret = pt.add(tools::newVal(vect1));
+    const static std::vector<std::string> names{ "POSIXt", "POSIXct" };
+    Rf_setAttrib(ret, R_ClassSymbol, tools::newVal(names));
+    //use local time zone
+    //Rf_setAttrib(ret, Rf_install("tzone"), tools::newVal("UTC"));
+    return ret;
+  }
+};
 
 template<typename T>
 void fl<T>::move_to(SEXP df)
@@ -157,8 +199,10 @@ HRESULT load_from_cursor(ICursor* pCursor, const std::vector<std::wstring> &fiel
         break;
       case esriFieldTypeSingle: 
       case esriFieldTypeDouble:
-      case esriFieldTypeDate:
         f = new fl<double>(ft, idx, fields[i].c_str());
+        break;
+      case esriFieldTypeDate:
+        f = new fdate(idx, fields[i].c_str());
         break;
       case esriFieldTypeString:
         f = new fl<std::wstring>(ft, idx, fields[i].c_str());

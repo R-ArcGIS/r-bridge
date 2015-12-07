@@ -16,22 +16,6 @@ public:
   virtual SEXP getSEXP() const = 0;
 };
 
-template<class  T>
-class fl : public fl_base
-{
-public:
-  std::vector<T> vect1;
-  fl(esriFieldType t, long id, const wchar_t* str)
-  {
-    ft = t;
-    name = str;
-    idx = id;
-  }
-  virtual void push(CComVariant &v) override;
-  virtual void move_to(SEXP df) override;
-  virtual SEXP getSEXP() const override;
-};
-
 
 HRESULT load_from_cursor(ICursor* pCursor, const std::vector<std::wstring> &fields, std::vector<fl_base*> &retColumns, ISpatialReference* pSRNew);
 

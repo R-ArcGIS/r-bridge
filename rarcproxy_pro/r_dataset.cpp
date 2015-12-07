@@ -118,6 +118,20 @@ SEXP table::select(SEXP fields, SEXP args)
       case dataset_handle::column_t::eInt:
         unique_cols.emplace_back(pt.add(tools::newVal(dataset_handle::column_t::get_ints(*it))), it->name);
       break;
+      case dataset_handle::column_t::eDate:
+        {
+          auto &data = dataset_handle::column_t::get_doubles(*it);
+          for (auto &d : data)
+            d = ole2epoch(d);
+
+          auto column = pt.add(tools::newVal(data));
+          const static std::vector<std::string> names{ "POSIXt", "POSIXct" };
+          Rf_setAttrib(column, R_ClassSymbol, pt.add(tools::newVal(names)));
+          //use local time zone
+          //Rf_setAttrib(column, Rf_install("tzone"), tools::newVal("UTC"));
+          unique_cols.emplace_back(column, it->name);
+        }
+      break;
       case dataset_handle::column_t::eDouble:
         unique_cols.emplace_back(pt.add(tools::newVal(dataset_handle::column_t::get_doubles(*it))), it->name);
       break;
