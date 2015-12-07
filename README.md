@@ -34,7 +34,7 @@ tool_exec <- function (in_params, out_params)
 - Create new folder `<ArcGIS>\R-bridge`
 - Set as current directory and clone repository  
 `git clone https://github.com/R-ArcGIS/r-bridge.git ./src`
-- Open `R-bridge.sln` (Visual Studio 2012) and build solution
+- Open `R-bridge.sln` (Visual Studio 2013) and build solution
 
 ######Build dependencies:
 - ArcObjects SDK for C++ 10.3.1 ([requirements](http://desktop.arcgis.com/en/desktop/latest/get-started/system-requirements/arcobjects-sdk-system-requirements.htm))
