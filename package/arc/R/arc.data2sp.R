@@ -71,7 +71,7 @@ arc.data2sp.arc.data <- function (x)
   else
   {
     part_map <- c(readBin(buf[45:pts_begin], integer(), nparts, size = 4), npts)
-    part_map <- lapply(1:nparts, function(i,v) seq(from=v[i]+1, to=v[i+1]), v=part_map)
+    part_map <- lapply(1:nparts, function(i,v) seq.int(v[i]+1, v[i+1]), v=part_map)
   }
   pts <- matrix(readBin(buf[pts_begin:pts_end],
                 numeric(), npts * 2, size = 8), npts, 2, byrow = TRUE)
