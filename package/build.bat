@@ -8,7 +8,7 @@ set pkg_main_ver=1.0.0
 echo Building '%pkg_name%' package
 
 set ORIG_PATH=%PATH%
-set Rbinpath="C:\Program Files\R\R-3.1.3\bin\x64"
+set Rbinpath="C:\Program Files\R\R-3.2.0\bin\x64"
 set Rcmd=%Rbinpath%\Rcmd.exe
 set Rscript=%Rbinpath%\Rscript.exe
 
@@ -42,8 +42,8 @@ IF NOT EXIST arc/inst/doc/ (mkdir arc\inst\doc)
 
 IF ERRORLEVEL 0 (
   IF EXIST ..\..\%pkg_name%\ (rm -R ../../%pkg_name%/*)
-  %Rcmd% INSTALL --build --clean --compile-both --html --library=../../ arc
-  move /Y %pkg_name%_%pkg_full_ver%.zip ../../
+  %Rcmd% INSTALL --build --clean --compile-both --html --library=../ arc
+  move /Y %pkg_name%_%pkg_full_ver%.zip ../
   rm -f arc/src/*.dll
 )
 

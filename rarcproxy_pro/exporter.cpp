@@ -284,10 +284,9 @@ bool cols_wrap<std::string>::get(size_t i, VARIANT &v) const
   if (s == NA_STRING)
     v.vt = VT_NULL;
   else 
-  {  v.vt = VT_BSTR;
-     const char* ptr = Rf_translateCharUTF8(s);
-    _bstr_t str(ptr);
-    v.bstrVal = str.Detach();
+  {
+    v.vt = VT_BSTR;
+    v.bstrVal = ::SysAllocString(fromUtf8(Rf_translateCharUTF8(s)).c_str());
   }
   return true;
 }

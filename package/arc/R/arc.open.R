@@ -71,7 +71,7 @@ arc.open <- function (path)
     return(as(ds, "arc.feature"))
   if (is(ds, "arc.table"))
     return(as(ds, "arc.table"))
-  warning("open as ", ds$dataset_type)
+  warning("open as ", ds@dataset_type)
   return(ds)
 }
 

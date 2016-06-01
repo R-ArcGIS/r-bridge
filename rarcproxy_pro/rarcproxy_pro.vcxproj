@@ -116,7 +116,7 @@
       <Command>lib /def:../R.def /MACHINE:x64 /OUT:$(IntDir)R.lib</Command>
     </PreLinkEvent>
     <Link>
-      <AdditionalDependencies>$(TargetDir)libarcobjects.lib;$(IntDir)R.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(ProjectDir)\..\libarcobjects\libarcobjects.lib;$(IntDir)R.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ImportLibrary />
       <DelayLoadDLLs>user32.dll;ole32.dll;oleaut32.dll;version.dll;shlwapi.dll;advapi32.dll</DelayLoadDLLs>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>

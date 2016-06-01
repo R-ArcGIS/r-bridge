@@ -31,7 +31,7 @@ int execute_tool2(const wchar_t* script_path, IArray* pParameters)
   if (current_connect == 0 || pParameters == 0 || script_path == 0)
     return 0;
 
-  _bstr_t file_path(script_path);
+  std::wstring file_path(script_path);
 
   long nParams = 0;
   pParameters->get_Count(&nParams);

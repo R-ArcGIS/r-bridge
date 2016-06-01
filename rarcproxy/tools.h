@@ -274,7 +274,11 @@ namespace tools
 
   inline SEXP newVal(const char* str)
   {
-    return Rf_mkString(str);
+    //return Rf_mkString(str);
+    protect pt;
+    SEXP sexp = pt.add(Rf_allocVector(STRSXP, 1));
+    SET_STRING_ELT(sexp, (R_len_t)0, Rf_mkCharCE(str, CE_UTF8));
+    return sexp;
   }
   inline SEXP newVal(const std::string& str)
   {
@@ -384,7 +388,7 @@ namespace tools
       if (value[i].empty())
         SET_STRING_ELT(sexp, (R_len_t)i, R_NaString);
       else
-        SET_STRING_ELT(sexp, (R_len_t)i, Rf_mkChar(value[i].c_str()));
+        SET_STRING_ELT(sexp, (R_len_t)i, Rf_mkCharCE(value[i].c_str(), CE_UTF8));
     }
     return sexp;
   }
@@ -398,7 +402,7 @@ namespace tools
       if (value[i].empty())
         SET_STRING_ELT(sexp, (R_len_t)i, R_NaString);
       else
-        SET_STRING_ELT(sexp, (R_len_t)i, Rf_mkChar(toUtf8(value[i].c_str()).c_str()));
+        SET_STRING_ELT(sexp, (R_len_t)i, Rf_mkCharCE(toUtf8(value[i].c_str()).c_str(), CE_UTF8));
     }
     return sexp;
   }
@@ -686,7 +690,7 @@ namespace tools
           if (str.empty())
             SET_STRING_ELT(sexp, (R_len_t)i, R_NaString);
           else
-            SET_STRING_ELT(sexp, (R_len_t)i, Rf_mkChar(str.c_str()));
+            SET_STRING_ELT(sexp, (R_len_t)i, Rf_mkCharCE(str.c_str(), CE_UTF8));
         }
       }break;
       default:

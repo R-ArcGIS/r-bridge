@@ -20,7 +20,7 @@ int execute_tool2(const wchar_t* script_path, IArray* pParameters)
     return 0;
 
   const rconnect_interface* connect = current_connect;
-  _bstr_t file_path(script_path);
+  std::wstring file_path(script_path);
 
   bool ok = true;
   int errorOccurred = 0;
