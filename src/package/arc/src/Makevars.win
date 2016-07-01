@@ -1,0 +1,37 @@
+MSBUILD =MSBuild.exe
+PRJ =..\\..\\..\\R-bridge.sln
+
+ifeq ($(WIN), 64)
+	PLATFORM =x64
+	BIN_PATH =../../../../bin64
+else
+	PLATFORM =Win32
+	BIN_PATH =../../../../bin32
+endif
+
+
+all: $(BUILD_TARGET)
+.PHONY: all clean
+
+build_proxy:
+	$(MSBUILD) $(PRJ) /p:configuration=Release-Desktop /t:Build /p:platform=$(PLATFORM) /p:PostBuildEventUseInBuild=false
+
+build_proxy_pro:
+ifeq ($(WIN), 64)
+	$(MSBUILD) $(PRJ) /p:configuration=Release-Pro /t:Build /p:platform=x64 /p:PostBuildEventUseInBuild=false
+endif
+
+proxy:
+	rm -f *.dll	
+	cp $(BIN_PATH)/rarcproxy.dll .
+	cp $(BIN_PATH)/libtieup.dll .
+
+proxy_pro:
+ifeq ($(WIN), 64)
+	rm -f *.dll
+	cp $(BIN_PATH)/rarcproxy_pro.dll .
+	cp $(BIN_PATH)/libtieup_pro.dll .
+endif
+
+clean:
+	rm -f *~ *.o *.dll
