@@ -37,12 +37,6 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>11.0.61030.0</_ProjectFileVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IntDir>..\..\obj\$(ProjectName)</IntDir>
-    <OutDir>..\..\obj\$(ProjectName)</OutDir>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release-Desktop|x64'">
     <IntDir>..\..\obj\$(ProjectName)</IntDir>
     <OutDir>..\..\obj\$(ProjectName)</OutDir>
   </PropertyGroup>
@@ -69,39 +63,37 @@
     </CustomBuild>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="arc\DESCRIPTION" />
-    <None Include="arc\man\arc.check_product.Rd" />
-    <None Include="arc\man\arc.data2sp.Rd" />
-    <None Include="arc\man\arc.dataset-class.Rd" />
-    <None Include="arc\man\arc.env.Rd" />
-    <None Include="arc\man\arc.fromP4ToWkt.Rd" />
-    <None Include="arc\man\arc.fromWktToP4.Rd" />
-    <None Include="arc\man\arc.progress_label.Rd" />
-    <None Include="arc\man\arc.progress_pos.Rd" />
-    <None Include="arc\man\arc.select.Rd" />
-    <None Include="arc\man\arc.shape-class.Rd" />
-    <None Include="arc\man\arc.shape.Rd" />
-    <None Include="arc\man\arc.shape2sp.Rd" />
-    <None Include="arc\man\arc.shapeinfo.Rd" />
-    <None Include="arc\man\arc.sp2data.Rd" />
-    <None Include="arc\man\arc.write.Rd" />
-    <None Include="arc\NAMESPACE" />
-    <None Include="arc\R\A.arc.classes.R" />
-    <None Include="arc\R\arc.data2sp.R" />
-    <None Include="arc\R\arc.dataset.R" />
-    <None Include="arc\R\arc.env.R" />
-    <None Include="arc\R\arc.init.R" />
-    <None Include="arc\R\arc.P4_WKT.R" />
-    <None Include="arc\R\arc.open.R" />
-    <None Include="arc\R\arc.select.R" />
-    <None Include="arc\R\arc.shape.R" />
-    <None Include="arc\R\arc.shapeinfo.R" />
-    <None Include="arc\R\arc.sp2data.R" />
-    <None Include="arc\R\arc.write.R" />
-    <None Include="arc\man\00.arc.Rd" />
-    <None Include="arc\man\arc.open.Rd" />
-    <None Include="arc\src\Makevars.win" />
-    <None Include="check.bat" />
+    <None Include="DESCRIPTION" />
+    <None Include="NAMESPACE" />
+    <None Include="man\arc.check_product.Rd" />
+    <None Include="man\arc.data2sp.Rd" />
+    <None Include="man\arc.dataset-class.Rd" />
+    <None Include="man\arc.env.Rd" />
+    <None Include="man\arc.fromP4ToWkt.Rd" />
+    <None Include="man\arc.fromWktToP4.Rd" />
+    <None Include="man\arc.progress_label.Rd" />
+    <None Include="man\arc.progress_pos.Rd" />
+    <None Include="man\arc.select.Rd" />
+    <None Include="man\arc.shape-class.Rd" />
+    <None Include="man\arc.shape.Rd" />
+    <None Include="man\arc.shape2sp.Rd" />
+    <None Include="man\arc.shapeinfo.Rd" />
+    <None Include="man\arc.sp2data.Rd" />
+    <None Include="man\arc.write.Rd" />
+    <None Include="man\arc.open.Rd" />
+    <None Include="R\A.arc.classes.R" />
+    <None Include="R\arc.data2sp.R" />
+    <None Include="R\arc.dataset.R" />
+    <None Include="R\arc.env.R" />
+    <None Include="R\arc.init.R" />
+    <None Include="R\arc.P4_WKT.R" />
+    <None Include="R\arc.open.R" />
+    <None Include="R\arc.select.R" />
+    <None Include="R\arc.shape.R" />
+    <None Include="R\arc.shapeinfo.R" />
+    <None Include="R\arc.sp2data.R" />
+    <None Include="R\arc.write.R" />
+    <None Include="src\Makevars.win" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

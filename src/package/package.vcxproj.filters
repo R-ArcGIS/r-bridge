@@ -15,102 +15,96 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="arc\DESCRIPTION">
+    <None Include="DESCRIPTION">
       <Filter>arc</Filter>
     </None>
-    <None Include="arc\NAMESPACE">
+    <None Include="NAMESPACE">
       <Filter>arc</Filter>
     </None>
-    <None Include="arc\R\arc.env.R">
+    <None Include="R\arc.env.R">
       <Filter>arc\R</Filter>
     </None>
-    <None Include="arc\R\arc.open.R">
+    <None Include="R\arc.open.R">
       <Filter>arc\R</Filter>
     </None>
-    <None Include="arc\R\arc.select.R">
+    <None Include="R\arc.select.R">
       <Filter>arc\R</Filter>
     </None>
-    <None Include="arc\R\arc.shape.R">
+    <None Include="R\arc.shape.R">
       <Filter>arc\R</Filter>
     </None>
-    <None Include="arc\R\arc.sp2data.R">
+    <None Include="R\arc.sp2data.R">
       <Filter>arc\R</Filter>
     </None>
-    <None Include="arc\R\arc.write.R">
+    <None Include="R\arc.write.R">
       <Filter>arc\R</Filter>
     </None>
-    <None Include="arc\man\00.arc.Rd">
+    <None Include="man\arc.open.Rd">
       <Filter>arc\man</Filter>
     </None>
-    <None Include="arc\man\arc.open.Rd">
-      <Filter>arc\man</Filter>
-    </None>
-    <None Include="arc\src\Makevars.win">
+    <None Include="src\Makevars.win">
       <Filter>arc\src</Filter>
     </None>
-    <None Include="arc\R\arc.P4_WKT.R">
+    <None Include="R\arc.P4_WKT.R">
       <Filter>arc\R</Filter>
     </None>
-    <None Include="arc\R\arc.data2sp.R">
+    <None Include="R\arc.data2sp.R">
       <Filter>arc\R</Filter>
     </None>
-    <None Include="arc\R\arc.init.R">
+    <None Include="R\arc.init.R">
       <Filter>arc\R</Filter>
     </None>
-    <None Include="arc\man\arc.select.Rd">
+    <None Include="man\arc.select.Rd">
       <Filter>arc\man</Filter>
     </None>
-    <None Include="arc\man\arc.write.Rd">
+    <None Include="man\arc.write.Rd">
       <Filter>arc\man</Filter>
     </None>
-    <None Include="arc\R\arc.dataset.R">
+    <None Include="R\arc.dataset.R">
       <Filter>arc\R</Filter>
     </None>
-    <None Include="arc\R\A.arc.classes.R">
+    <None Include="R\A.arc.classes.R">
       <Filter>arc\R</Filter>
     </None>
-    <None Include="arc\man\arc.shapeinfo.Rd">
+    <None Include="man\arc.shapeinfo.Rd">
       <Filter>arc\man</Filter>
     </None>
-    <None Include="arc\man\arc.check_product.Rd">
+    <None Include="man\arc.check_product.Rd">
       <Filter>arc\man</Filter>
     </None>
-    <None Include="arc\man\arc.progress_label.Rd">
+    <None Include="man\arc.progress_label.Rd">
       <Filter>arc\man</Filter>
     </None>
-    <None Include="arc\man\arc.progress_pos.Rd">
+    <None Include="man\arc.progress_pos.Rd">
       <Filter>arc\man</Filter>
     </None>
-    <None Include="arc\man\arc.data2sp.Rd">
+    <None Include="man\arc.data2sp.Rd">
       <Filter>arc\man</Filter>
     </None>
-    <None Include="arc\man\arc.sp2data.Rd">
+    <None Include="man\arc.sp2data.Rd">
       <Filter>arc\man</Filter>
     </None>
-    <None Include="arc\man\arc.shape-class.Rd">
+    <None Include="man\arc.shape-class.Rd">
       <Filter>arc\man</Filter>
     </None>
-    <None Include="arc\man\arc.dataset-class.Rd">
+    <None Include="man\arc.dataset-class.Rd">
       <Filter>arc\man</Filter>
     </None>
-    <None Include="arc\man\arc.shape.Rd">
+    <None Include="man\arc.shape.Rd">
       <Filter>arc\man</Filter>
     </None>
-    <None Include="arc\man\arc.shape2sp.Rd">
+    <None Include="man\arc.fromP4ToWkt.Rd">
       <Filter>arc\man</Filter>
     </None>
-    <None Include="arc\man\arc.fromP4ToWkt.Rd">
+    <None Include="man\arc.fromWktToP4.Rd">
       <Filter>arc\man</Filter>
     </None>
-    <None Include="arc\man\arc.fromWktToP4.Rd">
+    <None Include="man\arc.env.Rd">
       <Filter>arc\man</Filter>
     </None>
-    <None Include="arc\man\arc.env.Rd">
-      <Filter>arc\man</Filter>
-    </None>
-    <None Include="check.bat" />
-    <None Include="arc\R\arc.shapeinfo.R">
+    <None Include="R\arc.shapeinfo.R">
       <Filter>arc\R</Filter>
     </None>
+    <None Include="man\arc.shape2sp.Rd" />
   </ItemGroup>
 </Project>

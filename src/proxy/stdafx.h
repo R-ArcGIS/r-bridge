@@ -43,7 +43,7 @@
 
 #define RVERSION_DLL_BUILD R_MAJOR "." R_MINOR
 
-#include "..\arcobjects_api.h"
+#include "..\objects_api.h"
 
 using namespace ATL;
 bool isCancel();
