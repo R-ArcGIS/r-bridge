@@ -3,7 +3,7 @@
   <PropertyGroup>
     <ProxyName>rarcproxy</ProxyName>
     <LibArcObjects>libtieup</LibArcObjects>
-    <OutDir>..\..\bin$(PlatformArchitecture)\</OutDir>
+    <OutDir>..\..\lib\$(PlatformShortName)\</OutDir>
     <IntDir>..\..\obj\$(ProjectName)-$(Configuration)-$(PlatformArchitecture)\</IntDir>
     <TargetName>$(ProxyName)</TargetName>
   </PropertyGroup>
@@ -15,8 +15,11 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PreprocessorDefinitions>DESKTOP10;DLL_NAME=$(ProxyName);LIBRARY_API_NAME=$(LibArcObjects);%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <Link>
+      <DelayLoadDLLs>$(LibArcObjects).dll;user32.dll;oleaut32.dll</DelayLoadDLLs>
+    </Link>
     <ResourceCompile>
-      <PreprocessorDefinitions>DESKTOP10;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>DESKTOP10;LIBRARY_API_NAME=$(LibArcObjects);DLL_NAME=$(ProxyName);%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Platform)'=='Win32'">

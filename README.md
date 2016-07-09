@@ -31,28 +31,26 @@ tool_exec <- function (in_params, out_params)
 ```
 
 ####Building from source
-- Create new folder `<ArcGIS>\R-bridge`
-- Set as current directory and clone repository  
-`git clone https://github.com/R-ArcGIS/r-bridge.git ./src`
-- Open `R-bridge.sln` (Visual Studio 2013) and build solution
+`git clone https://github.com/R-ArcGIS/r-bridge.git`
+- open command prompt and execute `>src\build.bat`- this will create 'arcgisbinding' R package.
 
 ######Build dependencies:
-- ArcObjects SDK for C++ 10.3.1 ([requirements](http://desktop.arcgis.com/en/desktop/latest/get-started/system-requirements/arcobjects-sdk-system-requirements.htm))
+- Visual Studio 2015 Update 3 [Get free VC2015 Community](https://www.visualstudio.com/products/free-developer-offers-vs)
 - [Rtools 3.1 or 3.2](http://cran.r-project.org/bin/windows/Rtools)
+- [roxygen2](https://github.com/yihui/roxygen2) (optional) to build documentation: `install.packages('roxygen2')`
+- [MiKTeX 2.9](http://miktex.org/) - (optional) to build package PDF
+
 
 ######Documentation dependencies:
 - [roxygen2](https://github.com/yihui/roxygen2), install from R: `install.packages('roxygen2')`
 - [MiKTeX 2.9](http://miktex.org/), to build package PDF
 
 ###Repository layout
-- .\package  
+- src\package  
   `arcgisbinding` (native R package) - collection of classes and functions for script-level bindings between R and bridge dll.
-- .\rarcproxy  
-  C++, Bridge between ArcGIS 10.3.1 and `arcgisbinding`.
-- .\rarcproxy_pro  
-  C++, Bridge between ArcGIS Pro and `arcgisbinding`.
-- .\libarcobjects  
-  (private) - Static library for rarcproxy_pro. Wrapper classes for ArcObjects API.
+- src\proxy  
+  `rarcproxy.dll`, `rarcproxy_pro.dll` - C++, Bridge between ArcGIS (Desktop 10.3.1+, Pro 1.1+) and `arcgisbinding`
+
 
 ##Project Details
 
