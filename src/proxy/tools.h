@@ -5,7 +5,7 @@
 #include <string>
 #include <limits>
 #include <codecvt>
-#include <atlsafe.h>
+//#include <atlsafe.h>
 
 namespace tools
 {
@@ -283,23 +283,35 @@ namespace tools
     }
   }
 
+
   template<class T>
   struct SEXPhelper
   {
-    CComSafeArray<T> sa;
+    //CComSafeArray<T> sa;
+    SAFEARRAY* m_psa;
     SEXP sexp;
     SEXPhelper(const SAFEARRAY& psa)
     {
-      sa.Attach(&psa);
+      //sa.Attach(&psa);
+      m_psa = const_cast<SAFEARRAY*>(&psa);
+      ::SafeArrayLock(m_psa);
     }
     ~SEXPhelper()
     {
-      sa.Detach();
+      //sa.Detach();
+      ::SafeArrayUnlock(m_psa);
     }
 
     template<class S>
-    S get(size_t i) { return (S)sa.GetAt((LONG)i); }
+    S get(size_t i)
+    {
+      LONG lLBound = 0;
+      ::SafeArrayGetLBound(m_psa, 1, &lLBound);
+      return *(((S*)m_psa->pvData) + (i - lLBound));
+      //return (S)sa.GetAt((LONG)i); 
+    }
   };
+
 
   inline SEXP newVal(const std::vector<double>& value)
   {

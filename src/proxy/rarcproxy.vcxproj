@@ -1,6 +1,22 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug-Desktop|Win32">
+      <Configuration>Debug-Desktop</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug-Desktop|x64">
+      <Configuration>Debug-Desktop</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug-Pro|Win32">
+      <Configuration>Debug-Pro</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug-Pro|x64">
+      <Configuration>Debug-Pro</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Release-Desktop|Win32">
       <Configuration>Release-Desktop</Configuration>
       <Platform>Win32</Platform>
@@ -8,6 +24,10 @@
     <ProjectConfiguration Include="Release-Desktop|x64">
       <Configuration>Release-Desktop</Configuration>
       <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release-Pro|Win32">
+      <Configuration>Release-Pro</Configuration>
+      <Platform>Win32</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release-Pro|x64">
       <Configuration>Release-Pro</Configuration>
@@ -28,12 +48,37 @@
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug-Pro|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug-Desktop|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release-Desktop|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug-Desktop|Win32'">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release-Desktop|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug-Pro|Win32'">
+    <PlatformToolset>v140</PlatformToolset>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release-Pro|Win32'">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
@@ -44,7 +89,22 @@
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release-Pro|x64'" Label="PropertySheets">
     <Import Project="..\ArcGIS-Pro.props" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug-Pro|x64'" Label="PropertySheets">
+    <Import Project="..\ArcGIS-Pro.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug-Desktop|x64'" Label="PropertySheets">
+    <Import Project="..\ArcGIS-Desktop.props" />
+  </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release-Desktop|x64'" Label="PropertySheets">
+    <Import Project="..\ArcGIS-Desktop.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release-Pro|Win32'" Label="PropertySheets">
+    <Import Project="..\ArcGIS-Pro.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug-Pro|Win32'" Label="PropertySheets">
+    <Import Project="..\ArcGIS-Pro.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug-Desktop|Win32'" Label="PropertySheets">
     <Import Project="..\ArcGIS-Desktop.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release-Desktop|Win32'" Label="PropertySheets">
@@ -54,12 +114,76 @@
   <PropertyGroup>
     <_ProjectFileVersion>11.0.61030.0</_ProjectFileVersion>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug-Pro|x64'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug-Desktop|x64'" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release-Desktop|x64'" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release-Pro|x64'">
     <GenerateManifest />
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug-Desktop|Win32'" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release-Desktop|Win32'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug-Pro|Win32'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release-Pro|Win32'" />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug-Pro|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Program Files\R\R-3.2.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>Disabled</Optimization>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
+      <PreprocessorDefinitions>_USRDLL;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>Level3</WarningLevel>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+    </ClCompile>
+    <PreLinkEvent>
+      <Message>Making $(PlatformTarget) R.lib</Message>
+      <Command>lib /def:R.def /MACHINE:$(PlatformTarget) /OUT:$(OutDir)R.lib</Command>
+    </PreLinkEvent>
+    <Link>
+      <AdditionalDependencies>$(LibObjects).lib;R.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <DelayLoadDLLs>$(LibObjects).dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+      <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy $(OutDir)$(TargetName)$(TargetExt) ..\..\arcgisbinding\libs\x64\</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug-Desktop|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Program Files\R\R-3.2.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>Disabled</Optimization>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <PreprocessorDefinitions>_USRDLL;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
+      <WarningLevel>Level3</WarningLevel>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+    </ClCompile>
+    <PreLinkEvent>
+      <Message>Making $(PlatformTarget) R.lib</Message>
+      <Command>lib /def:R.def /MACHINE:$(PlatformTarget) /OUT:$(OutDir)R.lib</Command>
+    </PreLinkEvent>
+    <Link>
+      <AdditionalDependencies>$(LibObjects).lib;R.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <DelayLoadDLLs>$(LibObjects).dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+      <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy $(OutDir)$(TargetName)$(TargetExt) ..\..\arcgisbinding\libs\x64\</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release-Desktop|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
     <ClCompile>
       <AdditionalIncludeDirectories>C:\Program Files\R\R-3.2.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
@@ -78,8 +202,8 @@
       <Command>lib /def:R.def /MACHINE:$(PlatformTarget) /OUT:$(OutDir)R.lib</Command>
     </PreLinkEvent>
     <Link>
-      <AdditionalDependencies>$(LibArcObjects).lib;R.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <DelayLoadDLLs>$(LibArcObjects).dll;user32.dll;oleaut32.dll</DelayLoadDLLs>
+      <AdditionalDependencies>$(LibObjects).lib;R.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <DelayLoadDLLs>$(LibObjects).dll;%(DelayLoadDLLs)</DelayLoadDLLs>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <GenerateDebugInformation>No</GenerateDebugInformation>
@@ -91,6 +215,9 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release-Pro|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
     <ClCompile>
       <AdditionalIncludeDirectories>C:\Program Files\R\R-3.2.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -108,9 +235,9 @@
       <Command>lib /def:R.def /MACHINE:$(PlatformTarget) /OUT:$(OutDir)R.lib</Command>
     </PreLinkEvent>
     <Link>
-      <AdditionalDependencies>$(LibArcObjects).lib;R.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(LibObjects).lib;R.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ImportLibrary />
-      <DelayLoadDLLs>$(LibArcObjects).dll;user32.dll;oleaut32.dll</DelayLoadDLLs>
+      <DelayLoadDLLs>$(LibObjects).dll;%(DelayLoadDLLs)</DelayLoadDLLs>
       <GenerateDebugInformation>No</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
     </Link>
@@ -121,6 +248,30 @@
     <PostBuildEvent>
       <Command>
       </Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug-Desktop|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <AdditionalIncludeDirectories>C:\Program Files\R\R-3.2.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_USRDLL;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization>Disabled</Optimization>
+      <WarningLevel>Level3</WarningLevel>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>$(LibObjects).lib;R.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <DelayLoadDLLs>$(LibObjects).dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+      <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
+    </Link>
+    <PreLinkEvent>
+      <Command>lib /def:R.def /MACHINE:$(PlatformTarget) /OUT:$(OutDir)R.lib</Command>
+      <Message>Making $(PlatformTarget) R.lib</Message>
+    </PreLinkEvent>
+    <PostBuildEvent>
+      <Command>copy $(OutDir)$(TargetName)$(TargetExt) ..\..\arcgisbinding\libs\i386\</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release-Desktop|Win32'">
@@ -137,13 +288,66 @@
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>$(LibArcObjects).lib;R.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <DelayLoadDLLs>$(LibArcObjects).dll;user32.dll;oleaut32.dll</DelayLoadDLLs>
+      <AdditionalDependencies>$(LibObjects).lib;R.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <DelayLoadDLLs>$(LibObjects).dll;%(DelayLoadDLLs)</DelayLoadDLLs>
       <GenerateDebugInformation>No</GenerateDebugInformation>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
     </Link>
+    <PreLinkEvent>
+      <Command>lib /def:R.def /MACHINE:$(PlatformTarget) /OUT:$(OutDir)R.lib</Command>
+      <Message>Making $(PlatformTarget) R.lib</Message>
+    </PreLinkEvent>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release-Pro|Win32'">
+    <Link>
+      <GenerateDebugInformation>No</GenerateDebugInformation>
+      <DelayLoadDLLs>$(LibObjects).dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+      <AdditionalDependencies>$(LibObjects).lib;R.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
+    </Link>
+    <ClCompile>
+      <PreprocessorDefinitions>_USRDLL;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Optimization>Full</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <WarningLevel>Level3</WarningLevel>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+    </ClCompile>
+    <PreLinkEvent>
+      <Command>lib /def:R.def /MACHINE:$(PlatformTarget) /OUT:$(OutDir)R.lib</Command>
+      <Message>Making $(PlatformTarget) R.lib</Message>
+    </PreLinkEvent>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug-Pro|Win32'">
+    <Link>
+      <DelayLoadDLLs>$(LibObjects).dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+      <AdditionalDependencies>$(LibObjects).lib;R.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
+    </Link>
+    <ClCompile>
+      <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
+      <AdditionalIncludeDirectories>C:\Program Files\R\R-3.2.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_USRDLL;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+    </ClCompile>
     <PreLinkEvent>
       <Command>lib /def:R.def /MACHINE:$(PlatformTarget) /OUT:$(OutDir)R.lib</Command>
       <Message>Making $(PlatformTarget) R.lib</Message>
@@ -161,8 +365,11 @@
     <ClCompile Include="rarcproxy.cpp" />
     <ClCompile Include="r_api.cpp" />
     <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug-Pro|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug-Desktop|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release-Desktop|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release-Pro|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug-Desktop|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release-Desktop|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release-Pro|Win32'">Create</PrecompiledHeader>
     </ClCompile>

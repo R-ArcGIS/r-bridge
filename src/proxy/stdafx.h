@@ -8,7 +8,7 @@
 #include "targetver.h"
 
 #if !defined(DESKTOP10) && !defined(_WIN64)
-#error "There is no Win32 (32bit) version of rarcproxy_pro.dll. Build x64 version"
+#error ArcGISPro 64bit only"
 #endif
 
 #define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
@@ -16,17 +16,28 @@
 #define NOMCX
 // Windows Header Files:
 #include <windows.h>
+//#include <windef.h>
 
 #define _ATL_NO_AUTOMATIC_NAMESPACE
 #define _ATL_CSTRING_EXPLICIT_CONSTRUCTORS // some CString constructors will be explicit
 
-#include <crtdbg.h>
-
-#include <atlbase.h>
+//#include <crtdbg.h>
+#include <ole2.h>
+#include <tchar.h>
+//#include <atlbase.h>
 //#include <atlcom.h>
 //#include <atlctl.h>
-#include <comutil.h>
 
+//#include <comutil.h>
+
+
+#ifndef ATLASSERT
+#include <assert.h>
+#define ATLASSERT(x) assert(x)
+#endif
+#ifndef ATLTRACE
+#define ATLTRACE(a, b) ((void)0)
+#endif
 
 #undef min
 #undef max
@@ -43,9 +54,9 @@
 
 #define RVERSION_DLL_BUILD R_MAJOR "." R_MINOR
 
-#include "..\objects_api.h"
+#include "../libobjects_api.h"
 
-using namespace ATL;
+//using namespace ATL;
 bool isCancel();
 
 #define asSTR(s) #s

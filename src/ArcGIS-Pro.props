@@ -2,7 +2,7 @@
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ProxyName>rarcproxy_pro</ProxyName>
-    <LibArcObjects>libtieup_pro</LibArcObjects>
+    <LibObjects>libobjects_pro</LibObjects>
     <OutDir>..\..\lib\$(PlatformShortName)\</OutDir>
     <IntDir>..\..\obj\$(ProjectName)-$(Configuration)-$(PlatformArchitecture)\</IntDir>
     <TargetName>$(ProxyName)</TargetName>
@@ -12,13 +12,13 @@
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <PreprocessorDefinitions>DLL_NAME=$(ProxyName);LIBRARY_API_NAME=$(LibArcObjects);%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>DLL_NAME=$(ProxyName);LIBRARY_API_NAME=$(LibObjects);%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <DelayLoadDLLs>user32.dll;oleaut32.dll</DelayLoadDLLs>
     </Link>
     <ResourceCompile>
-      <PreprocessorDefinitions>LIBRARY_API_NAME=$(LibArcObjects);DLL_NAME=$(ProxyName);%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>LIBRARY_API_NAME=$(LibObjects);DLL_NAME=$(ProxyName);%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Platform)'=='Win32'">

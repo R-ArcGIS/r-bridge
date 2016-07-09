@@ -419,10 +419,15 @@ SEXP R_export2dataset(SEXP path, SEXP dataframe, SEXP shape, SEXP shape_info)
     {
       if (c->pos < 0)
         continue;
-      CComVariant val;
+      VARIANT val;
+      ::VariantInit(&val);
       c->get(i, val);
       if (!cur->setValue(c->pos, val))
+      {
+        ::VariantClear(&val);
         return showError<true>("insert row value failed"), R_NilValue;
+      }
+      ::VariantClear(&val);
     }
     if (isShape)
     {

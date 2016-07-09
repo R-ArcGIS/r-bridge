@@ -73,6 +73,7 @@ int execute_tool2(const wchar_t* script_path, IArray* pParameters)
     << "do.call('tool_exec', args=list(params_in, params_out))"
     << "},envir=list(params_in=" << env_name << "$params_in,params_out=" << env_name << "$params_out))";
 
+
   ok = GNU_GPL::do1line(eval_cmd.str().c_str()) == 1;
 
   connect->print_out(NULL, -1);
@@ -86,7 +87,9 @@ int execute_tool2(const wchar_t* script_path, IArray* pParameters)
     for (size_t i = 0, n = ret_out.size(); i < n; i++)
     {
       //if (!r2param(ret_out.at(idx), return_params[i].m_T))
-      CComVariant v;
+      //CComVariant v;
+      VARIANT v;
+      ::VariantInit(&v);
       if (!r2variant(ret_out.at(i), v))
       {
         std::wstring msg(L"failed to set output parameter[");
@@ -96,6 +99,7 @@ int execute_tool2(const wchar_t* script_path, IArray* pParameters)
       }
       else
         gp->update_output((int)i, v);
+      ::VariantClear(&v);
     }
   }
   { //remove .gptoolNN env

@@ -2,7 +2,7 @@
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ProxyName>rarcproxy</ProxyName>
-    <LibArcObjects>libtieup</LibArcObjects>
+    <LibObjects>libobjects</LibObjects>
     <OutDir>..\..\lib\$(PlatformShortName)\</OutDir>
     <IntDir>..\..\obj\$(ProjectName)-$(Configuration)-$(PlatformArchitecture)\</IntDir>
     <TargetName>$(ProxyName)</TargetName>
@@ -13,13 +13,13 @@
       <AdditionalIncludeDirectories>C:\Program Files (x86)\ArcGIS\Desktop10.4\com;C:\Program Files (x86)\ArcGIS\DeveloperKit10.3\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <PreprocessorDefinitions>DESKTOP10;DLL_NAME=$(ProxyName);LIBRARY_API_NAME=$(LibArcObjects);%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>DESKTOP10;DLL_NAME=$(ProxyName);LIBRARY_API_NAME=$(LibObjects);%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <DelayLoadDLLs>$(LibArcObjects).dll;user32.dll;oleaut32.dll</DelayLoadDLLs>
+      <DelayLoadDLLs>$(LibObjects).dll;user32.dll;oleaut32.dll</DelayLoadDLLs>
     </Link>
     <ResourceCompile>
-      <PreprocessorDefinitions>DESKTOP10;LIBRARY_API_NAME=$(LibArcObjects);DLL_NAME=$(ProxyName);%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>DESKTOP10;LIBRARY_API_NAME=$(LibObjects);DLL_NAME=$(ProxyName);%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Platform)'=='Win32'">

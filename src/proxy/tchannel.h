@@ -97,9 +97,7 @@ private:
   std::list<T> m_list;
 };
 
-// locking channel
-// to balance call between threads
-struct fn_struct;
+// to balance calls between threads
 struct tchannel
 {
   static tchannel& singleton();
@@ -112,6 +110,7 @@ struct tchannel
     R_TXT_OUT,
     FN_CALL,
     FN_CALL_RET,
+    INTERNAL
   };
   struct value
   {
@@ -119,7 +118,7 @@ struct tchannel
     union
     {
       void* _void;
-      const fn_struct* data_fn;
+      const void* data;
       SEXP data_sexp;
       int cmd_id;
       std::wstring* data_str;
@@ -127,7 +126,7 @@ struct tchannel
     inline bool empty() const { return _void == NULL; }
     value(): type (_UNINIT), _void(NULL){}
     explicit value(int t, int val) : type(t), cmd_id(val) {}
-    explicit value(int t, const fn_struct* val): type(t), data_fn(val){}
+    explicit value(int t, const void* val): type(t), data(val){}
     explicit value(int t, SEXP val): type(t), data_sexp(val)
     {
       if (val) ::R_PreserveObject(val);
@@ -158,9 +157,7 @@ struct tchannel
       if (type == R_PROMPT || type == R_TXT_OUT)
         delete data_str;
       else if (type == FN_CALL_RET && data_sexp)
-      {
         ::R_ReleaseObject(data_sexp);
-      }
       type = t;
       _void = newVal;
     }
@@ -168,6 +165,44 @@ struct tchannel
   safeQ<value> to_thread;
   safeQ<value> from_thread;
   std::string all_errors_text;
+public:
+  static bool try_process(tchannel::value &p)
+  {
+    if (p.type == INTERNAL)
+    {
+      ((const gp_eval*)p.data)->_call();
+      return true;
+    }
+    return false;
+  }
+  static void gp_thread(std::function<void()> fn)
+  {
+    gp_eval e(fn);
+    e.wait();
+  }
+private:
+  struct gp_eval
+  {
+    using Fn = std::function<void()>;
+    gp_eval(Fn fn) :m_fn(fn), m_h(::CreateEvent(NULL, TRUE, FALSE, NULL)){ }
+    ~gp_eval() { ::CloseHandle(m_h); }
+    void _call() const
+    {
+      m_fn();
+      ::SetEvent(m_h);
+    }
+    Fn m_fn;
+    HANDLE m_h;
+    void wait()
+    {
+      tchannel::value p(INTERNAL, (const void*)this);
+      tchannel& channel = singleton();
+      channel.from_thread.push(p);
+      ::WaitForSingleObject(m_h, INFINITE);
+    }
+  };
 };
+
+
 
 #endif

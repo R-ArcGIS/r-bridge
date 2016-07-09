@@ -231,7 +231,7 @@ double epoch2ole(double epoch)
 }
 
 #endif
-
+#if 0
 VARIANT r2variant(SEXP r, VARTYPE vt)
 {
   VARIANT v;
@@ -266,7 +266,7 @@ VARIANT r2variant(SEXP r, VARTYPE vt)
       if (tools::copy_to(rs, str))
       {
         v.vt = VT_BSTR;
-        v.bstrVal = CComBSTR(str.c_str()).Detach();
+        v.bstrVal = ::SysAllocString(str.c_str());
         return v;
       }
       v.vt = VT_NULL;
@@ -274,9 +274,11 @@ VARIANT r2variant(SEXP r, VARTYPE vt)
   }
   return v;
 }
+#endif
 
 bool r2variant(SEXP r, VARIANT &v)
 {
+  //get as string
   v.vt = VT_NULL;
   if (r == NULL || Rf_isNull(r))
     return true;
@@ -342,7 +344,8 @@ SEXP R_fromP42Wkt(SEXP str)
   return make_safe_return(wkt);
 }
 
-SEXP R_getEnv()
+static SEXP get_env()
+//SEXP R_getEnv()
 {
   tools::listGeneric vals(44);
   auto f([&vals](const std::wstring& name, VARIANT const &v)
@@ -355,6 +358,14 @@ SEXP R_getEnv()
 
   return vals.get();
 }
+
+SEXP R_getEnv()
+{
+  SEXP ret = nullptr;
+  tchannel::gp_thread([&ret]() { ret = get_env(); });
+  return ret;
+}
+
 
 extern DWORD g_main_TID;
 SEXP R_AoInitialize()
