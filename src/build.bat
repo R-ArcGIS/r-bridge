@@ -150,7 +150,7 @@ if ($isbuild -or -Not (Test-Path package/inst/doc/$pkg_name.pdf))
 }
 
 Write-Host "Building package" -foregroundcolor Green
-& $Rcmd INSTALL --build --clean $compile_flag --html --library=../../ package
+& $Rcmd INSTALL --build --clean $compile_flag --html --library=../ package
 
 if ($lastExitCode -ne 0)
 {
