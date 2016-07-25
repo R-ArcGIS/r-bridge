@@ -1,13 +1,14 @@
 #' Get geoprocessing environment settings
 #'
 #' Geoprocessing environment settings are additional parameters that affect a
-#' tool's results. Instead, they are values configured in a separate dialog box,
+#' tool's results. Unlike parameters, they are not directly input as values.
+#' Instead, they are values configured in a separate dialog box, and then
 #' and interrogated and used by the script when run.
 #'
 #' The geoprocessing environment can control a variety of attributes relating
 #' to where data is stored, the extent and projection of analysis outputs,
 #' tolerances of output values, and parallel processing, among other attributes.
-#  Commonly used environment settings include \code{workspace}, which controls
+#' Commonly used environment settings include \code{workspace}, which controls
 #' the default location for geoprocessing tool inputs and outputs. See the
 #' topics listed under "References" for details on the full range of
 #' environment settings that Geoprocessing scripts can utilize.
