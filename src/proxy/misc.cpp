@@ -345,7 +345,6 @@ SEXP R_fromP42Wkt(SEXP str)
 }
 
 static SEXP get_env()
-//SEXP R_getEnv()
 {
   tools::listGeneric vals(44);
   auto f([&vals](const std::wstring& name, VARIANT const &v)
@@ -372,18 +371,22 @@ SEXP R_AoInitialize()
 {
   const arcobject::product_info &info= arcobject::AoInitialize();
 
+  tools::listGeneric vals(3);
+
   if (info.license.front() == '-')
-    showError<true>(info.license.c_str() + 1);
+  {
+    //showError<true>(info.license.c_str() + 1);
+    vals.push_back(info.license.c_str() + 1, "error");
+    return vals.get();
+  }
+  vals.push_back(info.license, "license");
+  vals.push_back(info.version, "version");
+  vals.push_back(info.install_path, "path");
 
   SEXP ns = R_FindNamespace(Rf_mkString("arcgisbinding"));
   ATLTRACE("SEXP type:%s", Rf_type2char(TYPEOF(ns)));
 
   g_main_TID = GetCurrentThreadId();
-
-  tools::listGeneric vals(3);
-  vals.push_back(info.license, L"license");
-  vals.push_back(info.version, L"version");
-  vals.push_back(info.install_path, L"path");
   return vals.get();
 }
 
