@@ -30,6 +30,10 @@ tool_exec <- function (in_params, out_params)
 > arc.check_product()
 ```
 
+####Documentation
+ - The [arcgisbinding vignette](https://r-arcgis.github.io/assets/arcgisbinding-vignette.html) providesan overview of what the bridge does, and how to use it effectively.
+ - The [arcgisbinding manual](https://r-arcgis.github.io/assets/arcgisbinding.pdf) provides details on each of the functions included within the package.
+
 ####Building from source
 `git clone https://github.com/R-ArcGIS/r-bridge.git`
 - open command prompt and execute `>src\build.bat`- this will create 'arcgisbinding' R package.
