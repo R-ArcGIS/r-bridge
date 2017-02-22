@@ -52,7 +52,7 @@ tool_exec <- function (in_params, out_params)
 - src\package  
   `arcgisbinding` (native R package) - collection of classes and functions for script-level bindings between R and bridge dll.
 - src\proxy  
-  `rarcproxy.dll`, `rarcproxy_pro.dll` - C++, Bridge between ArcGIS (Desktop 10.3.1+, Pro 1.1+) and `arcgisbinding`
+  `rarcproxy.dll`, `rarcproxy_pro.dll` - C++, bridge between ArcGIS (Desktop 10.3.1+, Pro 1.1+) and `arcgisbinding`
 
 
 ##Project Details
