@@ -165,7 +165,7 @@ arc.progress_pos <- function (pos=-1)
   if (!.arc$inproc)
   {
     packageStartupMessage(paste("*** Please call arc.check_product() to",
-                                " define a desktop license."))
+                                "define a desktop license."))
   }
 }
 
