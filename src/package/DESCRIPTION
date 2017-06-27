@@ -1,6 +1,6 @@
 Package: arcgisbinding
-Version: 1.0.0.125
-Date: 2017-04-06
+Version: 1.0.0.126
+Date: 2017-06-08
 Title: Bindings for ArcGIS
 Author: Esri
 Maintainer: Esri <R_bridge@esri.com>
