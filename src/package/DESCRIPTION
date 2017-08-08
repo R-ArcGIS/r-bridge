@@ -1,15 +1,20 @@
 Package: arcgisbinding
-Version: 1.0.0.126
-Date: 2017-06-08
+Version: 1.0.0.128
+Date: 2017-08-02
 Title: Bindings for ArcGIS
 Author: Esri
 Maintainer: Esri <R_bridge@esri.com>
 NeedsCompilation: no
-Description: This package provides classes for loading, converting and exporting ArcGIS datasets and layers in R
-Depends: R (>= 3.2.0)
-Imports: methods
-Suggests: sp
+Description: This package provides classes for loading, converting and exporting
+    ArcGIS datasets and layers in R
+Depends:
+    R (>= 3.2.0)
+Imports:
+    methods
+Suggests:
+    sp
 License: Apache License 2.0
 URL: http://esri.com
 OS_type: windows
 Archs: i386, x64
+RoxygenNote: 5.0.1
