@@ -1,9 +1,7 @@
 ~$*
 *~
-*.pdf
-*.dll
-*.lib
 *.zip
+*.pdf
 *.pdb
 *.idb
 *.exp
@@ -17,20 +15,21 @@
 *.sln.docstates
 *.mdf
 *.ldf
+.Rd2pdf*
 
 # Visual Studio profiler
 *.psess
 *.vsp
 *.vspx
-.vs
 .DS_Store
 *.VC.opendb
 *.VC.db
 *.log
 
-BuildLog.htm
-arcgisbinding/
-obj/
-ipch/
-*.lastbuildstate
-*/arc.Rcheck
+.vs/
+.vscode/
+build/
+libs/
+arc/inst/
+DESCRIPTION
+settings.txt

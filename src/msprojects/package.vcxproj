@@ -1,0 +1,119 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<!--
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Release-Desktop|x64">
+      <Configuration>Release-Desktop</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+-->
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug-Pro|Win32">
+      <Configuration>Debug-Pro</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug-Pro|x64">
+      <Configuration>Debug-Pro</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release-Pro|Win32">
+      <Configuration>Release-Pro</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release-Pro|x64">
+      <Configuration>Release-Pro</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug-Desktop|Win32">
+      <Configuration>Debug-Desktop</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug-Desktop|x64">
+      <Configuration>Debug-Desktop</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release-Desktop|Win32">
+      <Configuration>Release-Desktop</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release-Desktop|x64">
+      <Configuration>Release-Desktop</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Condition=" '$(Configuration)'=='Release-Desktop' or '$(Configuration)'=='Debug-Desktop' ">
+    <BUILD_TYPE>desktop</BUILD_TYPE>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)'=='Release-Pro' or '$(Configuration)'=='Debug-Pro' ">
+    <BUILD_TYPE>pro</BUILD_TYPE>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{4D291BC3-66DB-4413-AC61-B694F6727867}</ProjectGuid>
+    <RootNamespace>arc</RootNamespace>
+    <PlatformToolset>v141</PlatformToolset>
+    <ConfigurationType>Utility</ConfigurationType>
+    <ProjectName>arcgisbinding (R package)</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <IntDir>$(ProjectDir)..\..\build\obj\$(ProjectName)</IntDir>
+    <OutDir>$(ProjectDir)..\..\build\obj\$(ProjectName)</OutDir>
+  </PropertyGroup>
+
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+    <CustomBuild />
+    <CustomBuild />
+    <CustomBuild>
+      <LinkObjects>false</LinkObjects>
+    </CustomBuild>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release-Desktop|x64'">
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+    <CustomBuild />
+    <CustomBuild />
+    <CustomBuild>
+      <LinkObjects>false</LinkObjects>
+    </CustomBuild>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <None Include="$(MSBuildProjectDirectory)..\..\..\DESCRIPTION.in"/>
+    <None Include="$(MSBuildProjectDirectory)..\..\..\NAMESPACE"/>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+  <Target Name="Rebuild"/>
+  <Target Name="Build">
+    <Message Text="#### Building 'arcgisbinding' ($(BUILD_TYPE)) package..." />
+    <Exec Command="$(ProjectDir)..\..\build\build.bat $(BUILD_TYPE)" />
+    <Delete Files="$(LastBuildState)" Condition="Exists($(LastBuildState))" />
+  </Target>
+
+  <!--
+  <Target Name="InitializeBuildStatus">
+     <Message Text="#### Building 'arcgisbinding' ($(BUILD_TYPE)) package..." />
+     <Exec Command="$(MSBuildProjectDirectory)..\..\..\build.bat $(BUILD_TYPE)" />
+  </Target>
+  <Target Name="FinalizeBuildStatus">
+    <Delete Files="$(LastBuildState)" Condition="Exists($(LastBuildState))" />
+  </Target>-->
+</Project>

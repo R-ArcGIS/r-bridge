@@ -1,0 +1,180 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug-Desktop|Win32">
+      <Configuration>Debug-Desktop</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug-Desktop|x64">
+      <Configuration>Debug-Desktop</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug-Pro|Win32">
+      <Configuration>Debug-Pro</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug-Pro|x64">
+      <Configuration>Debug-Pro</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release-Desktop|Win32">
+      <Configuration>Release-Desktop</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release-Desktop|x64">
+      <Configuration>Release-Desktop</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release-Pro|Win32">
+      <Configuration>Release-Pro</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release-Pro|x64">
+      <Configuration>Release-Pro</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{4D291BC3-66DB-4413-AC61-B694F6727866}</ProjectGuid>
+    <RootNamespace>rarcproxy</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectName>rarcproxy</ProjectName>
+  </PropertyGroup>
+  <Import Project="..\Common.props" />
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release-Pro|x64'" Label="PropertySheets">
+    <Import Project="..\ArcGIS-Pro.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug-Pro|x64'" Label="PropertySheets">
+    <Import Project="..\ArcGIS-Pro.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug-Desktop|x64'" Label="PropertySheets">
+    <Import Project="..\ArcGIS-Desktop.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release-Desktop|x64'" Label="PropertySheets">
+    <Import Project="..\ArcGIS-Desktop.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release-Pro|Win32'" Label="PropertySheets">
+    <Import Project="..\ArcGIS-Pro.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug-Pro|Win32'" Label="PropertySheets">
+    <Import Project="..\ArcGIS-Pro.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug-Desktop|Win32'" Label="PropertySheets">
+    <Import Project="..\ArcGIS-Desktop.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release-Desktop|Win32'" Label="PropertySheets">
+    <Import Project="..\ArcGIS-Desktop.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Label="Set R_PATH" Condition="'$(R_PATH)'=='' and Exists('$(settings_file)')">
+    <configtext>$([system.IO.File]::ReadAllText('$(settings_file)'))</configtext>
+    <R_PATH>$([System.Text.RegularExpressions.Regex]::Match($(configtext), '^R_PATH=(.+)').Groups[1].Value.Trim().Trim('\"'))</R_PATH>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug-Pro|x64'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug-Desktop|x64'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release-Desktop|x64'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release-Pro|x64'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug-Desktop|Win32'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release-Desktop|Win32'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug-Pro|Win32'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release-Pro|Win32'" />
+  <ItemDefinitionGroup Condition="'$(Platform)'=='x64'">
+    <ClCompile>
+      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <PreLinkEvent>
+      <Message>Making $(PlatformTarget) R.lib</Message>
+      <Command>lib /def:R.def /MACHINE:$(PlatformTarget) /OUT:$(OutDir)R.lib</Command>
+    </PreLinkEvent>
+    <Link>
+      <AdditionalDependencies>R.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
+      <DelayLoadDLLs>user32.dll;oleaut32.dll</DelayLoadDLLs>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy $(OutDir)$(TargetName)$(TargetExt) $(output_package_path)\libs\x64\</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Platform)'=='Win32'">
+    <ClCompile>
+      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <PreLinkEvent>
+      <Command>lib /def:R.def /MACHINE:$(PlatformTarget) /OUT:$(OutDir)R.lib</Command>
+      <Message>Making $(PlatformTarget) R.lib</Message>
+    </PreLinkEvent>
+    <PostBuildEvent>
+      <Command>copy $(OutDir)$(TargetName)$(TargetExt) $(output_package_path)\libs\i386\</Command>
+    </PostBuildEvent>
+    <Link>
+      <AdditionalDependencies>R.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
+      <DelayLoadDLLs>user32.dll;oleaut32.dll</DelayLoadDLLs>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="gp_exec.cpp" />
+    <ClCompile Include="init_interpreter.cpp" />
+    <ClCompile Include="misc.cpp" />
+    <ClCompile Include="rarcproxy.cpp" />
+    <ClCompile Include="r_api.cpp" />
+    <ClCompile Include="r_container.cpp" />
+    <ClCompile Include="r_feature_class.cpp" />
+    <ClCompile Include="r_raster.cpp" />
+    <ClCompile Include="r_raster_dataset.cpp" />
+    <ClCompile Include="r_table.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader>Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="exporter.cpp" />
+    <ClCompile Include="r_dataset.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\buildnum.h" />
+    <ClInclude Include="misc.h" />
+    <ClInclude Include="rarcproxy_exports.h" />
+    <ClInclude Include="exporter.h" />
+    <ClInclude Include="r_container.h" />
+    <ClInclude Include="r_dataset.h" />
+    <ClInclude Include="Rtl.h" />
+    <ClInclude Include="r_feature_class.h" />
+    <ClInclude Include="r_raster.h" />
+    <ClInclude Include="r_raster_dataset.h" />
+    <ClInclude Include="r_table.h" />
+    <ClInclude Include="tchannel.h" />
+    <ClInclude Include="tools.h" />
+    <ClInclude Include="rconnect_interface.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Resource.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="readme.txt" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+  <Target Name="InitializeBuildStatus">
+    <Error Condition="'$(R_PATH)'==''" Text="######## Please set R_PATH enviroment or $(settings_file)" />
+    <Message Text="using R_PATH=$(R_PATH)" />
+    <!--<Message Text="####"/>-->
+  </Target>
+  <Target Name="FinalizeBuildStatus">
+    <Message Text="###################" />
+    <Message Text="R_PATH=$(R_PATH)" />
+    <Message Text="Proxy dll: $(ProxyName)" />
+    <Message Text="LibObjects dll: $(LibObjects)" />
+    <Message Text="###################" />
+  </Target>
+  <!--<Target Name="ClCompile">
+    <Message Text="Project File Name = $(MSBuildProjectFile)" />
+    <Message Text="Project Extension = $(MSBuildProjectExtension)" />
+  </Target>-->
+</Project>

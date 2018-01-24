@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Release-Pro</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
+    <ProxyName>rarcproxy_pro</ProxyName>
+    <LibObjects>libobjects_pro</LibObjects>
+    <TargetName>$(ProxyName)</TargetName>
+    <YieldDuringToolExecution>true</YieldDuringToolExecution>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <PreprocessorDefinitions>DLL_NAME=$(ProxyName);LIBRARY_API_NAME=$(LibObjects);%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <DelayLoadDLLs>user32.dll;oleaut32.dll</DelayLoadDLLs>
+    </Link>
+    <ResourceCompile>
+      <PreprocessorDefinitions>LIBRARY_API_NAME=$(LibObjects);DLL_NAME=$(ProxyName);%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+</Project>

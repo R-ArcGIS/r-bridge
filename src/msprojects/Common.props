@@ -1,0 +1,105 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Release-Pro</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
+    <BuildPath>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\..\build))</BuildPath>
+    <OutDir>$(BuildPath)\..\libs\$(Platform)\</OutDir>
+    <IntDir>$(BuildPath)\obj\$(ProjectName)-$(Configuration)-$(Platform)\</IntDir>
+    <settings_file>$(BuildPath)\settings.txt</settings_file>
+    <output_package_path>$(BuildPath)\arcgisbinding</output_package_path>
+  </PropertyGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>15.0</VCProjectVersion>
+    <YieldDuringToolExecution>true</YieldDuringToolExecution>
+    <LinkIncremental>False</LinkIncremental>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)'=='Release-Pro' or '$(Configuration)'=='Debug-Pro' ">
+    <TargetName>$(MSBuildProjectName)_pro</TargetName>
+    <LibObjects>libobjects_pro</LibObjects>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)'=='Release-Desktop' or '$(Configuration)'=='Debug-Desktop' ">
+    <TargetName>$(MSBuildProjectName)</TargetName>
+    <LibObjects>libobjects</LibObjects>
+    <DefineConstants>DESKTOP10</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)'=='Debug-Desktop' or '$(Configuration)'=='Debug-Pro' ">
+    <DefineConstants>DEBUG;_DEBUG;$(DefineConstants)</DefineConstants>
+    <DefineDebug>true</DefineDebug>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)'=='Release-Desktop' or '$(Configuration)'=='Release-Pro' ">
+    <DefineConstants>NDEBUG;$(DefineConstants)</DefineConstants>
+  </PropertyGroup>
+  <!--
+  <PropertyGroup Condition="'$(ProjectName)'=='rarcproxy' and '$(R_PATH)'=='' and Exists('$(settings_file')" >
+    <configtext>$([system.IO.File]::ReadAllText('$(settings_file)'))</configtext>
+    <rr>$([System.Text.RegularExpressions.Regex]::Match($(configtext), '^R_PATH=(.+)'))</rr>
+    <rr>$(rr.Split('=')[1].Trim())</rr>
+    <R_PATH>$(rr.Trim('\"'))</R_PATH>
+    <!- -<R_PATH>$([System.Environment]::ExpandEnvironmentVariables($(rr.Split('=')[1].Trim())))</R_PATH>- ->
+  </PropertyGroup>
+  -->
+
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <Optimization>Disabled</Optimization>
+      <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <PreprocessorDefinitions>_USRDLL;DLL_NAME=$(TargetName);LIBRARY_API_NAME=$(LibObjects);$(DefineConstants);%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(R_PATH)'!=''">R_PATH='$(R_PATH)';%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories Condition=" '$(ProjectName)'=='rarcproxy' ">$(R_PATH)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MinimalRebuild>false</MinimalRebuild>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+    <ResourceCompile>
+      <PreprocessorDefinitions>DLL_NAME=$(TargetName);$(DefineConstants);%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+
+  <ItemDefinitionGroup Condition=" '$(Configuration)'=='Release-Pro' or '$(Configuration)'=='Release-Desktop' ">
+    <ClCompile>
+      <DebugInformationFormat>None</DebugInformationFormat>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <Optimization>Full</Optimization>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>No</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+    </Link>
+  </ItemDefinitionGroup>
+
+  <ItemDefinitionGroup Condition="'$(Platform)'=='Win32'">
+    <ClCompile>
+      <PreprocessorDefinitions>WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Platform)'=='x64'">
+    <ClCompile>
+      <PreprocessorDefinitions>_WIN64;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+
+</Project>
