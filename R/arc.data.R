@@ -29,7 +29,7 @@ print.arc.data <- function(x, ...)
   d <- NextMethod("[")
   if (is.data.frame(d))
   {
-    if (mode(i)=="numeric")
+    if (!missing(i) && mode(i)=="numeric")
       attr(d, "shape") <- arc.shape(x)[i]
     else
       attr(d, "shape") <- arc.shape(x)
