@@ -1,1 +1,2 @@
+src/msprojects/*.h linguist-detectable=false
 src/msprojects/proxy/*.h linguist-detectable=false
