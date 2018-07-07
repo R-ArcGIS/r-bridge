@@ -1,16 +1,6 @@
-#' Convert an arc.dataframe object to an sf Simple Feature object
-#'
-#' Convert an ArcGIS \code{data.frame} to the equivalent \code{sf} object
-#' type. The output types that can be generated:
-#' \code{POINT}, \code{MULTIPOINT}, \code{POLYGON}, \code{MULTIPOLYGON}, \code{LINESTRING}, \code{MULTILINESTRING}.
-#'
-#' @param x \code{data.frame} result of \code{\link{arc.select}}
-#' @examples
-#'
-#' require(sf)
-#' d <- arc.select(arc.open(system.file("extdata", "ca_ozone_pts.shp", package="arcgisbinding")), 'ozone')
-#' x <- arc.data2sf(d)
-#' \dontrun{plot(x)}
+
+#arc.data2sf.default <- function(x) stop()
+# Convert an arc.dataframe object to an sf Simple Feature object
 #' @export
 arc.data2sf <- function (x)
 {
@@ -30,25 +20,13 @@ arc.data2sf <- function (x)
     d2<-data.frame(df, "Shape.."=shape)
     coords<-paste0("Shape...", names(shape))
     #dim<-toupper(paste(names(shape), collapse=""))
-    dim<-.shapeinfo2_dim(info)
+    dim<-.shapeinfo_dim(info)
     sf::st_as_sf(d2,coords=coords, dim=dim, crs=arc.fromWktToP4(info$WKT))
   }
   sf::st_sf(df, geom=arc.shape2sf(shape))
 }
 
-#' Convert Esri shape to sfc simple feature geometry
-#'
-#' Convert \code{\link{arc.shape-class}} to \code{sfc} simple feature geometry:
-#' \code{POINT}, \code{MULTIPOINT}, \code{POLYGON}, \code{MULTIPOLYGON}, \code{LINESTRING}, \code{MULTILINESTRING}.
-#'
-#' @param shape \code{\link{arc.shape-class}}
-#' @seealso \code{\link{arc.shape}}
-#' @examples
-#'
-#' require(sp)
-#' d <- arc.select(arc.open(system.file("extdata", "ca_ozone_pts.shp", package="arcgisbinding")), 'ozone')
-#' x <- arc.shape2sp(arc.shape(d))
-#' \dontrun{plot(x)}
+# Convert Esri shape to sfc simple feature geometry
 #' @export
 arc.shape2sf <- function (shape)
 {

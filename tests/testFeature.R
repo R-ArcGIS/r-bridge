@@ -16,6 +16,7 @@ check_1 <- function()
   stopifnot(arc.fromP4ToWkt(arc.fromWktToP4(4326)) ==
    "GEOGCS[\"GCS_WGS_1984\",DATUM[\"D_WGS_1984\",SPHEROID[\"WGS_1984\",6378137.0,298.257223563]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]]")
 }
+
 check_2 <- function()
 {
   #create an empty table

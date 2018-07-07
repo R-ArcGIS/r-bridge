@@ -1,8 +1,4 @@
-#' @export
-arc.shapeinfo <- function (object) UseMethod("arc.shapeinfo")
-
-#' @export
-arc.shapeinfo.default <- function(object)
+.get_shapeinfo_any <- function(object)
 {
   if (inherits(object, "Spatial"))
     return (.get_shape_info_from_sp(object))
@@ -10,7 +6,8 @@ arc.shapeinfo.default <- function(object)
     return (.get_shape_info_from_sf(object))
   if (inherits(object, "sfc"))
     return (.get_shape_info_from_sf(object))
-  return (NULL)
+  #return (NULL)
+  return (arc.shapeinfo(object))
 }
 
 .shapeinfo_dim <- function(x)
@@ -21,13 +18,14 @@ arc.shapeinfo.default <- function(object)
     ifelse(!is.null(x$hasM) && x$hasM, 'M', ''))
 }
 
-#' @aliases arc.shapeinfo arc.shape-method
 #' @export
-arc.shapeinfo.arc.shape <- function(object) object@shapeinfo
+#arc.shapeinfo.arc.shape <- function(object) object@shapeinfo
+setMethod("arc.shapeinfo", "arc.shape", function(object) object@shapeinfo)
 
-#' @aliases arc.shapeinfo arcarc.feature-method
 #' @export
-arc.shapeinfo.arc.feature <- function(object) object@shapeinfo
+#arc.shapeinfo.arc.feature <- function(object) object@shapeinfo
+setMethod("arc.shapeinfo", "arc.feature", function(object) object@shapeinfo)
+
 #arc.shapeinfo.Spatial <- function(x) .get_shape_info_from_sp(x)
 
 #setMethod("show", "arc.shapeinfo", function(object)
@@ -39,6 +37,7 @@ format.arc.shapeinfo <- function(x, ...)
   gt <- if (nchar(zm) > 0) paste0(x$type, ", has ", zm) else x$type
   c("geometry type"=gt, .format_sr(x))
 }
+
 #' @export
 print.arc.shapeinfo <- function(x, ...)
 {

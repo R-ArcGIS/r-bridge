@@ -47,7 +47,6 @@ tool_exec <- function (in_params, out_params)
 - (optional) Visual Studio 2017 Update 2. [Get free Visual Studio Community](https://www.visualstudio.com/products/free-developer-offers-vs)
 
 ###### Documentation dependencies:
-- [roxygen2](https://github.com/yihui/roxygen2), install from R: `install.packages('roxygen2')`
 - [MiKTeX 2.9](http://miktex.org/), to build package PDF
 
 ## Project Details

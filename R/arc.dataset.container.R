@@ -1,6 +1,6 @@
 setMethod("arc.metadata", "arc.container", function(object) invisible(NULL))
 
-setMethod("initialize", "arc.container", def = function(.Object, path) 
+setMethod("initialize", "arc.container", def = function(.Object, path)
 {
   .Object <- callNextMethod(.Object, path)
   .Object@children <- .call_proxy("container.children", .Object)
@@ -48,3 +48,12 @@ setIs("arc.dataset", "arc.container",
   },
   replace = function(obj, value) value
 )
+
+#setMethod("[", signature(x="arc.container", i="numeric"), function(x,i)
+"[.arc.container" <-  function(x, i)
+{
+  idx <- substitute(i)
+  idx <- if (is.symbol(idx)) as.character(idx) else i
+  return (x@children[idx])
+}
+

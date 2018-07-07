@@ -1,17 +1,4 @@
-#' Convert an arc.dataframe or arc.raster object to an sp SpatialDataFrame object
-#'
-#' Convert an ArcGIS \code{data.frame} to the equivalent \code{sp} data frame
-#' type. The output types that can be generated: \code{SpatialPointsDataFrame},
-#' \code{SpatialLinesDataFrame}, or \code{SpatialPolygonsDataFrame}.
-#' Convert an \code{arc.raster} object to a \code{SpatialGridDataFrame} object.
-
-#' @param x \code{data.frame} result of \code{\link{arc.select}} or \code{arc.raster}
-#' @examples
-#'
-#' require(sp)
-#' d <- arc.select(arc.open(system.file("extdata", "ca_ozone_pts.shp", package="arcgisbinding")), 'ozone')
-#' sp.df <- arc.data2sp(d)
-#' \dontrun{spplot(sp.df)}
+# Convert an arc.dataframe or arc.raster object to an sp SpatialDataFrame object
 #' @export
 arc.data2sp <- function(x)
 {
@@ -65,21 +52,7 @@ arc.data2sp <- function(x)
   sp::SpatialGridDataFrame(.asSpatialGrid(from), data=data)
 }
 
-#' Convert Esri shape to sp spatial geometry
-#'
-#' Convert \code{\link{arc.shape-class}} to \code{sp} spatial geometry:
-#' \code{SpatialPoints}, \code{SpatialLines}, or \code{SpatialPolygons}.
-#'
-#'
-#' @param shape \code{\link{arc.shape-class}}
-#' @param wkt WKT spatial reference
-#' @seealso \code{\link{arc.shape}}
-#' @examples
-#'
-#' require(sp)
-#' d <- arc.select(arc.open(system.file("extdata", "ca_ozone_pts.shp", package="arcgisbinding")), 'ozone')
-#' x <- arc.shape2sp(arc.shape(d))
-#' \dontrun{plot(x)}
+# Convert Esri shape to sp spatial geometry
 #' @export
 arc.shape2sp <- function(shape, wkt)
 {

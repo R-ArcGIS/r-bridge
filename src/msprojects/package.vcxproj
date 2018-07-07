@@ -96,6 +96,10 @@
   <ItemGroup>
     <None Include="$(MSBuildProjectDirectory)..\..\..\DESCRIPTION.in"/>
     <None Include="$(MSBuildProjectDirectory)..\..\..\NAMESPACE"/>
+    <None Include="$(MSBuildProjectDirectory)..\..\..\R\*.R"/>
+    <None Include="$(MSBuildProjectDirectory)..\..\..\man\*.Rd"/>
+    <None Include="$(MSBuildProjectDirectory)..\..\..\src\install.libs.R"/>
+    <None Include="$(MSBuildProjectDirectory)..\..\..\tests\*.R"/>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
 

@@ -26,13 +26,20 @@ print.arc.data <- function(x, ...)
 "[.arc.data" <- function(x, i, j, drop)
 {
   cl <- oldClass(x)
+  if (missing(drop))
+    drop = FALSE
   d <- NextMethod("[")
   if (is.data.frame(d))
   {
-    if (!missing(i) && mode(i)=="numeric")
-      attr(d, "shape") <- arc.shape(x)[i]
+    if (drop == FALSE)
+    {
+      if (!missing(i) && mode(i)=="numeric")
+        attr(d, "shape") <- arc.shape(x)[i]
+      else
+        attr(d, "shape") <- arc.shape(x)
+    }
     else
-      attr(d, "shape") <- arc.shape(x)
+      cl <- cl[cl != "arc.data"]
     oldClass(d) <- cl
   }
   d
@@ -40,40 +47,35 @@ print.arc.data <- function(x, ...)
 
 #"[<-.arc.data" <- function(x, i, j, value) stop("'[<-' unsupported")
 
-#' dplyr support
-#'
-#' dplyr methods for arc.data objects: filter, arrange, mutate, select, group_by
-#'
-#' @name dplyr
-#' @rdname dplyr.support
+# dplyr methods for arc.data objects: filter, arrange, mutate, select, group_by
 #' @export
 filter.arc.data <- function(.data, ..., .dots)
 {
   .data[["..old.index"]] <- seq_len(nrow(.data))
   cl <- oldClass(.data)
   d <- NextMethod()
-  attr(d, "shape") <- arc.shape(d)[d[["..old.index"]]]
+  attr(d, "shape") <- arc.shape(.data)[d[["..old.index"]]]
   d[["..old.index"]]<-NULL
   oldClass(d) <- cl
   return (d)
 }
 
-#' @name dplyr
-#' @rdname dplyr.support
+# @name dplyr
+# @rdname dplyr.support
 #' @export
 arrange.arc.data <- function(.data, ..., .dots)
 {
   .data[["..old.index"]] <- seq_len(nrow(.data))
   cl <- oldClass(.data)
   d <- NextMethod()
-  attr(d, "shape") <- arc.shape(d)[d[["..old.index"]]]
+  attr(d, "shape") <- arc.shape(.data)[d[["..old.index"]]]
   d[["..old.index"]]<-NULL
   oldClass(d) <- cl
   return (d)
 }
 
-#' @name dplyr
-#' @rdname dplyr.support
+# @name dplyr
+# @rdname dplyr.support
 #' @export
 mutate.arc.data <- function(.data, ..., .dots)
 {
@@ -84,8 +86,8 @@ mutate.arc.data <- function(.data, ..., .dots)
   return (d)
 }
 
-#' @name dplyr
-#' @rdname dplyr.support
+# @name dplyr
+# @rdname dplyr.support
 #' @export
 group_by.arc.data <- function(.data, ..., add)
 {
@@ -95,8 +97,8 @@ group_by.arc.data <- function(.data, ..., add)
   return (d)
 }
 
-#' @name dplyr
-#' @rdname dplyr.support
+# @name dplyr
+# @rdname dplyr.support
 #' @export
 ungroup.arc.data <- function(x, ...)
 {

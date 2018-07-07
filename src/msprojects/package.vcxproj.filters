@@ -24,7 +24,7 @@
     <None Include="$(MSBuildProjectDirectory)..\..\..\man\*.Rd">
       <Filter>man</Filter>
     </None>
-    <None Include="$(MSBuildProjectDirectory)..\..\..\src\*.win">
+    <None Include="$(MSBuildProjectDirectory)..\..\..\src\install.libs.R">
       <Filter>src</Filter>
     </None>
     <None Include="$(MSBuildProjectDirectory)..\..\..\tests\*.R">

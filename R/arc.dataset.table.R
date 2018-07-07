@@ -13,8 +13,6 @@ setMethod("show", "arc.table", function(object) {
   invisible(object)
 })
 
-#' @method arc.select arc.table
-#' @rdname arc.select
 setMethod("arc.select", "arc.table", def = function(object, fields, where_clause, selected, sr, ...)
 {
   .select(object, fields=fields, where_clause=where_clause, selected=selected, na.rm = !is(object, "arc.feature"), sr = sr, ...)

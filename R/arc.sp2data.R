@@ -56,7 +56,7 @@
     list(shape_buffer=lapply(spl@coords, function(it) .sp2shp(8, it, bbox = as.vector(sp::bbox(spl)))))
   else stop("unsupported SP type")
 
-  return (new("arc.shape", shape, shapeinfo = arc.shapeinfo(spl)))
+  return (new("arc.shape", shape, shapeinfo = .get_shape_info_from_sp(spl)))
 }
 
 #' @export

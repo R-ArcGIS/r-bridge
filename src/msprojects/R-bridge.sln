@@ -4,11 +4,16 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 15.0.26430.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "rarcproxy", "proxy\rarcproxy.vcxproj", "{4D291BC3-66DB-4413-AC61-B694F6727866}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C518FB15-C600-4F32-BDD1-A84B00E8A19E} = {C518FB15-C600-4F32-BDD1-A84B00E8A19E}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "arcgisbinding (R package)", "package.vcxproj", "{4D291BC3-66DB-4413-AC61-B694F6727867}"
 	ProjectSection(ProjectDependencies) = postProject
 		{4D291BC3-66DB-4413-AC61-B694F6727866} = {4D291BC3-66DB-4413-AC61-B694F6727866}
 	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libobjects", "libobjects\libobjects.vcxproj", "{C518FB15-C600-4F32-BDD1-A84B00E8A19E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2C8A0842-5103-4AF1-BCEC-293579F8D423}"
 	ProjectSection(SolutionItems) = preProject
@@ -66,6 +71,22 @@ Global
 		{4D291BC3-66DB-4413-AC61-B694F6727867}.Release-Pro|Win32.Build.0 = Release-Pro|Win32
 		{4D291BC3-66DB-4413-AC61-B694F6727867}.Release-Pro|x64.ActiveCfg = Release-Pro|x64
 		{4D291BC3-66DB-4413-AC61-B694F6727867}.Release-Pro|x64.Build.0 = Release-Pro|x64
+		{C518FB15-C600-4F32-BDD1-A84B00E8A19E}.Debug-Desktop|Win32.ActiveCfg = Debug-Desktop|Win32
+		{C518FB15-C600-4F32-BDD1-A84B00E8A19E}.Debug-Desktop|Win32.Build.0 = Debug-Desktop|Win32
+		{C518FB15-C600-4F32-BDD1-A84B00E8A19E}.Debug-Desktop|x64.ActiveCfg = Debug-Desktop|x64
+		{C518FB15-C600-4F32-BDD1-A84B00E8A19E}.Debug-Desktop|x64.Build.0 = Debug-Desktop|x64
+		{C518FB15-C600-4F32-BDD1-A84B00E8A19E}.Debug-Pro|Win32.ActiveCfg = Debug-Pro|Win32
+		{C518FB15-C600-4F32-BDD1-A84B00E8A19E}.Debug-Pro|Win32.Build.0 = Debug-Pro|Win32
+		{C518FB15-C600-4F32-BDD1-A84B00E8A19E}.Debug-Pro|x64.ActiveCfg = Debug-Pro|x64
+		{C518FB15-C600-4F32-BDD1-A84B00E8A19E}.Debug-Pro|x64.Build.0 = Debug-Pro|x64
+		{C518FB15-C600-4F32-BDD1-A84B00E8A19E}.Release-Desktop|Win32.ActiveCfg = Release-Desktop|Win32
+		{C518FB15-C600-4F32-BDD1-A84B00E8A19E}.Release-Desktop|Win32.Build.0 = Release-Desktop|Win32
+		{C518FB15-C600-4F32-BDD1-A84B00E8A19E}.Release-Desktop|x64.ActiveCfg = Release-Desktop|x64
+		{C518FB15-C600-4F32-BDD1-A84B00E8A19E}.Release-Desktop|x64.Build.0 = Release-Desktop|x64
+		{C518FB15-C600-4F32-BDD1-A84B00E8A19E}.Release-Pro|Win32.ActiveCfg = Release-Pro|Win32
+		{C518FB15-C600-4F32-BDD1-A84B00E8A19E}.Release-Pro|Win32.Build.0 = Release-Pro|Win32
+		{C518FB15-C600-4F32-BDD1-A84B00E8A19E}.Release-Pro|x64.ActiveCfg = Release-Pro|x64
+		{C518FB15-C600-4F32-BDD1-A84B00E8A19E}.Release-Pro|x64.Build.0 = Release-Pro|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

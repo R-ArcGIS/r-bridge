@@ -83,6 +83,7 @@ lockBinding("pixel_type2data_type", .arc)
     ret <-c(ret, WKID=sr$WKID)
   return(ret)
 }
+
 #' @export
 .call_proxy <- function (n, ...)
 {

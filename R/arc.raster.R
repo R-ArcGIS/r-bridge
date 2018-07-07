@@ -4,8 +4,7 @@ setMethod("dim<-", "arc.raster", def = function(x, value) x$set_dim(value))
 
 setMethod("names", "arc.raster", def = function(x) names(x$bands))
 
-#' @method arc.raster arc.datasetraster
-#' @rdname arc.raster
+#@method arc.raster arc.datasetraster
 setMethod("arc.raster", "arc.datasetraster", def = function(object, bands, ...) {
   if (missing(bands))
     bands <- 1L:length(object@bands)
@@ -16,8 +15,7 @@ setMethod("arc.raster", "arc.datasetraster", def = function(object, bands, ...) 
   return(r)
 })
 
-#' @method arc.raster NULL
-#' @rdname arc.raster
+#@method arc.raster NULL
 setMethod("arc.raster", "NULL", def = function(object, path, dim, nrow, ncol, nband, extent, origin_x, origin_y, cellsize_x, cellsize_y, pixel_type, nodata, sr, ...){
   if (missing(nodata)) nodata <- as.numeric(NA)
   if (missing(pixel_type)) pixel_type <- "F64"
@@ -49,18 +47,17 @@ setMethod("arc.raster", "NULL", def = function(object, path, dim, nrow, ncol, nb
     cellsize_y <- (extent[4] - origin_y)/dim[1]
   }
 
- args = list(
-    path = path,
-    origin_x = origin_x,
-    origin_y = origin_y,
-    cellsize_x = cellsize_x,
-    cellsize_y = cellsize_y,
-    dim = as.integer(dim),
-    sr = sr,
-    pixel_type = pixel_type,
-    nodata_value = nodata,
-    ...
-  )
+  args = list( path = path,
+               origin_x = origin_x,
+               origin_y = origin_y,
+               cellsize_x = cellsize_x,
+               cellsize_y = cellsize_y,
+               dim = as.integer(dim),
+               sr = sr,
+               pixel_type = pixel_type,
+               nodata_value = nodata,
+               ...
+             )
   r <- new("arc.raster", NULL, args)
   return(r)
 })
@@ -70,19 +67,26 @@ getRefClass("arc.raster")$methods(
   initialize = function(source, args)
   {
     #str(args)
-    arcs.names <- names(args)
-    args = lapply(arcs.names, function(x) .prepare_raster_prop_value(NULL, x, args[[x]]))
-    names(args)<-arcs.names
+    args.names <- names(args)
+    args = lapply(args.names, function(x) .prepare_raster_prop_value(NULL, x, args[[x]]))
+    names(args) <- args.names
+
+    nd <- args[["nodata"]]
+    if(is.null(nd))
+      nd <- args[["nodata_value"]]
+    if(!is.null(nd) && !is.numeric(nd))
+      stop(paste('nodata is not numeric:', typeof(nd)))
+    #str(args)
 
     ptr <- .call_proxy("raster.create", .self, source, as.pairlist(args))
     stopifnot(!is.null(ptr))
     info <- .call_proxy("raster.rasterinfo", .self)
-    if ("path" %in% arcs.names)
+    if ("path" %in% args.names)
       info$path = args$path
     else
       info$path <- if (inherits(source, "arc.dataset")) source@path else source$.info$path
-    .info <<- info
-    sr <<- .call_proxy("raster.sr", .self)
+    .self$.info <- info
+    .self$sr <- .call_proxy("raster.sr", .self)
     .self
   },
   copy = function(shallow = FALSE)
@@ -125,7 +129,7 @@ getRefClass("arc.raster")$methods(
     if (length(value) == 1) value <- c(value, ncol)
     value <- as.integer(pmax(round(value[1:2]), c(1, 1)))
     stopifnot(.call_proxy("raster.update", .self, pairlist(nrow = value[1], ncol = value[2])))
-    .info <<- .update_info(.self)
+    .self$.info <- .update_info(.self)
     invisible(.self)
   },
   pixel_block = function(ul_x, ul_y, nrow, ncol, bands)
@@ -312,7 +316,7 @@ getRefClass("arc.raster")$methods(
   px <- matrix(no_data_val, nrow = nrow * ncol, ncol = length(bands))
   .call_proxy("raster.fill_pixelblock", x, px, as.integer(c(ul_y, ul_x, nrow, ncol)), bands)
   #class(px) <- append(class(px), "arc.pixelblock")
-  colnames(px) <- names(x$bands)
+  colnames(px) <- names(x$bands)[bands]
   return (px)
 }
 
@@ -400,19 +404,19 @@ getRefClass("arc.raster")$methods(
   return (invisible(d))
 }
 
-.write_raster <- function(path, data, ...)
+.write_raster <- function(path, data, ..., overwrite)
 {
   stopifnot(!missing(data))
   stopifnot(!is.null(data))
 
   if (inherits(data, "arc.raster"))
-    return (data$save_as(path, ...))
+    return (data$save_as(path, ..., overwrite=overwrite))
   if (inherits(data, "Raster"))
-    return (.save_Raster(path, data, ...))
+    return (.save_Raster(path, data, ..., overwrite=overwrite))
   if (inherits(data, "SpatialPixels"))
-    return (.save_SpatialPixels(path, data, ...))
+    return (.save_SpatialPixels(path, data, ..., overwrite=overwrite))
   if (inherits(data, "SpatialGridDataFrame"))
-    return (.save_SpatialGrid(path, data, ...))
-  
+    return (.save_SpatialGrid(path, data, ..., overwrite=overwrite))
+
   stop("unsupported raster object")
 }

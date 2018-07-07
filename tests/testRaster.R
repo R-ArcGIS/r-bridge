@@ -24,6 +24,8 @@ check_1 <- function()
 # reading and compare "logo.jpg", save to different formats
 check_2 <- function()
 {
+  if (!require("rgdal"))
+    return(0)
   fn <- system.file("pictures", "logo.jpg", package="rgdal")
   r <- arc.raster(arc.open(fn))
   rx <- raster::raster(fn)
@@ -38,6 +40,8 @@ check_2 <- function()
 # arc.write() support spacial pixels
 check_3 <- function()
 {
+  if (!require("sp"))
+    return(0)
   data(meuse.grid, package="sp")
   sp::coordinates(meuse.grid) <- c("x", "y")
   sp::gridded(meuse.grid) <- TRUE
@@ -50,6 +54,9 @@ check_3 <- function()
 # r$write_pixels(), copy R logo to my office
 check_4 <- function()
 {
+  if (!require("rgdal"))
+    return(0)
+
   to_new_raster_dataset <- function(vals, px_type, nrow, ncol)
   {
     # create an empty raster dataset

@@ -30,12 +30,13 @@ set update_date=false
 set scr=%~dp0build.ps1
 set plus_build_num=false
 set check_only=false
+set build_html=false
 
 call :handle_args %*
 if %ERRORLEVEL% NEQ 0 (goto end)
 if not defined target (set "target=desktop,pro") else (set target=%target:~1%)
 
-powershell -ExecutionPolicy ByPass -NoProfile -File %scr% -config %config% -isbuild %isbuild% -target "%target%" -set_date %update_date% -increment_build %plus_build_num% -check_package %check_only%
+powershell -ExecutionPolicy ByPass -NoProfile -File %scr% -config %config% -isbuild %isbuild% -target "%target%" -set_date %update_date% -increment_build %plus_build_num% -check_package %check_only% %build_html%
 
 :end
 ENDLOCAL
@@ -53,6 +54,7 @@ if /i "%1"=="desktop"  (set "target=%target%,desktop"& shift & goto handle_args)
 if /i "%1"=="update_date" (set update_date=true& shift & goto handle_args)
 if /i "%1"=="+1"       (set plus_build_num=true& shift & goto handle_args)
 if /i "%1"=="check"    (set check_only=true& shift & goto handle_args)
+if /i "%1"=="html"     (set build_html=true& shift & goto handle_args)
 if /i "%1"=="-h" goto usage
 if /i "%1"=="-?" goto usage
 

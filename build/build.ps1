@@ -4,12 +4,14 @@ param(
   $config,
   $set_date,
   $increment_build,
-  $check_package
+  $check_package,
+  $build_html
 )
 [bool]$isbuild = $isbuild -eq "true"
 [bool]$set_date = $set_date -eq "true"
 [bool]$increment_build = $increment_build -eq "true"
 [bool]$check_package = $check_package -eq "true"
+[bool]$build_html = $build_html -eq "true"
 $curdir = Split-Path $MyInvocation.MyCommand.Path
 $projects_path = Resolve-Path "${curdir}/../src/msprojects"
 
@@ -128,13 +130,19 @@ if ((dir ../libs/*.dll -recurse).Count -eq 0)
 
 if ($check_package)
 {
-  #$env:_R_CHECK_FORCE_SUGGESTS_="false"
+  $env:_R_CHECK_FORCE_SUGGESTS_="false"
   #push-location -path build/
   Write-Host "Prepare source package..." -foregroundcolor Green
-  & $Rcmd build --no-manual ..
+  & $Rcmd build --force --no-build-vignettes ..
+  if ($lastExitCode -ne 0)
+  {
+    Write-Host "Rcmd build FAILED" -foregroundcolor Red
+    Exit
+  }
+
   $pkg_tag_gz=$pkg_name+"_"+$pkg_main_ver+$build_n+".tar.gz"
   Write-Host "Checking ${pkg_tag_gz}" -foregroundcolor Green
-  & $Rcmd check --no-multiarch --no-manual --no-vignettes --library=./ $pkg_tag_gz
+  & $Rcmd check --no-multiarch --check-subdirs=yes --no-vignettes --library=./ $pkg_tag_gz
   Exit
 }
 
@@ -156,7 +164,7 @@ Function Get-StringHash([String] $String,$HashName="MD5")
   $StringBuilder.ToString()
 }
 
-$check_sum_now = Get-ChildItem ../R/*.R | Get-FileHash
+$check_sum_now = Get-ChildItem @("../R/*.R","../man/*.Rd") | Get-FileHash
 $check_sum_now = $check_sum_now| Out-String
 $md5 = Get-StringHash $check_sum_now
 $check_sum_file = [System.IO.Path]::GetTempPath() + "${md5}.bld-chksm"
@@ -165,30 +173,14 @@ if (-Not $updateRD)
 {
   $updateRD = -Not (Test-Path $check_sum_file)
 }
-if (-Not $updateRD)
-{
-  $updateRD = (Get-ChildItem ../man/*.Rd).Count -eq 0
-}
 
-$build_html = ""
 if ($updateRD)
 {
-  $build_html = "--html"
-  Write-Host "Re-create '.RD' files" -foregroundcolor Green
-  & $Rscript --vanilla -e "roxygen2::roxygenize(package.dir ='../')"
-  #& $Rscript --vanilla -e "devtools::document('../')"
-  if ($lastExitCode -ne 0)
-  {
-    Write-Host "Skip creating new '.DR' files. Check if roxygen2 is installed" -foregroundcolor Red
-  }
-  else
-  {
-    $tmp = [System.IO.Path]::GetTempPath()
-    Remove-Item -Include *.bld-chksm -Path $tmp/*
-    Set-Content $check_sum_file $Null
-  }
+  Write-Host "New MD5 = $md5" -foregroundcolor Green
+  $tmp = [System.IO.Path]::GetTempPath()
+  Remove-Item -Include *.bld-chksm -Path $tmp/*
+  Set-Content $check_sum_file $Null
 }
-
 
 if ($updateRD -or -Not (Test-Path ../inst/doc/$pkg_name.pdf))
 {
@@ -205,8 +197,9 @@ if ($updateRD -or -Not (Test-Path ../inst/doc/$pkg_name.pdf))
   }
 }
 
+$build_html_flag = @("--no-html","--html")[$build_html]
 #push-location -path ../
-& $Rcmd INSTALL --build --clean --preclean $compile_flag $build_html --no-test-load --library=./ ../
+& $Rcmd INSTALL --build --clean --preclean $compile_flag $build_html_flag --byte-compile --no-test-load --library=./ ../
 $lec = $lastExitCode
 if ($lec -ne 0)
 {

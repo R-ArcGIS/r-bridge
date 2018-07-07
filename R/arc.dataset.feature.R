@@ -49,13 +49,14 @@ setIs("arc.dataset", "arc.feature",
       coords <- data
     else
       data <- .sp2data(data)
+    shape_info <- .get_shapeinfo_any(coords)
   }
   else if (inherits(data, "sf"))
   {
     if (is.null(coords))
       coords <- .coords_from_sfc(sf::st_geometry(data))
     if (is.null(shape_info))
-      shape_info <- arc.shapeinfo(data)
+      shape_info <- .get_shapeinfo_any(data)#arc.shapeinfo(data)
     data <- sf::st_set_geometry(data, NULL)
   }
   else if (inherits(data, "sfc"))
@@ -67,7 +68,7 @@ setIs("arc.dataset", "arc.feature",
   if (!is.null(data) && is.null(coords))
     coords <- arc.shape(data)
   if (!is.null(coords) && is.null(shape_info))
-    shape_info <- arc.shapeinfo(coords)
+    shape_info <- .get_shapeinfo_any(coords)#arc.shapeinfo(coords)
 
   if (is.null(coords) && is.null(data))
     stop("arc.write() - 'coords' and 'data' are NULL", call. = FALSE)
@@ -78,12 +79,12 @@ setIs("arc.dataset", "arc.feature",
     {
       coords <- .sp2shape(coords)
       if (is.null(shape_info))
-        shape_info <- arc.shapeinfo(coords)
+        shape_info <- .get_shapeinfo_any(coords)#arc.shapeinfo(coords)
     }
     else if (inherits(coords, "sfc"))
     {
       if (is.null(shape_info))
-        shape_info <- arc.shapeinfo(coords)
+        shape_info <- .get_shapeinfo_any(coords)#arc.shapeinfo(coords)
       coords <- .coords_from_sfc(coords)
     }
     if (is.null(shape_info))
