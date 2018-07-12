@@ -1,5 +1,6 @@
 .get_shapeinfo_any <- function(object)
 {
+  if (is.null(object)) return (NULL)
   if (inherits(object, "Spatial"))
     return (.get_shape_info_from_sp(object))
   if (inherits(object, "sf"))
