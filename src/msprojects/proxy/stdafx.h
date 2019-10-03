@@ -6,6 +6,7 @@
 #pragma once
 
 #include "targetver.h"
+#define COM_NO_WINDOWS_H
 
 #if !defined(DESKTOP10) && !defined(_WIN64)
 #error ArcGISPro 64bit only"
@@ -31,19 +32,23 @@
 #define VC_EXTRALEAN
 #define NOMCX
 // Windows Header Files:
-#include <windows.h>
+//#include <windows.h>
 //#include <windef.h>
 
-#define _ATL_NO_AUTOMATIC_NAMESPACE
-#define _ATL_CSTRING_EXPLICIT_CONSTRUCTORS // some CString constructors will be explicit
+
+#include <combaseapi.h>
+#include <propapi.h>
 
 //#include <crtdbg.h>
-#include <ole2.h>
-#include <tchar.h>
+//#include <ole2.h>
+#include <oleauto.h>
+//#include <oaidl.h>
+
+//#define _ATL_NO_AUTOMATIC_NAMESPACE
+//#define _ATL_CSTRING_EXPLICIT_CONSTRUCTORS // some CString constructors will be explicit
 //#include <atlbase.h>
 //#include <atlcom.h>
 //#include <atlctl.h>
-
 //#include <comutil.h>
 
 
@@ -73,7 +78,8 @@
 
 #include "../libobjects_api.h"
 extern const arcobject::API* _api;
-typedef const arcobject::API* (__stdcall *fn_api)(bool);
+//typedef const arcobject::API* (*fn_api)(bool);
+using fn_api = const arcobject::API* (*)(bool);
 
 //using namespace ATL;
 bool isCancel();

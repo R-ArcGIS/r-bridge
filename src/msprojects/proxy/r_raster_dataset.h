@@ -18,7 +18,7 @@ public:
   static const char* class_name;
 
   BEGIN_CALL_MAP(raster_dataset)
-  {"raster_dataset.create_from", (DL_FUNC)R_fn2<raster_dataset::create_from>, 2 },
+    {"raster_dataset.create_from", (DL_FUNC)(FN2)fn::R<decltype(&raster_dataset::create_from), &raster_dataset::create_from, SEXP, SEXP>, 2 },
   END_CALL_MAP()
 private:
   static SEXP create_from(SEXP rHost, SEXP from);
@@ -30,7 +30,7 @@ public:
   static const char* class_name;
 
   BEGIN_CALL_MAP(raster_mosaic_dataset)
-  {"raster_mosaic_dataset.create_from", (DL_FUNC)R_fn2<raster_mosaic_dataset::create_from>, 2 },
+    {"raster_mosaic_dataset.create_from", (DL_FUNC)(FN2)fn::R<decltype(&raster_mosaic_dataset::create_from), &raster_mosaic_dataset::create_from, SEXP, SEXP>, 2},
   END_CALL_MAP()
 private:
   static SEXP create_from(SEXP rHost, SEXP from);

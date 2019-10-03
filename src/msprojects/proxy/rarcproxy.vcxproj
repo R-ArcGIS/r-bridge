@@ -44,35 +44,7 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release-Pro|x64'" Label="PropertySheets">
-    <Import Project="..\ArcGIS-Pro.props" />
-  </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug-Pro|x64'" Label="PropertySheets">
-    <Import Project="..\ArcGIS-Pro.props" />
-  </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug-Desktop|x64'" Label="PropertySheets">
-    <Import Project="..\ArcGIS-Desktop.props" />
-  </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release-Desktop|x64'" Label="PropertySheets">
-    <Import Project="..\ArcGIS-Desktop.props" />
-  </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release-Pro|Win32'" Label="PropertySheets">
-    <Import Project="..\ArcGIS-Pro.props" />
-  </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug-Pro|Win32'" Label="PropertySheets">
-    <Import Project="..\ArcGIS-Pro.props" />
-  </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug-Desktop|Win32'" Label="PropertySheets">
-    <Import Project="..\ArcGIS-Desktop.props" />
-  </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release-Desktop|Win32'" Label="PropertySheets">
-    <Import Project="..\ArcGIS-Desktop.props" />
-  </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Label="Set R_PATH" Condition="'$(R_PATH)'=='' and Exists('$(settings_file)')">
-    <configtext>$([system.IO.File]::ReadAllText('$(settings_file)'))</configtext>
-    <R_PATH>$([System.Text.RegularExpressions.Regex]::Match($(configtext), '^R_PATH=(.+)').Groups[1].Value.Trim().Trim('\"'))</R_PATH>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug-Pro|x64'" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug-Desktop|x64'" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release-Desktop|x64'" />
@@ -81,35 +53,14 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release-Desktop|Win32'" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug-Pro|Win32'" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release-Pro|Win32'" />
-  <ItemDefinitionGroup Condition="'$(Platform)'=='x64'">
+  <ItemDefinitionGroup>
     <ClCompile>
-      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
+      <PreprocessorDefinitions Condition="'$(R_PATH)'!=''">R_PATH='$(R_PATH)';%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <PreLinkEvent>
       <Message>Making $(PlatformTarget) R.lib</Message>
       <Command>lib /def:R.def /MACHINE:$(PlatformTarget) /OUT:$(OutDir)R.lib</Command>
     </PreLinkEvent>
-    <Link>
-      <AdditionalDependencies>R.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
-      <DelayLoadDLLs>user32.dll;oleaut32.dll</DelayLoadDLLs>
-    </Link>
-    <PostBuildEvent>
-      <Command>copy $(OutDir)$(TargetName)$(TargetExt) $(output_package_path)\libs\x64\</Command>
-    </PostBuildEvent>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Platform)'=='Win32'">
-    <ClCompile>
-      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
-      <Optimization Condition="'$(Configuration)|$(Platform)'=='Release-Desktop|Win32'">Disabled</Optimization>
-    </ClCompile>
-    <PreLinkEvent>
-      <Command>lib /def:R.def /MACHINE:$(PlatformTarget) /OUT:$(OutDir)R.lib</Command>
-      <Message>Making $(PlatformTarget) R.lib</Message>
-    </PreLinkEvent>
-    <PostBuildEvent>
-      <Command>copy $(OutDir)$(TargetName)$(TargetExt) $(output_package_path)\libs\i386\</Command>
-    </PostBuildEvent>
     <Link>
       <AdditionalDependencies>R.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
@@ -131,14 +82,15 @@
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="exporter.cpp" />
+    <ClCompile Include="r_write.cpp" />
     <ClCompile Include="r_dataset.cpp" />
+    <ClCompile Include="tools.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\buildnum.h" />
     <ClInclude Include="misc.h" />
     <ClInclude Include="rarcproxy_exports.h" />
-    <ClInclude Include="exporter.h" />
+    <ClInclude Include="r_write.h" />
     <ClInclude Include="r_container.h" />
     <ClInclude Include="r_dataset.h" />
     <ClInclude Include="Rtl.h" />

@@ -93,7 +93,8 @@ arc.sp2data <- function (sp.df)
   wkt <- arc.fromP4ToWkt(sp.df@proj4string@projargs)
   if (!is.null(wkt))
     shapeinfo["WKT"] <- wkt
-  class(shapeinfo) <- c(class(shapeinfo), "arc.shapeinfo")
+  #class(shapeinfo) <- c(class(shapeinfo), "arc.shapeinfo")
+  class(shapeinfo) <- c("arc.shapeinfo", class(shapeinfo))
   #shapeinfo <- structure(shapeinfo, class="arc.shapeinfo")
   return (shapeinfo)
 }

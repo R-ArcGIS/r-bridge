@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26430.16
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29123.88
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "rarcproxy", "proxy\rarcproxy.vcxproj", "{4D291BC3-66DB-4413-AC61-B694F6727866}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -17,12 +17,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libobjects", "libobjects\li
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2C8A0842-5103-4AF1-BCEC-293579F8D423}"
 	ProjectSection(SolutionItems) = preProject
-		ArcGIS-Desktop.props = ArcGIS-Desktop.props
-		ArcGIS-Pro.props = ArcGIS-Pro.props
 		..\..\build\build.bat = ..\..\build\build.bat
 		..\..\build\build.ps1 = ..\..\build\build.ps1
 		buildnum.h = buildnum.h
-		Common.props = Common.props
+		src\msprojects\Common.props = src\msprojects\Common.props
 		libobjects_api.h = libobjects_api.h
 		..\..\README.md = ..\..\README.md
 	EndProjectSection

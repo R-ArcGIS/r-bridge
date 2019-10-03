@@ -10,6 +10,7 @@ raster::raster()
 {
 }
 
+//arc.raster()
 bool raster::initialize(SEXP source, SEXP sargs)
 {
   using namespace arcobject;
@@ -46,7 +47,7 @@ bool raster::initialize(SEXP source, SEXP sargs)
     }
     catch(const std::exception& e)
     {
-      return error_Ret(e.what());
+      return error_Ret(e.what()), false;
     }
     //create empty raster
 
@@ -62,9 +63,9 @@ bool raster::initialize(SEXP source, SEXP sargs)
     if (_api->is_dataset_exists(path))
     {
       if (!overwrite)
-        return showError<false>("dataset already exists"), R_NilValue;
+        return showError<false>("dataset already exists"), false;
       if (!_api->delete_dataset(path))
-        return showError<false>("failed to overwrite existing dataset. use arc.delete(path) or add overwrite=TRUE argument"), R_NilValue;
+        return showError<false>("failed to overwrite existing dataset. use arc.delete(path) or add overwrite=TRUE argument"), false;
     }
 
     auto r = _api->create_empty_raster(path,
@@ -111,7 +112,8 @@ bool raster::initialize(SEXP source, SEXP sargs)
 
 SEXP raster::update(SEXP sargs)
 {
-  return tools::newVal(update_by(tools::pairlist2args_map(sargs)));
+  auto args = tools::pairlist2args_map(sargs);
+  return tools::newVal(update_by(args));
 }
 
 static inline void show_warning(const std::string &arg)
@@ -191,7 +193,10 @@ SEXP raster::get_sr()
 {
   ATLASSERT(m_raster.get() != nullptr);
   if (m_raster.get() != nullptr)
-    return forward_from_keyvalue_variant(m_raster->get_sr());
+  {
+    auto v = m_raster->get_sr();
+    return forward_from_keyvalue_variant(v);
+  }
   return R_NilValue;
 }
 
@@ -199,7 +204,10 @@ SEXP raster::get_rasterinfo()
 {
   ATLASSERT(m_raster.get() != nullptr);
   if (m_raster.get() != nullptr)
-    return forward_from_keyvalue_variant(m_raster->get_info());
+  {
+    auto v = m_raster->get_info();
+    return forward_from_keyvalue_variant(v);
+  }
   return R_NilValue;
 }
 

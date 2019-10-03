@@ -178,7 +178,7 @@ public:
   static void gp_thread(std::function<void()> fn)
   {
     extern DWORD g_main_TID;
-    if (g_main_TID != GetCurrentThreadId())
+    if (g_main_TID != ::GetCurrentThreadId())
     {
       gp_eval e(fn);
       e.wait();

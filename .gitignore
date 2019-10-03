@@ -28,8 +28,12 @@
 
 .vs/
 .vscode/
-build/
+build/*
 libs/
 arc/inst/
 DESCRIPTION
 settings.txt
+
+# but not these files
+!build.bat
+!build.ps1

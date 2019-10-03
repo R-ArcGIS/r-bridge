@@ -34,7 +34,7 @@ setMethod("arc.shapeinfo", "arc.feature", function(object) object@shapeinfo)
 format.arc.shapeinfo <- function(x, ...)
 {
   if (is.null(x)) return (invisible(x))
-  zm<-substr(.shapeinfo_dim(x),3,4)
+  zm <- substr(.shapeinfo_dim(x), 3, 4)
   gt <- if (nchar(zm) > 0) paste0(x$type, ", has ", zm) else x$type
   c("geometry type"=gt, .format_sr(x))
 }
@@ -42,6 +42,6 @@ format.arc.shapeinfo <- function(x, ...)
 #' @export
 print.arc.shapeinfo <- function(x, ...)
 {
-  x<-format(x, ...)
+  x <- format(x, ...)
   cat(paste(paste0(format(names(x), width=16), ": ", x), collapse="\n"), "\n")
- }
+}

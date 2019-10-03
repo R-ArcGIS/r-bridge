@@ -9,17 +9,19 @@
 \title{Load or create "arc.raster" object}
 \usage{
 
-\S4method{arc.raster}{arc.datasetraster}(object, bands, ...)
+\S4method{arc.raster}{arc.datasetraster}(object, bands, \dots)
 
-\S4method{arc.raster}{arc.datasetrastermosaic}(object, bands, ...)
+\S4method{arc.raster}{arc.datasetrastermosaic}(object, bands, \dots)
 
 \S4method{arc.raster}{NULL}(object, path, dim, nrow, ncol, nband, extent,
-  origin_x, origin_y, cellsize_x, cellsize_y, pixel_type, nodata, sr, ...)
+  origin_x, origin_y, cellsize_x, cellsize_y, pixel_type, nodata, sr, \dots)
 }
 \arguments{
 \item{object}{code{\link{arc.datasetraster-class}} object.}
 \item{bands}{optional, integer. List of bands to read (default: all bands).}
-\item{...}{optional additional arguments such as \code{nrow, ncol, extent, pixel_type, resample_type} to be passed to the method.}
+\item{\dots}{optional additional arguments such as \code{nrow, ncol, extent, pixel_type, resample_type} to be passed to the method.
+  Use \code{overwite=TRUE} to overwite existing dataset.
+}
 
 \item{path}{file path (character) or layer name (character).}
 \item{dim}{optional. List for number of rows and columns of the raster.}
@@ -47,9 +49,9 @@ Methods to create a \code{arc.raster} object from scratch, extent, \code{arc.ope
 
 \section{References}{
   \enumerate{\item \href{https://desktop.arcgis.com/en/arcmap/latest/manage-data/raster-and-images/what-is-raster-data.htm}{ArcGIS Help: Raster Introduction}
-	\item \href{https://desktop.arcgis.com/en/arcmap/10.3/manage-data/raster-and-images/bit-depth-capacity-for-raster-dataset-cells.htm}{ArcGIS Help: Pixel Types}
-	\item \href{https://desktop.arcgis.com/en/arcmap/10.3/manage-data/raster-and-images/what-is-a-mosaic-dataset.htm}{ArcGIS Help: Mosaic Introductions}
-	\item \href{https://desktop.arcgis.com/en/arcmap/10.3/manage-data/raster-and-images/understanding-the-mosaicking-rules-for-a-mosaic-dataset.htm}{ArcGIS Help: Mosaicking Rules}
+  \item \href{https://desktop.arcgis.com/en/arcmap/10.3/manage-data/raster-and-images/bit-depth-capacity-for-raster-dataset-cells.htm}{ArcGIS Help: Pixel Types}
+  \item \href{https://desktop.arcgis.com/en/arcmap/10.3/manage-data/raster-and-images/what-is-a-mosaic-dataset.htm}{ArcGIS Help: Mosaic Introductions}
+  \item \href{https://desktop.arcgis.com/en/arcmap/10.3/manage-data/raster-and-images/understanding-the-mosaicking-rules-for-a-mosaic-dataset.htm}{ArcGIS Help: Mosaicking Rules}
   }
 }
 

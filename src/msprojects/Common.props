@@ -5,6 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
     <BuildPath>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\..\build))</BuildPath>
     <OutDir>$(BuildPath)\..\libs\$(Platform)\</OutDir>
+    <OutDir Condition=" '$(Platform)' == 'Win32' ">$(BuildPath)\..\libs\i386\</OutDir>
     <IntDir>$(BuildPath)\obj\$(ProjectName)-$(Configuration)-$(Platform)\</IntDir>
     <settings_file>$(BuildPath)\settings.txt</settings_file>
     <output_package_path>$(BuildPath)\arcgisbinding</output_package_path>
@@ -14,19 +15,21 @@
     <YieldDuringToolExecution>true</YieldDuringToolExecution>
     <LinkIncremental>False</LinkIncremental>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <ConfigurationType>DynamicLibrary</ConfigurationType>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)'=='Release-Pro' or '$(Configuration)'=='Debug-Pro' ">
     <TargetName>$(MSBuildProjectName)_pro</TargetName>
     <LibObjects>libobjects_pro</LibObjects>
+    <ProxyName>rarcproxy_pro</ProxyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)'=='Release-Desktop' or '$(Configuration)'=='Debug-Desktop' ">
     <TargetName>$(MSBuildProjectName)</TargetName>
     <LibObjects>libobjects</LibObjects>
+    <ProxyName>rarcproxy</ProxyName>
     <DefineConstants>DESKTOP10</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)'=='Debug-Desktop' or '$(Configuration)'=='Debug-Pro' ">
@@ -45,27 +48,49 @@
     <!- -<R_PATH>$([System.Environment]::ExpandEnvironmentVariables($(rr.Split('=')[1].Trim())))</R_PATH>- ->
   </PropertyGroup>
   -->
+  <PropertyGroup Label="Load config" Condition="Exists('$(settings_file)')">
+    <configtext>$([system.IO.File]::ReadAllText('$(settings_file)'))</configtext>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Set ARCGIS_DESKTOP_PATH" Condition="'$(TargetName)'=='libobjects' ">
+    <ARCGIS_DESKTOP_PATH>$([System.Text.RegularExpressions.Regex]::Match($(configtext), '\bARCGIS_DESKTOP_PATH=(.+)').Groups[1].Value.Trim().Trim('\"'))</ARCGIS_DESKTOP_PATH>
+    <ARCGIS_DESKTOP_KIT_PATH>$([System.Text.RegularExpressions.Regex]::Match($(configtext), '\bARCGIS_DESKTOP_KIT_PATH=(.+)').Groups[1].Value.Trim().Trim('\"'))</ARCGIS_DESKTOP_KIT_PATH>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Set ARCGIS_PRO_PATH" Condition="'$(ARCGIS_PRO_PATH)'=='' and '$(TargetName)'=='libobjects_pro' ">
+    <ARCGIS_PRO_PATH>$([System.Text.RegularExpressions.Regex]::Match($(configtext), '\bARCGIS_PRO_PATH=(.+)').Groups[1].Value.Trim().Trim('\"'))</ARCGIS_PRO_PATH>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Set R_PATH" Condition="'$(R_PATH)'==''">
+    <R_PATH>$([System.Text.RegularExpressions.Regex]::Match($(configtext), '\bR_PATH=(.+)').Groups[1].Value.Trim().Trim('\"'))</R_PATH>
+  </PropertyGroup>
 
   <ItemDefinitionGroup>
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <!--<DebugInformationFormat>ProgramDatabase</DebugInformationFormat>-->
+      <DebugInformationFormat>OldStyle</DebugInformationFormat>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PreprocessorDefinitions>_USRDLL;DLL_NAME=$(TargetName);LIBRARY_API_NAME=$(LibObjects);$(DefineConstants);%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PreprocessorDefinitions Condition="'$(R_PATH)'!=''">R_PATH='$(R_PATH)';%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition=" '$(TargetName)'=='libobjects' ">ARCGIS_DESKTOP_PATH='$(ARCGIS_DESKTOP_PATH)';ARCGIS_DESKTOP_KIT_PATH='$(ARCGIS_DESKTOP_KIT_PATH)';%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition=" '$(TargetName)'=='libobjects_pro' ">ARCGIS_PRO_PATH='$(ARCGIS_PRO_PATH)';%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories Condition=" '$(ProjectName)'=='rarcproxy' ">$(R_PATH)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition=" '$(TargetName)'=='libobjects' ">$(ARCGIS_DESKTOP_PATH)\com;$(ARCGIS_DESKTOP_KIT_PATH)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition=" '$(TargetName)'=='libobjects_pro' ">$(ARCGIS_PRO_PATH)\com;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MinimalRebuild>false</MinimalRebuild>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
       <LanguageStandard>stdcpplatest</LanguageStandard>
+      <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <ResourceCompile>
       <PreprocessorDefinitions>DLL_NAME=$(TargetName);$(DefineConstants);%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -74,7 +99,6 @@
 
   <ItemDefinitionGroup Condition=" '$(Configuration)'=='Release-Pro' or '$(Configuration)'=='Release-Desktop' ">
     <ClCompile>
-      <DebugInformationFormat>None</DebugInformationFormat>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <Optimization>Full</Optimization>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -82,7 +106,6 @@
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <GenerateDebugInformation>No</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
@@ -93,11 +116,17 @@
     <ClCompile>
       <PreprocessorDefinitions>WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <PostBuildEvent>
+      <Command>copy $(OutDir)$(TargetName)$(TargetExt) $(output_package_path)\libs\i386\</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Platform)'=='x64'">
     <ClCompile>
       <PreprocessorDefinitions>_WIN64;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <PostBuildEvent>
+      <Command>copy $(OutDir)$(TargetName)$(TargetExt) $(output_package_path)\libs\x64\</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
 
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />

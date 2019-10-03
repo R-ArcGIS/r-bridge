@@ -100,6 +100,18 @@ namespace arcobject
   protected:
     dataset() = default;
   public:
+    enum geometry_kind
+    {
+      //ersi shape binary buffer
+      eShapeBuffer = 0,
+      //WKB binary buffer
+      eWkb,
+      //json geometry without SR
+      eJson,
+      //json geometry with SR
+      eJsonSR
+    };
+
     virtual ~dataset(){};
     virtual const char* get_type() const = 0;
     virtual bool is_table() const = 0;
@@ -112,11 +124,12 @@ namespace arcobject
     virtual VARIANT get_fields() const = 0;
     virtual std::pair<std::vector<std::wstring>, std::vector<std::string>> get_children() const = 0;
     //virtual raster* create_raster(const std::vector<int> &bands) const = 0;
-    virtual std::vector<std::unique_ptr<column_t2>> select(const std::vector<std::wstring> &fld, const std::wstring& where_clause, 
+    virtual std::vector<std::unique_ptr<column_t2>> select(const std::vector<std::wstring> &fld,
+      const std::wstring& where_clause,
       bool use_selection,
       const sr_type& sr,
       bool densify,
-      bool asWKB) const = 0;
+      geometry_kind kind) const = 0;
   };
   typedef std::pair<std::string, std::pair<std::wstring, int>> geometry_info;
 
@@ -131,6 +144,7 @@ namespace arcobject
     virtual bool set_shape(const std::vector<byte>& shp) = 0;
     virtual bool next() = 0;
     virtual dataset* commit() = 0;
+    virtual const std::string& warnings() const = 0;
   };
 
   struct ATL_NO_VTABLE API
@@ -147,7 +161,7 @@ namespace arcobject
     virtual bool is_dataset_exists(const std::wstring &path) const = 0;
     virtual bool delete_dataset(const std::wstring &path) const = 0;
     virtual dataset* open_dataset(const std::wstring &path) const = 0;
-    virtual cursor* create_insert_cursor(const std::wstring &path, const geometry_info& geometry) const = 0;
+    virtual cursor* create_insert_cursor(const std::wstring &path, const geometry_info& geometry, bool simplify) const = 0;
     virtual raster* create_raster(const dataset* pdataset, const std::vector<int> &bands) const = 0;
     virtual raster* create_empty_raster(const std::wstring &path, 
       double origin_x, double origin_y,
@@ -155,6 +169,8 @@ namespace arcobject
       int nrow, int ncol, int nband,
       int pixel_type, int compression_type,
       const sr_type& sr) const = 0;
+    virtual bool portal_signon(const std::wstring& url, const std::wstring& username, const std::wstring& pwd, std::wstring& token) const = 0;
+    virtual VARIANT portal_info() const = 0;
   };
   extern "C" { LIBRARY_API const API* api(bool InProc); }
 }//arcobject namespace

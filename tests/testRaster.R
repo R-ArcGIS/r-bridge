@@ -3,7 +3,11 @@
 if (!isNamespaceLoaded("arcgisbinding"))
 {
   library("arcgisbinding")
-  arc.check_product()
+  if (class(try(arc.check_product())) == "try-error")
+  {
+    warning("skip testRaster.R")
+    return(0)
+  }
 }
 .arc <- asNamespace("arcgisbinding")$.arc
 
@@ -50,6 +54,16 @@ check_3 <- function()
   #copy meuse.grid to FDGB, force pixel type to double
   arc.write(file.path(fgdb_path, "meuse_grid"), meuse.grid, pt="F64")
 }
+check_3.1 <- function()
+{
+  if (!require("sp"))
+    return(0)
+  #write SpatialPixels as 1 bit raster
+  data(meuse.grid, package="sp")
+  pts = meuse.grid[c("x", "y")]
+  mask = sp::SpatialPixels(SpatialPoints(pts))
+  arc.write(file.path(fgdb_path, "meuse_mask"), mask)
+}
 
 # r$write_pixels(), copy R logo to my office
 check_4 <- function()
@@ -90,5 +104,6 @@ if (Sys.getenv("_R_CHECK_INTERNALS2_")[[1]] != "")
   check_1()
   check_2()
   check_3()
+  check_3.1()
   check_4()
 }

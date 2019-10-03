@@ -30,5 +30,7 @@
     <None Include="$(MSBuildProjectDirectory)..\..\..\tests\*.R">
       <Filter>tests</Filter>
     </None>
+    <None Include="$(MSBuildProjectDirectory)..\..\..\DESCRIPTION.in" />
+    <None Include="$(MSBuildProjectDirectory)..\..\..\NAMESPACE" />
   </ItemGroup>
 </Project>

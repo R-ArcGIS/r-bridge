@@ -10,7 +10,8 @@ SEXP table::get_fields()
 {
   //if (!m_dataset->is_table())
   //  return error_Ret("arc.table");
-  return forward_from_keyvalue_variant(m_dataset->get_fields());
+  auto v = m_dataset->get_fields();
+  return forward_from_keyvalue_variant(v);
 }
 #include <unordered_set>
 
@@ -259,6 +260,8 @@ SEXP table::select2(SEXP fields, SEXP sargs)
   std::wstring where_clause;
   arcobject::sr_type sp_ref(std::wstring(), 0);
   bool asWKB = false;
+  bool asJson = false;
+  bool asJsonSR = false;
   bool dencify = true;
 
   const auto args = tools::pairlist2args_map(sargs);
@@ -267,6 +270,8 @@ SEXP table::select2(SEXP fields, SEXP sargs)
     std::tie("where_clause", where_clause),
     std::tie("sr", sp_ref),
     std::tie("asWKB", asWKB),
+    std::tie("asJson", asJson),
+    std::tie("asJsonSR", asJsonSR),
     std::tie("dencify", dencify));
 
   if (std::get<0>(is_args) == 2)
@@ -311,7 +316,12 @@ SEXP table::select2(SEXP fields, SEXP sargs)
     }
   }
 
-  auto cols = m_dataset->select(unique, where_clause, use_selection, sp_ref, dencify, asWKB);
+  arcobject::dataset::geometry_kind kind = arcobject::dataset::geometry_kind::eShapeBuffer;
+  if (asWKB) kind = arcobject::dataset::geometry_kind::eWkb;
+  else if (asJson) kind = arcobject::dataset::geometry_kind::eJson;
+  else if (asJsonSR) kind = arcobject::dataset::geometry_kind::eJsonSR;
+
+  auto cols = m_dataset->select(unique, where_clause, use_selection, sp_ref, dencify, kind);
 
   if (cols.empty())
     return showError<true>("COM error");

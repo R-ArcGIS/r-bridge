@@ -1,12 +1,15 @@
-\name{arc.progress_label}
+\name{Working with progressor}
 \docType{methods}
 \alias{arc.progress_label}
-\title{Set progressor label for Geoprocessing dialog box}
+\alias{arc.progress_pos}
+\title{Progressor for ArcGIS Geoprocessing dialog}
 \usage{
 arc.progress_label(label)
+arc.progress_pos(pos = -1)
 }
 \arguments{
 \item{label}{Progress Label}
+\item{pos}{Progress position (in percent)}
 }
 \description{
 Geoprocessing tools have a progressor, which includes both a progress
@@ -21,6 +24,15 @@ to the dialog is insufficient to communicate script progress.
 Using \code{\link{arc.progress_label}} allows control over the label that is
 displayed at the top of the running script. For example, it might be used
 to display the current step of the analysis taking place.
+
+Using \code{\link{arc.progress_pos}} allows control over the progrssor position
+displayed at the top of the running script. The position is an integer percentage,
+0 to 100, that the progress bar should be set to, with 100 indicating
+the script has completed (100\%).
+
+Setting the position to -1 resets the progressor to the default progressor,
+which continuously moves to indicate the script is running.
+
 }
 \note{
 \itemize{
@@ -37,6 +49,7 @@ to display the current step of the analysis taking place.
 \examples{
 \dontrun{
 arc.progress_label("Calculating bootstrap samples...")
+arc.progress_pos(55)
 }
 }
 \seealso{

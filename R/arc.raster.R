@@ -141,7 +141,7 @@ getRefClass("arc.raster")$methods(
   save_as = function(path, opt, overwrite)
   {
     if (missing(opt))
-      opt = NULL #"build-stats"
+      opt <- NULL #"build-stats"
     if (missing(overwrite))
       overwrite <- FALSE
 
@@ -165,7 +165,7 @@ getRefClass("arc.raster")$methods(
   commit = function(opt)
   {
     if (missing(opt))
-      opt = "build-stats"
+      opt <- "build-stats"
     for (it in opt) .call_proxy("raster.commit", .self, it)
     gc()
     invisible(new("arc.datasetraster_impl", .self, .self$.info$path))
@@ -197,18 +197,18 @@ getRefClass("arc.raster")$methods(
       return(val[c(1L,3L,2L,4L)])
 
     stopifnot(is.numeric(val))
-    n = min(4L, length(val))
-    val = val[1L:n]
-    na = names(val)
+    n <- min(4L, length(val))
+    val <- val[1L:n]
+    na <- names(val)
     if (!is.null(na) && all(na %in% names(ex)))
-      ex[na] = val
+      ex[na] <- val
     else
-      ex[1L:n] = val
+      ex[1L:n] <- val
     ex
   }
   to_resample_type <- function(val)
   {
-    idx = if (is.numeric(val))
+    idx <- if (is.numeric(val))
       ifelse (val[1L] > 0 && val[1L] < length(.arc$resample_types), val[1L], 0L)
     else
       which(names(.arc$resample_types) == as.character(val))
@@ -234,7 +234,7 @@ getRefClass("arc.raster")$methods(
 }
 .raster_prop <- function(x, name, value)
 {
-  info = x$.info
+  info <- x$.info
   if (missing(value))
   {
     switch(name,
@@ -244,7 +244,7 @@ getRefClass("arc.raster")$methods(
       "colormap" = if (!is.null(info$colormap)) info$colormap else as.character(NA),
       "nodata" = if (!is.null(info$bands[[1]]$nodata)) info$bands[[1]]$nodata else ifelse(info$pixel_type < 9L, as.integer(NA), as.double(NA)),
       {
-        v = info[name]
+        v <- info[name]
         if (is.null(v))
           stop("unknown properties")
         v[[1L]]
@@ -255,8 +255,8 @@ getRefClass("arc.raster")$methods(
   {
     if (!(name %in% c("nrow", "ncol", "extent", "pixel_type", "resample_type", "colormap")))
       stop(gettextf("field '%s' is not editable", name))
-    v = .prepare_raster_prop_value(x, name, value)
-    p = pairlist(v)
+    v <- .prepare_raster_prop_value(x, name, value)
+    p <- pairlist(v)
     names(p)<-name
     stopifnot(.call_proxy("raster.update", x, p))
     x$.info <- .update_info(x)
@@ -272,7 +272,7 @@ getRefClass("arc.raster")$methods(
 
 .to_pixeltype <- function(val)
 {
-  idx = if (is.numeric(val))
+  idx <- if (is.numeric(val))
     ifelse (val[1L] > 0 && val[1L] < 12L, val[1L], NULL)
   else
     which(names(.arc$pixel_type) == as.character(val))
@@ -293,10 +293,9 @@ getRefClass("arc.raster")$methods(
 .print_band_names <- function(bands)
 {
   nbands <- length(bands)
-  labels = if (nbands > 1) paste0("bands[1:", nbands, "]") else "band"
+  labels <- if (nbands > 1) paste0("bands[1:", nbands, "]") else "band"
   cat(names(bands), sep = ", ", labels = paste0(format(labels, width=16), ":"), fill = TRUE)
 }
-
 
 .pixel_block = function(x, bands, ul_x, ul_y, nrow, ncol)
 {
@@ -323,7 +322,7 @@ getRefClass("arc.raster")$methods(
 .save_Raster <- function(path, rx, overwrite, opt)
 {
   d <- as.integer(dim(rx))
-  px_type = names(.arc$pixel_type2data_type)[which(.arc$pixel_type2data_type == raster::dataType(rx))]
+  px_type <- names(.arc$pixel_type2data_type)[which(.arc$pixel_type2data_type == raster::dataType(rx))]
 
   r <- arc.raster(NULL,
     path = path,
@@ -339,7 +338,7 @@ getRefClass("arc.raster")$methods(
     overwrite = overwrite
   )
   #r <- new("arc.raster", NULL, args)
-  ncol = d[2]
+  ncol <- d[2]
   bs <- raster::blockSize(rx)
   for (i in 1:bs$n)
   {
@@ -350,7 +349,7 @@ getRefClass("arc.raster")$methods(
   ct <- raster::colortable(rx)
   if (length(ct) > 0L)
     r$colormap <- ct
-  d = r$commit(opt)
+  d <- r$commit(opt)
   .discard(r)
   return (invisible(d))
 }
@@ -379,9 +378,11 @@ getRefClass("arc.raster")$methods(
   nrow <- grid@cells.dim[2]
   ncol <- grid@cells.dim[1]
   extent <- as.double(sp::bbox(x))
-  ddata = ddata[sapply(ddata, function(c) is.numeric(c) || is.factor(c))]
+  ddata <- ddata[sapply(ddata, function(c) is.numeric(c) || is.factor(c))]
 
-  nband = ncol(ddata)
+  nband <- ncol(ddata)
+  if (is.null(nband))
+    nband <- 1L
   r <- arc.raster(NULL,
     path = path,
     extent = extent,
@@ -399,7 +400,7 @@ getRefClass("arc.raster")$methods(
   {
     r$write_pixel_block(values = as.matrix(ddata), ncol = ncol, nrow = nrow)
   }
-  d = r$commit(opt)
+  d <- r$commit(opt)
   .discard(r)
   return (invisible(d))
 }

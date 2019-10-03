@@ -20,7 +20,7 @@ int execute_tool2(const wchar_t* script_path, IArray* pParameters)
   if (connect == nullptr || pParameters == 0 || script_path == 0)
     return 0;
 
-  
+
   std::wstring file_path(script_path);
 
   bool ok = true;
@@ -62,7 +62,7 @@ int execute_tool2(const wchar_t* script_path, IArray* pParameters)
     L"tool_exec<-get('tool_exec',en);"
     L"tool_exec(params_in, params_out)"
     L"},envir=list(scriptfile=.arc$scriptfile,params_in=.arc$params_in,params_out=.arc$params_out))";
-  const static wchar_t eval_str2[] = 
+  const static wchar_t eval_str2[] =
     L".arc$gptool$result<-local({"
     L"eval(parse(file=.arc$scriptfile));"
     L"do.call('tool_exec', args=list(params_in, params_out))"

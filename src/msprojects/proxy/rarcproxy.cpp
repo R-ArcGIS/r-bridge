@@ -8,8 +8,8 @@
 #include "rconnect_interface.h"
 
 volatile rconnect_interface* _current_connect = nullptr;
-const rconnect_interface* current_connect() 
-{ 
+const rconnect_interface* current_connect()
+{
   return const_cast<const rconnect_interface*>(_current_connect);
 }
 

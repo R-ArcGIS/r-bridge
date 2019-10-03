@@ -3,7 +3,8 @@ setMethod("initialize", "arc.feature", def = function(.Object, path)
 {
   .Object <- callNextMethod(.Object, path)
   shapeinfo <- .call_proxy("feature_class.shape_info", .Object)
-  class(shapeinfo) <- c(class(shapeinfo), "arc.shapeinfo")
+  #class(shapeinfo) <- c(class(shapeinfo), "arc.shapeinfo")
+  class(shapeinfo) <- c("arc.shapeinfo", class(shapeinfo))
   .Object@shapeinfo <- shapeinfo
   .Object@extent <- .call_proxy("dataset.extent", .Object)
   return(.Object)
@@ -12,7 +13,7 @@ setMethod("initialize", "arc.feature", def = function(.Object, path)
 setMethod("show", "arc.feature", function(object)
 {
   callNextMethod(object)
-  x<-c("extent"=.format_extent(object@extent), format(object@shapeinfo))
+  x <- c("extent"=.format_extent(object@extent), format(object@shapeinfo))
   cat(paste(paste0(format(names(x), width=16), ": ", x), collapse="\n"), "\n")
   invisible(object)
 })
@@ -30,7 +31,7 @@ setIs("arc.dataset", "arc.feature",
   coerce = function(from) new("arc.feature_impl", from),
   replace = function(obj, value) value)
 
-.write_feature <- function(path, data, coords, shape_info, overwrite)
+.write_feature <- function(path, data, coords, shape_info, overwrite, simplify=FALSE)
 {
   if(missing(data) && missing(coords))
     stop("arc.write() - 'coords' and 'data' are missing", call. = FALSE)
@@ -38,9 +39,9 @@ setIs("arc.dataset", "arc.feature",
   if (missing(data))
     data <- NULL
   if (missing(coords))
-    coords = NULL
+    coords <- NULL
   if (missing(shape_info))
-    shape_info = NULL
+    shape_info <- NULL
 
   # inherits(data, "arc.data")
   if (inherits(data, "Spatial"))
@@ -110,8 +111,8 @@ setIs("arc.dataset", "arc.feature",
       stopifnot(length(data) > 0)
       data <- list("data"=data);
     }
-    else stop("unsupported 'data' type", call. = FALSE)
+    else stop(paste("unsupported 'data' type:", class(data)) , call. = FALSE)
   }
-  .call_proxy("arc_export2dataset", path, pairlist(data=data, coords=coords, shape_info=shape_info, overwrite=overwrite))
+  .call_proxy("arc_write", path, pairlist(data=data, coords=coords, shape_info=shape_info, overwrite=overwrite, simplify=simplify))
   return (invisible(TRUE))
 }

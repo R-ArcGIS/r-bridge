@@ -9,5 +9,6 @@ SEXP feature_class::get_shape_info()
 {
   //if (!m_dataset->is_fc())
   //  return error_Ret("arc.feature");
-  return forward_from_keyvalue_variant(m_dataset->get_shape_info());
+  auto v = m_dataset->get_shape_info();
+  return forward_from_keyvalue_variant(v);
 }

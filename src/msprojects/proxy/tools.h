@@ -13,51 +13,53 @@ namespace tools
 {
   class protect
   {
-    protect(const protect&);
     int n;
   public:
-    protect(): n(0) {}
-    protect(SEXP v): n(0) { add (v); }
-    ~protect(){ release(); }
-    inline SEXP add(SEXP v)
-    { 
+    protect(const protect&) = delete;
+    constexpr protect(): n(0) {}
+    constexpr protect(SEXP v): n(0) { add (v); }
+    ~protect() noexcept { release(); }
+    inline constexpr SEXP add(SEXP v) noexcept
+    {
       if (v == R_NilValue)
         return v;
-      try { PROTECT(v); n++; } catch(...){ return R_NilValue; } return v;}
-    inline void release(){ try { if (n) UNPROTECT(n); }catch(...){} n = 0; }
+      try { PROTECT(v); n++; } catch(...){ return R_NilValue; }
+      return v;
+    }
+    inline constexpr void release() noexcept
+    {
+      if (n == 0) return;
+      try { UNPROTECT(n); } catch(...){}
+      n = 0;
+    }
   };
   class preserved
   {
-    preserved(const preserved&);
   protected:
     SEXP sexp;
   public:
-    preserved() : sexp(R_NilValue) {}
-    preserved(SEXP v) : sexp(R_NilValue) { set(v); }
+    preserved(const preserved&) = delete;
+    constexpr preserved() : sexp(R_NilValue) {}
+    constexpr preserved(SEXP v) : sexp(R_NilValue) { set(v); }
     ~preserved(){ release(); }
-    inline void set(SEXP v)
+    inline constexpr void set(SEXP v) noexcept
     {
       if (v == sexp) return;
       release();
       if (v != R_NilValue)
       {
-        try {
-          ::R_PreserveObject(v);
-          sexp = v;
-        }catch(...){}
+        try { ::R_PreserveObject(v); sexp = v;} catch(...){}
       }
     }
-    inline SEXP release()
+    inline constexpr SEXP release() noexcept
     {
+      if (sexp == R_NilValue) return R_NilValue;
       SEXP ret = sexp;
-      if (sexp != R_NilValue)
-      {
-        try { ::R_ReleaseObject(sexp); } catch(...){}
-        sexp = R_NilValue;
-      }
+      try { ::R_ReleaseObject(sexp); } catch(...){}
+      sexp = R_NilValue;
       return ret;
     }
-    SEXP get() const { return sexp; }
+    inline constexpr SEXP get() const noexcept { return sexp; }
   };
 
   inline static const std::wstring tolower(const std::wstring& str)
@@ -67,7 +69,7 @@ namespace tools
     return tmp;
   }
 
-  inline bool copy_to(SEXP sexp, std::string &str_out)
+  inline constexpr bool copy_to(const SEXP sexp, std::string &str_out)
   {
     if (!sexp) return false;
     if (TYPEOF(sexp) != STRSXP)
@@ -87,7 +89,7 @@ namespace tools
     //str_out.assign(Rf_translateChar(STRING_ELT(sexp, 0)));
     return true;
   }
-  inline bool copy_to(SEXP sexp, std::wstring &str_out)
+  inline constexpr bool copy_to(const SEXP sexp, std::wstring &str_out)
   {
     if (!sexp) return false;
     std::string str;
@@ -98,8 +100,8 @@ namespace tools
     return true;
   }
 
-  bool copy_to(SEXP sexp, int &out);
-  inline bool copy_to(SEXP sexp, double &out)
+  constexpr bool copy_to(const SEXP sexp, int &out);
+  inline constexpr bool copy_to(const SEXP sexp, double &out)
   {
     if (!sexp) return false;
     if (TYPEOF(sexp) != REALSXP)
@@ -121,7 +123,7 @@ namespace tools
     return true;
   }
 
-  inline bool copy_to(SEXP sexp, int &out)
+  inline constexpr bool copy_to(const SEXP sexp, int &out)
   {
     if (!sexp) return false;
     if (TYPEOF(sexp) != INTSXP)
@@ -139,7 +141,7 @@ namespace tools
     return true;
   }
 
-  inline bool copy_to(SEXP sexp, bool &out)
+  inline constexpr bool copy_to(const SEXP sexp, bool &out)
   {
     if (!sexp) return false;
     //if (TYPEOF(sexp) != LGLSXP && Rf_xlength(sexp) < 1)
@@ -155,7 +157,7 @@ namespace tools
     return true;
   }
 
-  inline bool copy_to(SEXP sexp, std::vector<byte>& out)
+  inline constexpr bool copy_to(const SEXP sexp, std::vector<byte>& out)
   {
     if (!sexp) return false;
     if (TYPEOF(sexp) != RAWSXP)
@@ -171,7 +173,7 @@ namespace tools
     return true;
   }
 
-  inline bool copy_to(SEXP sexp, std::vector<std::string>& out)
+  inline constexpr bool copy_to(const SEXP sexp, std::vector<std::string>& out)
   {
     if (!sexp) return false;
     if (TYPEOF(sexp) != STRSXP)
@@ -187,7 +189,7 @@ namespace tools
     return true;
   }
 
-  inline bool copy_to(SEXP sexp, std::vector<std::wstring>& out, bool na_as_empty = false)
+  inline constexpr bool copy_to(const SEXP sexp, std::vector<std::wstring>& out, bool na_as_empty = false)
   {
     if (!sexp) return false;
     if (TYPEOF(sexp) != STRSXP)
@@ -213,7 +215,7 @@ namespace tools
     return true;
   }
 
-  inline bool copy_to(SEXP sexp, std::vector<int>& out)
+  inline constexpr bool copy_to(const SEXP sexp, std::vector<int>& out)
   {
     if (!sexp) return false;
     if (TYPEOF(sexp) != INTSXP)
@@ -229,7 +231,7 @@ namespace tools
     return true;
   }
 
-  inline bool copy_to(SEXP sexp, std::vector<double>& out)
+  inline constexpr bool copy_to(const SEXP sexp, std::vector<double>& out)
   {
     if (!sexp) return false;
     if (TYPEOF(sexp) != REALSXP) return false;
@@ -241,7 +243,7 @@ namespace tools
     return true;
   }
 
-  inline bool copy_to(SEXP sexp, std::vector<bool>& out)
+  inline constexpr bool copy_to(const SEXP sexp, std::vector<bool>& out)
   {
     if (!sexp) return false;
     if (TYPEOF(sexp) != LGLSXP)
@@ -265,7 +267,7 @@ namespace tools
     return true;
   }
 */
-  static inline SEXPTYPE vartype2rtype(VARTYPE vt)
+  static inline constexpr SEXPTYPE vartype2rtype(const VARTYPE vt) noexcept
   {
     switch(vt & VT_TYPEMASK)
     {
@@ -290,11 +292,11 @@ namespace tools
 
   class SafeArrayHelper
   {
-    private:
-      bool m_locked;
+  private:
+      mutable bool m_locked;
       SAFEARRAY* m_psa;
       VARTYPE m_vt;
-    public:
+  public:
     SafeArrayHelper(SAFEARRAY *psa) : m_locked(false), m_psa(psa)
     {
       ATLASSERT(psa != nullptr);
@@ -305,7 +307,7 @@ namespace tools
       if (m_locked)
         ::SafeArrayUnlock(m_psa);
     }
-    SAFEARRAY* Detach()
+    constexpr SAFEARRAY* Detach()
     {
       if (m_locked)
       {
@@ -316,10 +318,10 @@ namespace tools
       m_psa = nullptr;
       return tmp;
     }
-    const SAFEARRAY* psa() const { return m_psa; }
+    constexpr const SAFEARRAY* psa() const { return m_psa; }
 
     template<class S>
-    S get(size_t i)
+    constexpr S get(size_t i) const
     {
       if (!m_locked)
         m_locked = ::SafeArrayLock(m_psa) == S_OK;
@@ -328,7 +330,7 @@ namespace tools
       return *(((S*)m_psa->pvData) + i);
     }
     template<>
-    int get<int>(size_t i)
+    int get<int>(size_t i) const
     {
       if (!m_locked)
         m_locked = ::SafeArrayLock(m_psa) == S_OK;
@@ -356,11 +358,11 @@ namespace tools
           return 0;
       }
     }
-    size_t GetCount() const { return GetCount(m_psa); }
-    VARTYPE VarType() const { return m_vt; }
+    constexpr size_t GetCount() const { return GetCount(m_psa); }
+    constexpr VARTYPE VarType() const noexcept { return m_vt; }
 
     //dimantion 0
-    static size_t GetCount(SAFEARRAY* psa)
+    static constexpr size_t GetCount(SAFEARRAY* psa)
     {
       if (psa == nullptr) return 0;
       ATLASSERT(::SafeArrayGetDim(psa) == 1);
@@ -374,7 +376,7 @@ namespace tools
       return (size_t)psa->rgsabound[0].cElements;
     }
 
-    static VARTYPE VarType(SAFEARRAY* psa)
+    static constexpr VARTYPE VarType(SAFEARRAY* psa) noexcept
     {
       VARTYPE vt = {VT_EMPTY};
       if (psa)
@@ -468,15 +470,14 @@ namespace tools
     return newVal((const int*)vals, n);
   }
 
-  template<class T>
-  inline SEXP newBoolVal(T& it, size_t n)
+  /*inline SEXP newBoolVal(const bool *it, size_t n)
   {
     protect pt;
     SEXP sexp = pt.add(Rf_allocVector(LGLSXP, n));
     for (std::size_t i = 0; i < n; i++, ++it)
       LOGICAL(sexp)[i] = *it ? TRUE : FALSE;
     return sexp;
-  }
+  }*/
   inline SEXP newVal(const bool value) { return Rf_ScalarLogical(value ? TRUE : FALSE); }
 
   inline SEXP newVal(const byte* vals, size_t n)
@@ -508,7 +509,14 @@ namespace tools
   template<>
   inline SEXP newVal<bool>(const std::vector<bool>& value)
   {
-    return newBoolVal(value.begin(), value.size());
+    //return newBoolVal(value.data(), value.size());
+    protect pt;
+    const auto n = value.size();
+    SEXP sexp = pt.add(Rf_allocVector(LGLSXP, n));
+    std::size_t i = 0;
+    for (const auto v : value)
+      LOGICAL(sexp)[i++] = v ? TRUE : FALSE;
+    return sexp;
   }
 
   //inline bool getAttr(SEXP obj, LPCSTR attr_name)
@@ -559,7 +567,7 @@ namespace tools
     return obj;
   }
 
-  inline R_xlen_t size(SEXP sexp)
+  inline R_xlen_t size(const SEXP sexp)
   {
     if (Rf_isNull(sexp)) return 0;
     return Rf_xlength(sexp);
@@ -599,9 +607,9 @@ namespace tools
     vector_iterator(SEXP l = R_NilValue) : preserved(l)
     {
     }
-    void set(SEXP val){ preserved::set(val); }
-    std::size_t size() const { return tools::size(sexp); }
-    SEXP at(std::size_t i) const
+    constexpr void set(SEXP val){ preserved::set(val); }
+    inline std::size_t size() const { return tools::size(sexp); }
+    inline SEXP at(std::size_t i) const
     {
       if (TYPEOF(sexp) == VECSXP)
         return VECTOR_ELT(sexp, (R_xlen_t)i);
@@ -612,14 +620,14 @@ namespace tools
       ATLASSERT(0); //not a vector
       return 0;
     }
-    SEXP at(const std::string &name) const
+    inline SEXP at(const std::string &name) const
     {
       std::size_t i = idx(name);
       if (i == (std::size_t)-1)
         return NULL;
       return at(i);
     }
-    SEXP set(std::size_t i, SEXP val)
+    inline SEXP set(std::size_t i, SEXP val)
     {
       if (TYPEOF(sexp) == VECSXP)
         return SET_VECTOR_ELT(sexp, (R_xlen_t)i, val);
@@ -627,7 +635,7 @@ namespace tools
         return SET_STRING_ELT(sexp, (R_xlen_t)i, val), val;
       ATLASSERT(0);
     }
-    std::size_t idx(const std::string &name) const
+    inline std::size_t idx(const std::string &name) const
     {
       const auto& nm = names();
       if (nm.empty())
@@ -636,7 +644,7 @@ namespace tools
       if (it == nm.end())return (std::size_t)-1;
       return std::distance(nm.begin(), it);
     }
-    const std::vector<std::string>& names() const
+    inline const std::vector<std::string>& names() const
     {
       if (m_names.empty())
         getNames(sexp, m_names);
@@ -872,22 +880,22 @@ namespace tools
       return R_NilValue;
     switch (pv.vt)
     {
-    case VT_NULL: return R_NilValue;
-    case (VT_UI1|VT_VECTOR):     return newVal(pv.cac);
-    case (VT_I4|VT_VECTOR):      return newVal(pv.cal);
-    case (VT_R8|VT_VECTOR):      return newVal(pv.cadbl);
-    case (VT_BSTR|VT_VECTOR):    return newVal(pv.cabstr);
-    case (VT_LPSTR|VT_VECTOR):   return newVal(pv.calpstr);
-    case (VT_LPWSTR|VT_VECTOR):  return newVal(pv.calpwstr);
-    case (VT_VARIANT|VT_VECTOR): return newVal(pv.capropvar);
+      case VT_NULL: return R_NilValue;
+      case (VT_UI1|VT_VECTOR):     return newVal(pv.cac);
+      case (VT_I4|VT_VECTOR):      return newVal(pv.cal);
+      case (VT_R8|VT_VECTOR):      return newVal(pv.cadbl);
+      case (VT_BSTR|VT_VECTOR):    return newVal(pv.cabstr);
+      case (VT_LPSTR|VT_VECTOR):   return newVal(pv.calpstr);
+      case (VT_LPWSTR|VT_VECTOR):  return newVal(pv.calpwstr);
+      case (VT_VARIANT|VT_VECTOR): return newVal(pv.capropvar);
 
-    case VT_BSTR:    return newVal(pv.bstrVal);
-    case VT_LPWSTR:  return newVal(pv.pwszVal);
-    case VT_LPSTR:   return newVal(pv.pszVal);
-    case VT_I4:      return newVal(pv.lVal);
-    case VT_R8:      return newVal(pv.dblVal);
+      case VT_BSTR:    return newVal(pv.bstrVal);
+      case VT_LPWSTR:  return newVal(pv.pwszVal);
+      case VT_LPSTR:   return newVal(pv.pszVal);
+      case VT_I4:      return newVal(pv.lVal);
+      case VT_R8:      return newVal(pv.dblVal);
 
-    default: ATLASSERT(0); return R_NilValue;
+      default: ATLASSERT(0); return R_NilValue;
     }
     return R_NilValue;
   }
@@ -915,7 +923,7 @@ namespace tools
     return ret;
   }
 
-  inline static bool r2variant(SEXP r, VARIANT &v, bool allow_multi_value = false)
+  inline static bool r2variant(const SEXP r, VARIANT &v, const bool allow_multi_value = false)
   {
     v.vt = VT_EMPTY;
     if (r == NULL || Rf_isNull(r))
@@ -1001,7 +1009,7 @@ namespace tools
   {
     argument_converter()=delete;
     template <class R>
-    static constexpr bool arg2val(SEXP arg, R& out) noexcept
+    static constexpr bool arg2val(SEXP arg, R& out)
     {
       if (arg == nullptr) return false;
       return tools::copy_to(arg, out);
@@ -1014,14 +1022,14 @@ namespace tools
       return true;
     }
     template <>
-    static constexpr bool arg2val<VARIANT>(SEXP arg, VARIANT& out) noexcept
+    static constexpr bool arg2val<VARIANT>(SEXP arg, VARIANT& out)
     {
       if (arg == nullptr) return false;
       ATLASSERT(out.vt == VT_EMPTY);
       return r2variant(arg, out);
     }
     template <>
-    static constexpr bool arg2val<arcobject::sr_type>(SEXP arg, arcobject::sr_type& val) noexcept
+    static constexpr bool arg2val<arcobject::sr_type>(SEXP arg, arcobject::sr_type& val)
     {
       if (arg == nullptr) return false;
       arcobject::sr_type from_sr(SEXP sr);
@@ -1058,75 +1066,8 @@ namespace tools
   template <bool throw_if_failed, bool remove_from_map = false, class C = tools::argument_converter, class... KV>
   constexpr auto unpack_args(typename std::conditional<remove_from_map, tools::args_map_type, const tools::args_map_type>::type& m, KV&&... args)
   {
-    return std::make_tuple(C::get_arg<throw_if_failed, remove_from_map>(m, std::forward<KV>(args))...);
+    return std::make_tuple(C::template get_arg<throw_if_failed, remove_from_map>(m, std::forward<KV>(args))...);
   }
-}
-
-struct fn_struct
-{
-  typedef SEXP (*f4)(SEXP, SEXP, SEXP, SEXP);
-  typedef SEXP (*f3)(SEXP, SEXP, SEXP);
-  typedef SEXP (*f2)(SEXP, SEXP);
-  typedef SEXP (*f1)(SEXP);
-  typedef SEXP (*f0)();
-
-  int nargs;
-  void* (*fn)();
-
-  SEXP args[4];
-  SEXP call() const
-  {
-    SEXP ret = NULL;
-    switch (nargs)
-    {
-      case 4: ret = (*(f4)fn)(args[0], args[1], args[2], args[3]); break;
-      case 3: ret = (*(f3)fn)(args[0], args[1], args[2]); break;
-      case 2: ret = (*(f2)fn)(args[0], args[1]);          break;
-      case 1: ret = (*(f1)fn)(args[0]);                   break;
-      case 0: ret = (*(f0)fn)();                          break;
-      default:
-          ATLASSERT(0);
-        break;
-    }
-    return ret;
-  }
-};
-
-SEXP R_fnN(fn_struct &it);
-
-template<SEXP (*fn)(SEXP,SEXP,SEXP,SEXP)>
-SEXP R_fn4(SEXP x1, SEXP x2, SEXP x3, SEXP x4)
-{
-  fn_struct it = {4, (DL_FUNC)fn, {x1, x2, x3, x4}};
-  return R_fnN(it);
-}
-template<SEXP (*fn)(SEXP,SEXP,SEXP)>
-SEXP R_fn3(SEXP x1, SEXP x2, SEXP x3)
-{
-  fn_struct it = {3, (DL_FUNC)fn, {x1, x2, x3}};
-  return R_fnN(it);
-}
-template<SEXP (*fn)(SEXP,SEXP)>
-SEXP R_fn2(SEXP x1, SEXP x2)
-{
-  fn_struct it = {2, (DL_FUNC)fn, {x1, x2}};
-  return R_fnN(it);
-}
-template<SEXP (*fn)(SEXP)>
-SEXP R_fn1(SEXP x1)
-{
-  fn_struct it = {1, (DL_FUNC)fn, {x1}};
-  return R_fnN(it);
-}
-#define R_fnExt R_fn1
-//template <SEXP (*fn)(SEXP)>
-//using R_fnExt = R_fn1<fn>;
-
-template<SEXP (*fn)()>
-SEXP R_fn0()
-{
-  fn_struct it = {0, (DL_FUNC)fn};
-  return R_fnN(it);
 }
 
 SEXP error_Ret(const char* str_UTF8, SEXP retVal = R_NilValue);
@@ -1142,3 +1083,62 @@ inline SEXP showError(const char* strErrDefaultUTF8 = "unknown error")
   }
   return error_Ret(strErrDefaultUTF8);
 }
+
+using FN0 = SEXP(*)();
+using FN1 = SEXP(*)(SEXP);
+using FN2 = SEXP(*)(SEXP, SEXP);
+using FN3 = SEXP(*)(SEXP, SEXP, SEXP);
+using FN4 = SEXP(*)(SEXP, SEXP, SEXP, SEXP);
+
+struct fn
+{
+  const int narg;
+  union U {
+    const FN0 f0;
+    const FN1 f1;
+    const FN2 f2;
+    const FN3 f3;
+    const FN4 f4;
+    constexpr U(const FN0& f) : f0(f){}
+    constexpr U(const FN1& f) : f1(f){}
+    constexpr U(const FN2& f) : f2(f){}
+    constexpr U(const FN3& f) : f3(f){}
+    constexpr U(const FN4& f) : f4(f){}
+  }f;
+  const SEXP args[4];
+  fn() = delete;
+
+  template<class F, class... Args>
+  constexpr fn(const F& fn, Args&&... a) : narg(sizeof...(Args)), f(fn), args{a...} {}
+
+//private:
+  constexpr SEXP call() const
+  {
+    switch (narg)
+    {
+      case 4: return f.f4(args[0], args[1], args[2], args[3]);
+      case 3: return f.f3(args[0], args[1], args[2]);
+      case 2: return f.f2(args[0], args[1]);
+      case 1: return f.f1(args[0]);
+      case 0: return f.f0();
+      default:
+        ATLASSERT(0);
+        return R_NilValue;
+    }
+  }
+
+  template<class T, class F, F f, class ...A>
+  static SEXP R(SEXP self, A... a)
+  {
+    return fn::wrap({ &rtl::template _member_fn<T, F, f, A...>, self, std::forward<A>(a)...});
+  }
+
+  template<class F, F f, class ...A>
+  static SEXP R(A... a)
+  {
+    return fn::wrap({f, std::forward<A>(a)...});
+  }
+
+private:
+  static SEXP wrap(const fn &it);
+};

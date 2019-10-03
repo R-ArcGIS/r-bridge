@@ -1,9 +1,27 @@
 S3method("[",arc.data)
 S3method("[",arc.shape)
+
 S3method(print,arc.data)
-S3method(print,arc.product)
+
+S3method(format,arc.productinfo)
+S3method(print,arc.productinfo)
+
+S3method(format,arc.portalinfo)
+S3method(print,arc.portalinfo)
+
 S3method(format,arc.shapeinfo)
 S3method(print,arc.shapeinfo)
+
+#repr method
+export(repr_html.arc.productinfo)
+export(repr_html.arc.portalinfo)
+export(repr_html.arc.shapeinfo)
+export(repr_html.arc.data)
+export(repr_html.leaflet)
+
+#leaflet
+export(pointData.arc.data)
+export(polygonData.arc.data)
 
 #dplyr methods as S3 methods
 export(arrange.arc.data)
@@ -14,6 +32,8 @@ export(ungroup.arc.data)
 
 export(.call_proxy,
   arc.check_product,
+  arc.check_portal,
+  arc.portal_connect,
   arc.data2sf,
   arc.data2sp,
   arc.delete,

@@ -17,3 +17,4 @@ arcobject::sr_type from_sr(SEXP sr);
 SEXP forward_from_keyvalue_variant(VARIANT &v);
 std::wstring normalize_path(const std::wstring& path);
 SEXP R_delete(SEXP spath);
+SEXP arc_Portal(SEXP surl, SEXP suser, SEXP spw, SEXP stoken);

@@ -3,18 +3,19 @@
 \title{Write dataset, raster, feature, table or layer}
 
 \usage{
-  arc.write(path, data, ..., overwrite = FALSE)
-%  arc.write(path, data, coords, shape_info, ..., overwrite = FALSE)
+  arc.write(path, data, \dots, overwrite = FALSE)
+%  arc.write(path, data, coords, shape_info, \dots, overwrite = FALSE)
 }
 \arguments{
   \item{path}{full output path}
 
   \item{data}{Accepts input source objects (see \sQuote{Details} for the types of objects allowed).}
-  \item{\dots}{Optional parameters.
+  \item{\dots}{Additional arguments:
     \itemize{
-      \item{coords}{list containing geometry.  Accepts \code{Spatial} objects.
-          Put field names if \code{data} is \code{data.frame} and consists coordinates (see \cite{Example #2}).}
-      \item{shape_info}{required argument if \code{data} has no spatial attribute. }
+      \item \code{coords} list containing geometry.  Accepts \code{Spatial} objects.
+      If \code{data} is \code{data.frame} \code{coords} can be list of field names (see \cite{Example #2}).
+      \item \code{shape_info} list.  Required argument if \code{data} has no spatial attribute (see \cite{Example #2}).
+      \item \code{simplify} logical.  Default \code{FALSE}.  If \code{TRUE} makes the geometries topologically correct.
     }
   }
   \item{overwrite}{overwrite existing dataset. default \code{= FALSE}.}

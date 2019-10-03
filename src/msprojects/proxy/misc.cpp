@@ -132,32 +132,6 @@ SEXP error_Ret(const char* str_or_UTF8, SEXP retVal)
   return retVal;
 }
 
-SEXP R_fnN(fn_struct &it)
-{
-  if (g_main_TID == 0)
-  {
-    Rf_error("Could not bind to a valid ArcGIS installation");
-    return R_NilValue;
-  }
-  if (g_main_TID != GetCurrentThreadId())
-  {
-    tchannel& channel = tchannel::singleton();
-    //this is R thread
-    tchannel::value p(tchannel::FN_CALL, &it);
-    channel.from_thread.push(p);
-    channel.to_thread.pop(p, INFINITE);
-    if (!channel.all_errors_text.empty()) //show error now -> arc._Call
-    {
-      Rf_defineVar(Rf_install(".arc_err"), tools::newVal(channel.all_errors_text), R_GlobalEnv);
-      channel.all_errors_text.clear();
-    }
-    ATLASSERT(p.type == tchannel::FN_CALL_RET);
-    return p.data_sexp;
-  }
-  else
-    return it.call();
-}
-
 SEXP extent2r(const std::array<double, 4> &ext)
 {
   if (ext[0] == 0.0 && ext[1] == 0.0 && ext[2] == 0.0 && ext[3] == 0.0)
@@ -373,9 +347,11 @@ SEXP forward_from_keyvalue_variant(VARIANT &info)
   return ret;
 }
 
-extern DWORD g_main_TID;
 SEXP R_AoInitialize()
 {
+  if (_api == nullptr)
+    return error_Ret("Failed to load '" LIBRARY_API_DLL_NAME ".dll'");
+
   const arcobject::product_info &info = _api->AoInitialize();
 
   tools::listGeneric vals(3);
@@ -399,7 +375,43 @@ SEXP R_AoInitialize()
 
   if (g_main_TID == 0)
     g_main_TID = GetCurrentThreadId();
+
   return vals.get();
+}
+
+SEXP arc_Portal(SEXP surl, SEXP suser, SEXP spw, SEXP stoken)
+{
+  if (Rf_isNull(surl))
+  {
+    auto v = _api->portal_info();
+    return forward_from_keyvalue_variant(v);
+  }
+
+  std::wstring token;
+  std::wstring url;
+  if (!tools::copy_to(surl, url))
+    return error_Ret("missing 'url' param");
+
+  if (!Rf_isNull(stoken))
+  {
+    if (!tools::copy_to(stoken, token))
+      return error_Ret("invalid 'token' param");
+    return tools::newVal(L"TODO token");
+  }
+
+  std::wstring user;
+  if (!Rf_isNull(suser) && !tools::copy_to(suser, user))
+    return error_Ret("invalid 'username' param");
+
+  std::wstring pw;
+  if (!Rf_isNull(spw) && !tools::copy_to(spw, pw))
+    return error_Ret("invalid 'password' param");
+
+  if (!_api->portal_signon(url, user, pw, token))
+    return showError<true>();
+
+  auto v = _api->portal_info();
+  return forward_from_keyvalue_variant(v);
 }
 
 SEXP R_delete(SEXP spath)

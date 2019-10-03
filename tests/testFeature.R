@@ -2,7 +2,11 @@
 if (!isNamespaceLoaded("arcgisbinding"))
 {
   library(arcgisbinding)
-  arc.check_product()
+  if (class(try(arc.check_product())) == "try-error")
+  {
+    warning("skip testRaster.R")
+    return(0)
+  }
 }
 
 fgdb_path = tempfile("new_databse",fileext=".gdb")
@@ -36,8 +40,36 @@ check_2 <- function()
   stopifnot(arc.delete(f))
 }
 
+#write SpatialPoints
+check_3 <- function()
+{
+  if (!require("sp"))
+    return (0)
+
+  x = c(1,2,3,4,5)
+  y = c(3,2,5,1,4)
+  pts <- sp::SpatialPoints(cbind(x,y))
+  f <- file.path(fgdb_path, "points")
+  arc.write(f, coords = pts)
+}
+
+#write SpatialPointsDataframe
+check_4 <- function()
+{
+  if (!require("sp"))
+    return (0)
+
+  data(meuse)
+  coordinates(meuse) <- c("x", "y")
+  proj4string(meuse) <- CRS(paste("+init=epsg:28992", "+towgs84=565.237,50.0087,465.658,-0.406857,0.350733,-1.87035,4.0812"))
+  f <- file.path(fgdb_path, "meuse_full")
+  arc.write(f, meuse)
+}
+
 if (Sys.getenv("_R_CHECK_INTERNALS2_")[[1]] != "")
 {
   check_1()
   check_2()
+  check_3()
+  check_4()
 }

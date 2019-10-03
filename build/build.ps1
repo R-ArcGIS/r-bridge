@@ -35,8 +35,6 @@ if (-Not (Test-Path $env:R_TOOLS))
 }
 $env:Path="${env:R_TOOLS};${env:Path}"
 
-$Rscript="${env:R_PATH}\bin\x64\Rscript.exe"
-
 $descFile = "../DESCRIPTION.in"
 
 # use relative path from package folder
@@ -75,13 +73,12 @@ if ($increment_build)
   }
 }
 
-$Rcmd="${env:R_PATH}\bin\x64\Rcmd.exe"
+$Rcmd="${env:R_PATH}\bin\x64\R.exe"
 
 $arc_flag=0
 $targets=@()
 if ($target -match "desktop")
 {
-  #$Rcmd="${env:R_PATH}\bin\i386\Rcmd.exe"
   $arc_flag = $arc_flag+1
   $targets += "${config}-Desktop,platform=Win32"
   $targets += "${config}-Desktop,platform=x64"
@@ -105,6 +102,16 @@ if ($isbuild)
   {
     param($cfg)
     Write-Host "Compiling: ${cfg}" -foregroundcolor Green
+    Write-Host "R_PATH=$env:R_PATH"
+    if ($target -match "pro")
+    {
+      Write-Host "ARCGIS_PRO_PATH=$env:ARCGIS_PRO_PATH"
+    }
+    else
+    {
+      Write-Host "ARCGIS_DESKTOP_PATH=$env:ARCGIS_DESKTOP_PATH"
+      Write-Host "ARCGIS_DESKTOP_KIT_PATH=$env:ARCGIS_DESKTOP_KIT_PATH"
+    }
     cmd /c "`"${env:VS_TOOLS}`" && msbuild ${projects_path}\R-bridge.sln /m /p:configuration=${cfg},PostBuildEventUseInBuild=false /t:Rebuild /nologo /clp:NoSummary /verbosity:minimal"
     if ($lastExitCode -ne 0)
     {
@@ -121,7 +128,7 @@ if ($isbuild)
   foreach ($e in $targets) {bld $e}
 }
 
-if ((dir ../libs/*.dll -recurse).Count -eq 0)
+if ((Get-ChildItem -Path ../libs/ -Include *.dll -Recurse -Name).Count -eq 0)
 {
   Write-Host "Cannot find proxy dll(s) in ../libs/*.dll" -ForegroundColor Red
   Write-Host "To build windows dll call './build.bat pro release'" -ForegroundColor Yell
@@ -132,25 +139,34 @@ if ($check_package)
 {
   $env:_R_CHECK_FORCE_SUGGESTS_="false"
   #push-location -path build/
-  Write-Host "Prepare source package..." -foregroundcolor Green
-  & $Rcmd build --force --no-build-vignettes ..
+  $compile_flag = @("-","--no-multiarch", "--no-multiarch", "--multiarch")[$arc_flag]
+  $arch = @("-","i386", "x64", "i386, x64")[$arc_flag]
+  if ($arc_flag -eq 1)
+  {
+    $Rcmd="${env:R_PATH}\bin\i386\R.exe"
+  }
+  $pkg_tag_gz=$pkg_name+"_"+$pkg_main_ver+$build_n+".tar.gz"
+
+  Write-Host "Prepare source package '$pkg_tag_gz' Archs: $arch ..." -foregroundcolor Green
+  $new = $new -replace '^Archs:.+$', ('Archs: '+$arch)
+  Set-Content ../DESCRIPTION $new
+  & $Rcmd CMD build --force --no-build-vignettes ..
   if ($lastExitCode -ne 0)
   {
     Write-Host "Rcmd build FAILED" -foregroundcolor Red
     Exit
   }
 
-  $pkg_tag_gz=$pkg_name+"_"+$pkg_main_ver+$build_n+".tar.gz"
   Write-Host "Checking ${pkg_tag_gz}" -foregroundcolor Green
-  & $Rcmd check --no-multiarch --check-subdirs=yes --no-vignettes --library=./ $pkg_tag_gz
+  & $Rcmd CMD check $compile_flag --check-subdirs=yes --no-vignettes --library=./ $pkg_tag_gz
   Exit
 }
-
-Write-Host "Prepare $pkg_name $pkg_main_ver$build_n" -foregroundcolor Green
 
 $env:BUILD_TARGET=@("-","proxy", "proxy_pro", "proxy proxy_pro")[$arc_flag]
 $arch = @("-","i386, x64", "x64", "i386, x64")[$arc_flag]
 $compile_flag = @("-","--compile-both", "--no-multiarch", "--compile-both")[$arc_flag]
+
+Write-Host "Prepare $pkg_name $pkg_main_ver$build_n" -foregroundcolor Green
 
 $new = $new -replace '^Archs:.+$', ('Archs: '+$arch)
 $updateRD = $isbuild
@@ -158,16 +174,19 @@ Set-Content ../DESCRIPTION $new
 
 Function Get-StringHash([String] $String,$HashName="MD5")
 {
-  $StringBuilder=New-Object System.Text.StringBuilder
-  [System.Security.Cryptography.HashAlgorithm]::Create($HashName).ComputeHash([System.Text.Encoding]::UTF8.GetBytes($String))|%{
-  [Void]$StringBuilder.Append($_.ToString("x2"))}
-  $StringBuilder.ToString()
+  $ret=""
+  $hashByteArray = [System.Security.Cryptography.HashAlgorithm]::Create($HashName).ComputeHash([System.Text.Encoding]::UTF8.GetBytes($String))
+  foreach($byte in $hashByteArray)
+  {
+    $ret += $byte.ToString("x2")
+  }
+  $ret
 }
 
 $check_sum_now = Get-ChildItem @("../R/*.R","../man/*.Rd") | Get-FileHash
 $check_sum_now = $check_sum_now| Out-String
 $md5 = Get-StringHash $check_sum_now
-$check_sum_file = [System.IO.Path]::GetTempPath() + "${md5}.bld-chksm"
+$check_sum_file = [System.IO.Path]::GetTempPath() + "{${md5}}.bld-log"
 
 if (-Not $updateRD)
 {
@@ -178,7 +197,7 @@ if ($updateRD)
 {
   Write-Host "New MD5 = $md5" -foregroundcolor Green
   $tmp = [System.IO.Path]::GetTempPath()
-  Remove-Item -Include *.bld-chksm -Path $tmp/*
+  Remove-Item -Include *.bld-log -Path $tmp/*
   Set-Content $check_sum_file $Null
 }
 
@@ -189,7 +208,7 @@ if ($updateRD -or -Not (Test-Path ../inst/doc/$pkg_name.pdf))
   {
     New-Item ../inst/doc/ -type directory | Out-Null
   }
-  & $Rcmd Rd2pdf --batch --no-preview --force --pdf ../ -o ../inst/doc/$pkg_name.pdf
+  & $Rcmd CMD Rd2pdf --batch --no-preview --force --pdf ../ -o ../inst/doc/$pkg_name.pdf
 
   if ($lastExitCode -ne 0)
   {
@@ -199,7 +218,7 @@ if ($updateRD -or -Not (Test-Path ../inst/doc/$pkg_name.pdf))
 
 $build_html_flag = @("--no-html","--html")[$build_html]
 #push-location -path ../
-& $Rcmd INSTALL --build --clean --preclean $compile_flag $build_html_flag --byte-compile --no-test-load --library=./ ../
+& $Rcmd CMD INSTALL --build --clean --preclean $compile_flag $build_html_flag --byte-compile --no-test-load --library=./ ../
 $lec = $lastExitCode
 if ($lec -ne 0)
 {

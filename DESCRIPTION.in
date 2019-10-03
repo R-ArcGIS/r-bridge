@@ -1,6 +1,6 @@
 Package: arcgisbinding
-Version: 1.0.1.232
-Date: 2018-07-12
+Version: 1.0.1.235
+Date: 2019-08-14
 Title: Bindings for ArcGIS
 Author: Esri
 Maintainer: Esri <R_bridge@esri.com>
@@ -16,7 +16,10 @@ Suggests:
     sf,
     raster,
     rgdal,
-    dplyr
+    dplyr,
+    repr,
+    htmltools,
+    leaflet
 License: file LICENSE
 URL: http://esri.com
 BugReports: https://github.com/R-ArcGIS/r-bridge/issues

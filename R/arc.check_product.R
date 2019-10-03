@@ -15,15 +15,21 @@ arc.check_product <- function()
 #    gdal_data = file.path(prod$path, ifelse(.arc$dll == "rarcproxy_pro", "Resources\\pedata\\gdaldata", "pedata\\gdaldata"), fsep='\\')
 #    Sys.setenv(GDAL_DATA=gdal_data)
 #  }
-  class(prod) <- c("arc.product", class(prod))
+  class(prod) <- c("arc.productinfo", class(prod))
   return(prod)
 }
 
-#' @export
-print.arc.product <- function(x, ...)
+format.arc.productinfo <- function(x, ...)
 {
-  cat("product:", x$app, "(", x$version, ")\n")
-  cat("license:", x$license, "\n")
-  cat("version:", x$pkg_ver, "\n")
+  fmt <- list(...)["fmt"]
+  if (fmt == "html")
+    return (sprintf("<b>product:</b> %s (%s)\n<b>license:</b> %s\n<b>version:</b> %s", x$app, x$version, x$license, x$pkg_ver))
+  return (sprintf("product: %s (%s)\nlicense: %s\nversion: %s", x$app, x$version, x$license, x$pkg_ver))
+}
+
+#' @export
+print.arc.productinfo <- function(x, ...)
+{
+  cat(format(x), "\n")
   invisible(x)
 }

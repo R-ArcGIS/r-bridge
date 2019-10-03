@@ -18,7 +18,7 @@ namespace rtl
   };
 
   template <class T>
-  void destroyT(SEXP p)
+  static void destroyT(SEXP p)
   {
     if (p != nullptr && TYPEOF(p) == EXTPTRSXP)
     {
@@ -28,7 +28,7 @@ namespace rtl
     }
   }
 
-  static SEXP getExt(SEXP s4)
+  inline static SEXP getExt(SEXP s4)
   {
     if (IS_S4_OBJECT(s4))
       return R_do_slot(s4, object::s_name_ptr());
@@ -66,8 +66,9 @@ namespace rtl
     }
     return R_NilValue;
   }
+
   template <class T>
-  inline SEXP release_internalsT(SEXP s4)
+  inline static SEXP release_internalsT(SEXP s4)
   {
     SEXP ptr = getExt(s4);
     if (ptr)
@@ -83,7 +84,7 @@ namespace rtl
   }
 
   template <class T>
-  T* getCObject(SEXP s4)
+  inline static T* getCObject(SEXP s4)
   {
     SEXP ptr = getExt(s4);
     if (TYPEOF(ptr) == EXTPTRSXP)
@@ -91,31 +92,17 @@ namespace rtl
     return nullptr;
   }
 
-  /*template <class T, SEXP(T::*fn)(SEXP)>
-  inline SEXP call_s0(SEXP self)
+  template <class T, class F, F f, class... Args>
+  static SEXP _member_fn(SEXP self, Args... a)
   {
     T* obj = getCObject<T>(self);
     ATLASSERT(obj);
-    if (obj) return (obj->*fn)(self);
-    return R_NilValue;
-  }*/
-  template <class T, SEXP(T::*fn)()>
-  inline SEXP call_0(SEXP self)
-  {
-    T* obj = getCObject<T>(self);
-    ATLASSERT(obj);
-    if (obj) return (obj->*fn)();
+    if (obj) return (obj->*f)(std::forward<Args>(a)...);
     return R_NilValue;
   }
-  
-  template <class T, SEXP(T::*fn)(SEXP)>
-  inline SEXP call_1(SEXP self, SEXP a1)
-  {
-    T* obj = getCObject<T>(self);
-    ATLASSERT(obj);
-    if (obj) return (obj->*fn)(a1);
-    return R_NilValue;
-  }
+
+#if 0
+
   template <class T, SEXP(T::*fn)(SEXP)>
   inline SEXP ext_N(SEXP args)
   {
@@ -126,32 +113,7 @@ namespace rtl
     if (obj) return (obj->*fn)(CDR(args));
     return R_NilValue;
   }
-  /*template <class T, SEXP(T::*fn)(SEXP, SEXP)>
-  inline SEXP call_s1(SEXP self, SEXP a1)
-  {
-    T* obj = getCObject<T>(self);
-    ATLASSERT(obj);
-    if (obj) return (obj->*fn)(self, a1);
-    return R_NilValue;
-  }*/
-  
-  template <class T, SEXP(T::*fn)(SEXP, SEXP)>
-  inline SEXP call_2(SEXP self, SEXP a1, SEXP a2)
-  {
-    T* obj = getCObject<T>(self);
-    ATLASSERT(obj);
-    if (obj) return (obj->*fn)(a1, a2);
-    return R_NilValue;
-  }
-  template <class T, SEXP(T::*fn)(SEXP, SEXP, SEXP)>
-  inline SEXP call_3(SEXP self, SEXP a1, SEXP a2, SEXP a3)
-  {
-    T* obj = getCObject<T>(self);
-    ATLASSERT(obj);
-    if (obj) return (obj->*fn)(a1, a2, a3);
-    return R_NilValue;
-  }
-  //template <class Tbase>
+#endif
 }
 
 #define BEGIN_CALL_MAP(x) public:\

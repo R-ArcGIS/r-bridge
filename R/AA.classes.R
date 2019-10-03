@@ -6,11 +6,13 @@
 #
 setClass("arc.object", contains = "VIRTUAL", representation(.ptr = "externalptr"))
 
+setOldClass("arc.shapeinfo")
+
 # Class "arc.shape"
 #' @export
 setClass("arc.shape",
     contains = "list",
-    representation(shapeinfo = "list"))
+    representation(shapeinfo = "arc.shapeinfo"))
 
 # Class "arc.dataset"
 #' @export
@@ -32,7 +34,7 @@ setClass("arc.table",
 #' @export
 setClass("arc.feature",
     contains = c("arc.table", "VIRTUAL"),
-    representation(shapeinfo = "list", extent = "numeric"))
+    representation(shapeinfo = "arc.shapeinfo", extent = "numeric"))
 
 ##
 ## base class arc.container

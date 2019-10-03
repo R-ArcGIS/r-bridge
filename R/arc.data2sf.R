@@ -237,7 +237,8 @@ arc.shape2sf <- function (shape)
   wkt <- arc.fromP4ToWkt(sr$proj4string)
   if (!is.null(wkt))
     shapeinfo["WKT"] <- wkt
-  class(shapeinfo) <- append(class(shapeinfo), "arc.shapeinfo")
+  #class(shapeinfo) <- append(class(shapeinfo), "arc.shapeinfo")
+  class(shapeinfo) <- append("arc.shapeinfo", class(shapeinfo))
   #shapeinfo <- structure(shapeinfo, class="arc.shapeinfo")
   return (shapeinfo)
 }

@@ -1,11 +1,11 @@
-.vs
-.vscode
+^\.git
+\.vs
+\.vscode
 ^settings.txt
 ^build.bat
 ^build.ps1
 ^build$
-^libs/.hold$
-^libs/obj$
+\.hold$
 ^src/msprojects/libobjects$
 README\.md
 DESCRIPTION\.in

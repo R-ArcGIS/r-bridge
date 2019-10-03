@@ -32,15 +32,15 @@ lockBinding("resample_types", .arc)
 lockBinding("pixel_type", .arc)
 
 .arc$pixel_type2data_type <- c(
-    "U1"  = "LOG1S",
-    "U8"  = "INT1U",
-    "S8"  = "INT1S",
-    "U16" = "INT2U",
-    "S16" = "INT2S",
-    "S32" = "INT4S",
-    "U32" = "INT4U",
-    "F32" = "FLT4S",
-    "F64" = "FLT8S")
+  "U1"  = "LOG1S",
+  "U8"  = "INT1U",
+  "S8"  = "INT1S",
+  "U16" = "INT2U",
+  "S16" = "INT2S",
+  "S32" = "INT4S",
+  "U32" = "INT4U",
+  "F32" = "FLT4S",
+  "F64" = "FLT8S")
 
 lockBinding("pixel_type2data_type", .arc)
 

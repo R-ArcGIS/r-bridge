@@ -31,20 +31,24 @@ SEXP dataset::get_type()
 SEXP dataset::get_extent()
 {
   //return extent2r(m_dataset->get_extent());
-  return forward_from_keyvalue_variant(m_dataset->get_extent());
+  auto v = m_dataset->get_extent();
+  return forward_from_keyvalue_variant(v);
 }
 
 SEXP dataset::get_sr()
 {
-  return forward_from_keyvalue_variant(m_dataset->get_sr());
+  auto v = m_dataset->get_sr();
+  return forward_from_keyvalue_variant(v);
 }
 
 SEXP dataset::get_props()
 {
-  return forward_from_keyvalue_variant(m_dataset->get_properties_info());
+  auto v = m_dataset->get_properties_info();
+  return forward_from_keyvalue_variant(v);
 }
 
 SEXP dataset::get_metadata()
 {
-  return forward_from_keyvalue_variant(m_dataset->get_metadata_info());
+  auto v = m_dataset->get_metadata_info();
+  return forward_from_keyvalue_variant(v);
 }

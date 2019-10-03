@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "exporter.h"
+#include "r_write.h"
 #include "tools.h"
 #include "misc.h"
 #include <limits>
@@ -28,8 +28,8 @@ public:
   const std::vector<std::wstring>& ref_fields() const { return m_ref_fields; }
   const std::pair<std::string, std::pair<std::wstring, int>>& geometry_info() const { return m_geometry_info; }
   bool isPoints() const {return m_points; }
-  std::vector<double> shape_extractor::getPoint(size_t i);
-  std::vector<byte> shape_extractor::getShape(size_t i);
+  std::vector<double> /*shape_extractor::*/getPoint(size_t i);
+  std::vector<byte> /*shape_extractor::*/getShape(size_t i);
 };
 
 long shape_extractor::init(SEXP sh, SEXP sinfo)
@@ -360,7 +360,7 @@ bool cols_wrap<std::string>::get(size_t i, VARIANT &v) const
   SEXP s = STRING_ELT(vect, i);
   if (s == NA_STRING)
     v.vt = VT_NULL;
-  else 
+  else
   {
     v.vt = VT_BSTR;
     v.bstrVal = ::SysAllocString(fromUtf8(Rf_translateCharUTF8(s)).c_str());
@@ -445,7 +445,7 @@ static std::unique_ptr<cols_base> setup_field(arcobject::cursor* cur, SEXP it, c
        item = std::make_unique<cols_wrap<std::string>>(it);
        item->pos = cur->add_field(str, "String", (int)estimate_string_max_len(it));
      }break;
-     case LGLSXP: 
+     case LGLSXP:
        item = std::make_unique<cols_wrap<bool>>(it);
        item->pos = cur->add_field(str, "Integer");
        break;
@@ -454,8 +454,8 @@ static std::unique_ptr<cols_base> setup_field(arcobject::cursor* cur, SEXP it, c
 }
 
 
-
-SEXP R_export2dataset(SEXP spath, SEXP sargs)//SEXP dataframe, SEXP shape, SEXP shape_info)
+// arc.write()
+SEXP arc_write(SEXP spath, SEXP sargs)
 {
   std::wstring path;
   if (!tools::copy_to(spath, path))
@@ -466,22 +466,26 @@ SEXP R_export2dataset(SEXP spath, SEXP sargs)//SEXP dataframe, SEXP shape, SEXP 
     return error_Ret("incorrect argument: path");
 
   bool overwrite = false;
+  bool simplify = false;
   SEXP shape = nullptr,
        dataframe = nullptr,
        shape_info = nullptr;
 
   try
   {
+    //required
     const auto args = tools::pairlist2args_map(sargs);
     tools::unpack_args<true>(args,
       std::tie("overwrite", overwrite),
       std::tie("coords", shape),
       std::tie("data", dataframe),
-      std::tie("shape_info", shape_info));
+      std::tie("shape_info", shape_info),
+      std::tie("simplify", simplify));
   }catch(const std::exception& e)
   {
     return error_Ret(e.what());
   }
+  //std::tie("simplify", simplify)
   if (_api->is_dataset_exists(path))
   {
     if (!overwrite)
@@ -532,7 +536,7 @@ SEXP R_export2dataset(SEXP spath, SEXP sargs)//SEXP dataframe, SEXP shape, SEXP 
     Rf_warning("length of shape != data.frame length");
     //return showError<false>("length of shape != data.frame"), R_NilValue;
 
-  std::unique_ptr<arcobject::cursor> acur(_api->create_insert_cursor(path, extractor.geometry_info()));
+  std::unique_ptr<arcobject::cursor> acur(_api->create_insert_cursor(path, extractor.geometry_info(), simplify));
   if (acur.get() == NULL)
     return showError<true>(), R_NilValue;
   arcobject::cursor* cur = acur.get();
@@ -612,10 +616,13 @@ SEXP R_export2dataset(SEXP spath, SEXP sargs)//SEXP dataframe, SEXP shape, SEXP 
       else
         cur->set_shape(extractor.getShape(i));
     }
-   
+
     if (!cur->next())
       return showError<true>("insert row failed"), R_NilValue;
   }
+  if (const auto warn = cur->warnings(); !warn.empty())
+    Rf_warning(warn.c_str());
+
   std::unique_ptr<arcobject::dataset> d(cur->commit());
   //return null
   return R_NilValue;

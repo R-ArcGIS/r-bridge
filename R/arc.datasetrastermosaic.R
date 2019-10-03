@@ -2,7 +2,8 @@ setMethod("initialize", "arc.datasetrastermosaic", def = function(.Object, path)
 {
   .Object<-callNextMethod(.Object, path)
   shapeinfo <- .call_proxy("feature_class.shape_info", .Object)
-  class(shapeinfo) <- c(class(shapeinfo), "arc.shapeinfo")
+  #class(shapeinfo) <- c(class(shapeinfo), "arc.shapeinfo")
+  class(shapeinfo) <- c("arc.shapeinfo", class(shapeinfo))
   .Object@shapeinfo <- shapeinfo
   .Object@fields <- as.list(.call_proxy("table.fields", .Object))
   return(.Object)

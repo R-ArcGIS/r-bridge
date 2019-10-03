@@ -36,9 +36,6 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="exporter.cpp">
-      <Filter>Source Files\arc-binding</Filter>
-    </ClCompile>
     <ClCompile Include="gp_exec.cpp">
       <Filter>Source Files\arc-binding</Filter>
     </ClCompile>
@@ -69,13 +66,16 @@
     <ClCompile Include="r_raster.cpp">
       <Filter>Source Files\arc-binding\raster</Filter>
     </ClCompile>
+    <ClCompile Include="tools.cpp">
+      <Filter>Source Files\arc-binding</Filter>
+    </ClCompile>
+    <ClCompile Include="r_write.cpp">
+      <Filter>Source Files\arc-binding</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="rarcproxy_exports.h">
       <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="exporter.h">
-      <Filter>Source Files\arc-binding</Filter>
     </ClInclude>
     <ClInclude Include="Rtl.h">
       <Filter>Source Files\arc-binding</Filter>
@@ -121,6 +121,9 @@
     </ClInclude>
     <ClInclude Include="r_raster.h">
       <Filter>Source Files\arc-binding\raster</Filter>
+    </ClInclude>
+    <ClInclude Include="r_write.h">
+      <Filter>Source Files\arc-binding</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,6 +1,7 @@
 #pragma once
 #include "Rtl.h"
 #include <memory>
+
 namespace rd {
 class dataset : public rtl::object//<dataset>
 {
@@ -10,7 +11,6 @@ public:
   static const char* class_name;
   ~dataset()
   {
-
   }
 
   std::shared_ptr<arcobject::dataset> m_dataset;
@@ -18,22 +18,22 @@ public:
   /*static const std::vector<R_CallMethodDef>& _exports()
   {
     std::vector<R_CallMethodDef> m = {
-      {"dataset.create", (DL_FUNC) R_fn1<rtl::createT<dataset> >, 1},
-      {"dataset.open",   (DL_FUNC) R_fn2<rtl::call_1<dataset, &dataset::open> >, 2},
+      {"dataset.create", (DL_FUNC) fn::R1<rtl::createT<dataset> >, 1},
+      {"dataset.open",   (DL_FUNC) fn::R2<rtl::call_1<dataset, &dataset::open> >, 2},
     };
     return m;
   }*/
 
   BEGIN_CALL_MAP(dataset)
-   {"dataset.create", (DL_FUNC)R_fn1<rtl::createT<dataset> >, 1},
-   {"dataset.open",   (DL_FUNC)R_fn2<rtl::call_1<dataset, &dataset::open> >, 2},
-   {"dataset.type",   (DL_FUNC)R_fn1<rtl::call_0<dataset, &dataset::get_type> >, 1},
-   {"dataset.extent", (DL_FUNC)R_fn1<rtl::call_0<dataset, &dataset::get_extent>>, 1},
-   {"dataset.sr",     (DL_FUNC)R_fn1<rtl::call_0<dataset, &dataset::get_sr>>, 1},
-   {"dataset.props",  (DL_FUNC)R_fn1<rtl::call_0<dataset, &dataset::get_props>>, 1},
-   {"dataset.metadata", (DL_FUNC)R_fn1<rtl::call_0<dataset, &dataset::get_metadata>>, 1},
-   {"dataset.is_table", (DL_FUNC)R_fn1<rtl::call_0<dataset, &dataset::is_table> >, 1},
-   {"dataset.is_feature_class", (DL_FUNC)R_fn1<dataset::is_feature_class>, 1},
+   {"dataset.create", (DL_FUNC)(FN1)fn::R<decltype(&rtl::createT<dataset>), &rtl::createT<dataset>, SEXP>, 1},
+   {"dataset.open",   (DL_FUNC)(FN2)fn::R<dataset, decltype(&dataset::open), &dataset::open, SEXP>, 2},
+   {"dataset.type",   (DL_FUNC)(FN1)fn::R<dataset, decltype(&dataset::get_type), &dataset::get_type>, 1},
+   {"dataset.extent", (DL_FUNC)(FN1)fn::R<dataset, decltype(&dataset::get_extent), &dataset::get_extent>, 1},
+   {"dataset.sr",     (DL_FUNC)(FN1)fn::R<dataset, decltype(&dataset::get_sr), &dataset::get_sr>, 1},
+   {"dataset.props",  (DL_FUNC)(FN1)fn::R<dataset, decltype(&dataset::get_props), &dataset::get_props>, 1},
+   {"dataset.metadata", (DL_FUNC)(FN1)fn::R<dataset, decltype(&dataset::get_metadata), &dataset::get_metadata>, 1},
+   {"dataset.is_table", (DL_FUNC)(FN1)fn::R<dataset, decltype(&dataset::is_table), &dataset::is_table>, 1},
+   {"dataset.is_feature_class", (DL_FUNC)(FN1)fn::R<decltype(&dataset::is_feature_class), &dataset::is_feature_class, SEXP>, 1},
   END_CALL_MAP()
 
 protected:
