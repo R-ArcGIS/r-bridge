@@ -462,7 +462,7 @@ namespace GNU_GPL
         extern HMODULE hDllHandle;
         ::GetModuleFileName(hDllHandle, dllName, _countof(dllName));
         fs::path path(dllName);
-        auto pkg_path = path.remove_filename().parent_path().parent_path().parent_path().generic_u8string();
+        auto pkg_path = path.parent_path().parent_path().parent_path().parent_path().generic_u8string();
         //std::replace(pkg_path.begin(), pkg_path.end(), '\\', '/');
 
         //verify it

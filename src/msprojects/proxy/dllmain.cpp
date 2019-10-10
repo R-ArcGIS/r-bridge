@@ -61,7 +61,7 @@ BOOL APIENTRY DllMain(HMODULE hModule,
       ::DisableThreadLibraryCalls(hModule);
       hDllHandle = hModule;
       _api = nullptr;
-      //load_arcobjectlib(hModule);
+      load_arcobjectlib(hModule);
     }
     break;
     case DLL_PROCESS_DETACH:
