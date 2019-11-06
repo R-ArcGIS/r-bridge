@@ -15,7 +15,7 @@
       \item \code{coords} list containing geometry.  Accepts \code{Spatial} objects.
       If \code{data} is \code{data.frame} \code{coords} can be list of field names (see \cite{Example #2}).
       \item \code{shape_info} list.  Required argument if \code{data} has no spatial attribute (see \cite{Example #2}).
-      \item \code{simplify} logical.  Default \code{FALSE}.  If \code{TRUE} makes the geometries topologically correct.
+      \item \code{validate} logical.  Default \code{FALSE}.  If \code{TRUE} makes the geometries topologically correct.
     }
   }
   \item{overwrite}{overwrite existing dataset. default \code{= FALSE}.}
@@ -23,8 +23,8 @@
 \description{
 Export a \code{data} object to an ArcGIS dataset.  If the data frame
 includes a spatial attribute, this function writes a feature dataset.  If no
-spatial attribute is found, a table is instead written. If \code{data} is raster-like object,
-this function writes a raster dataset. See \sQuote{Details} section for more information.
+spatial attribute is found, a table is instead written.  If \code{data} is raster-like object,
+this function writes a raster dataset.  See \sQuote{Details} section for more information.
 }
 \note{
   To write Date column type corresponding \code{data} column must have
