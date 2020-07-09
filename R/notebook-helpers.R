@@ -36,9 +36,9 @@ repr_html.leaflet <- function(obj, ...)
   if (is.null(obj$elementId))
     stop("$elementId == NULL. Required property $elementId.")
 
-  dir_maps <-'~/../.ipython/nbextensions/maps'
+  dir_maps <-normalizePath('~/../.ipython/nbextensions/maps', mustWork = FALSE)
   libdir <- 'mlib'
-  dir.create(dir_maps, showWarnings = FALSE, recursive = FALSE, mode = "0777")
+  dir.create(dir_maps, showWarnings = FALSE, recursive = TRUE, mode = "0777")
   #oldwd <- setwd(dir_maps); on.exit(setwd(oldwd), add = TRUE)
 
   name<-paste0(obj$elementId, '.html')

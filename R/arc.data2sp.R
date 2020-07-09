@@ -1,6 +1,6 @@
 # Convert an arc.dataframe or arc.raster object to an sp SpatialDataFrame object
 #' @export
-arc.data2sp <- function(x)
+arc.data2sp <- function(x, ...)
 {
   if (!requireNamespace("sp", quietly = TRUE))
     stop("This function requires the sp package.")
@@ -24,7 +24,12 @@ arc.data2sp <- function(x)
     shp <- arc.shape(x)
   }
 
-  spl <- arc.shape2sp(shape = shp, wkt = info$WKT)
+  crs <- list(...)$crs
+  if (is.null(crs))
+    spl <- arc.shape2sp(shape = shp, wkt = info$WKT)
+  else
+    spl <- arc.shape2sp(shape = shp, crs = crs)
+
   class(x) <- setdiff(class(x), "arc.data")
   attr(x, "shape") <- NULL
 
@@ -54,14 +59,21 @@ arc.data2sp <- function(x)
 
 # Convert Esri shape to sp spatial geometry
 #' @export
-arc.shape2sp <- function(shape, wkt)
+arc.shape2sp <- function(shape, ...)
 {
   if (!requireNamespace("sp", quietly = TRUE))
     stop("This function requires the sp package.")
   info <- arc.shapeinfo(shape)
-  if (missing(wkt))
-    wkt = info$WKT
-  p4 <- sp::CRS(arc.fromWktToP4(wkt))
+
+  args <- list(...)
+  if (!is.null(args$crs))
+    crs <- args$crs
+  else if (!is.null(args$wkt))
+    crs <- arc.fromWktToP4(args$wkt)
+  else
+    crs <- arc.fromWktToP4(info$WKT)
+
+  p4 <- sp::CRS(crs)
   parts <- function(x) lapply(seq_along(x), function(i) .shp2sp(x[[i]], i, info$type))
 
   switch(info$type,

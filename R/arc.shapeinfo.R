@@ -27,6 +27,8 @@ setMethod("arc.shapeinfo", "arc.shape", function(object) object@shapeinfo)
 #arc.shapeinfo.arc.feature <- function(object) object@shapeinfo
 setMethod("arc.shapeinfo", "arc.feature", function(object) object@shapeinfo)
 
+setMethod("arc.shapeinfo", "arc.data", function(object) arc.shape(object)@shapeinfo)
+
 #arc.shapeinfo.Spatial <- function(x) .get_shape_info_from_sp(x)
 
 #setMethod("show", "arc.shapeinfo", function(object)

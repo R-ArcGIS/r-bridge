@@ -4,11 +4,12 @@
 \title{
 Convert 'arc.data' or 'arc.raster' object to 'sp' - SpatialDataFrame object or 'sf' - Simple Feature object}
 \usage{
-arc.data2sp(x)
-arc.data2sf(x)
+arc.data2sp(x, \dots)
+arc.data2sf(x, \dots)
 }
 \arguments{
 \item{x}{\code{\link{arc.data}} object, result of \code{\link{arc.select}} or \code{\link{arc.raster}}. }
+\item{\dots}{ optional additional argument such \code{crs} coordinate reference string to assign to return object}
 }
 \value{
   sp::Spatial*DataFrame object.

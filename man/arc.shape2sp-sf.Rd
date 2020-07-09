@@ -3,12 +3,12 @@
 \alias{arc.shape2sf}
 \title{Convert 'arc.shape' geometry object to sp::Spatial* - Spatial geometry or sf::sfc - simple feature geometry}
 \usage{
-arc.shape2sp(shape, wkt)
-arc.shape2sf(shape)
+arc.shape2sp(shape, \dots)
+arc.shape2sf(shape, \dots)
 }
 \arguments{
 \item{shape}{\code{\link{arc.shape-class}}}
-\item{wkt}{optional, WKT spatial reference}
+\item{\dots}{optional \code{wkt} WKT spatial reference or \code{crs} spatial reference string to assigne to return object}
 }
 
 \value{

@@ -2,7 +2,7 @@
 #arc.data2sf.default <- function(x) stop()
 # Convert an arc.dataframe object to an sf Simple Feature object
 #' @export
-arc.data2sf <- function (x)
+arc.data2sf <- function (x, ...)
 {
   stopifnot(inherits(x, "arc.data"))
 
@@ -15,25 +15,32 @@ arc.data2sf <- function (x)
   stopifnot(!is.null(shape))
   info <- arc.shapeinfo(shape)
   stopifnot(!is.null(info))
+
+  crs <- list(...)$crs
+  if (is.null(crs))
+    crs <- arc.fromWktToP4(info$WKT)
+
   if (info$type == "-Point") #alternative
   {
     d2<-data.frame(df, "Shape.."=shape)
     coords<-paste0("Shape...", names(shape))
     #dim<-toupper(paste(names(shape), collapse=""))
     dim<-.shapeinfo_dim(info)
-    sf::st_as_sf(d2,coords=coords, dim=dim, crs=arc.fromWktToP4(info$WKT))
+    sf::st_as_sf(d2,coords=coords, dim=dim, crs=crs)
   }
-  sf::st_sf(df, geom=arc.shape2sf(shape))
+  sf::st_sf(df, geom=arc.shape2sf(shape, crs=crs))
 }
 
 # Convert Esri shape to sfc simple feature geometry
 #' @export
-arc.shape2sf <- function (shape)
+arc.shape2sf <- function (shape, ...)
 {
   stopifnot(inherits(shape, "arc.shape"))
   info <- arc.shapeinfo(shape)
-  #if (missing(wkt))
-  wkt <- info$WKT
+
+  crs <- list(...)$crs
+  if (is.null(crs))
+    crs <- arc.fromWktToP4(info$WKT)
 
   t <- .shapeinfo_dim(info)
 
@@ -56,7 +63,7 @@ arc.shape2sf <- function (shape)
   }
   else
     lapply(shape[[1]], function(sh) .shp2sfg(sh, info$type, t))
-  return(sf::st_sfc(sfgs, crs = arc.fromWktToP4(wkt)))
+  return(sf::st_sfc(sfgs, crs = crs))
 }
 
 #create 'sfg' object from Esri shape buffer

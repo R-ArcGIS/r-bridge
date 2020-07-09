@@ -31,7 +31,7 @@ setIs("arc.dataset", "arc.feature",
   coerce = function(from) new("arc.feature_impl", from),
   replace = function(obj, value) value)
 
-.write_feature <- function(path, data, coords, shape_info, overwrite, simplify=FALSE)
+.write_feature <- function(path, data, coords, shape_info, overwrite, validate=FALSE)
 {
   if(missing(data) && missing(coords))
     stop("arc.write() - 'coords' and 'data' are missing", call. = FALSE)
@@ -113,6 +113,6 @@ setIs("arc.dataset", "arc.feature",
     }
     else stop(paste("unsupported 'data' type:", class(data)) , call. = FALSE)
   }
-  .call_proxy("arc_write", path, pairlist(data=data, coords=coords, shape_info=shape_info, overwrite=overwrite, simplify=simplify))
+  .call_proxy("arc_write", path, pairlist(data=data, coords=coords, shape_info=shape_info, overwrite=overwrite, simplify=validate))
   return (invisible(TRUE))
 }

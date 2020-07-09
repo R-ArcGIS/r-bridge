@@ -22,6 +22,8 @@ export(repr_html.leaflet)
 #leaflet
 export(pointData.arc.data)
 export(polygonData.arc.data)
+S3method(leaflet::pointData, arc.data, pointData.arc.data)
+S3method(leaflet::polygonData, arc.data, polygonData.arc.data)
 
 #dplyr methods as S3 methods
 export(arrange.arc.data)
