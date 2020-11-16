@@ -1,9 +1,8 @@
 // dllmain.cpp : Defines the entry point for the DLL application.
 #include "stdafx.h"
 #include <filesystem>
-
 #if _HAS_CXX17
-namespace fs = std::experimental::filesystem::v1;
+namespace fs = std::filesystem;
 #else
 namespace fs = std::tr2::sys;
 #endif

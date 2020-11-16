@@ -83,13 +83,14 @@ public:
     ::LeaveCriticalSection(&m_cs);
   }
 
-  template <class F>
+  /*template <class F>
   void for_each(F pred)
   {
     ::EnterCriticalSection(&m_cs);
-    std::for_each(m_list.begin(), m_list.end(), pred);
+    for(const auto &v : m_list)
+      pred(v);
     ::LeaveCriticalSection(&m_cs);
-  }
+  }*/
 
 private:
   CRITICAL_SECTION m_cs;

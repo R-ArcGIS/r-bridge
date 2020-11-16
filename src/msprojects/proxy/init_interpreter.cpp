@@ -2,13 +2,13 @@
 #include "tchannel.h"
 #include "tools.h"
 #include "rconnect_interface.h"
-#include <filesystem>
 #include <process.h>
 //#include <thread>
 //#include <future>
 
+#include <filesystem>
 #if _HAS_CXX17
-namespace fs = std::experimental::filesystem::v1;
+namespace fs = std::filesystem;
 #else
 namespace fs = std::tr2::sys;
 #endif
@@ -468,7 +468,7 @@ namespace GNU_GPL
         //verify it
         Rf_defineVar(Rf_install(".arcgisbinding_inproc"), tools::newVal(g_InProc), R_GlobalEnv);
         std::string load_pkg("library(arcgisbinding,lib.loc='");
-        load_pkg += pkg_path.c_str();
+        load_pkg += (const char*)pkg_path.c_str();
         load_pkg += "')";
         auto x = evaluate_string(load_pkg.c_str());
         ATLASSERT(x);

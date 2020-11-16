@@ -3,6 +3,12 @@
   #define RTL_H
 #endif
 
+namespace rtl
+{
+  //forward declare
+  template <class T, class F, F f, class... Args>
+  static SEXP _member_fn(SEXP self, Args... a);
+}
 #include "tools.h"
 
 #define SLOT_PTR_NAME ".ptr"

@@ -892,7 +892,7 @@ namespace tools
       case VT_BSTR:    return newVal(pv.bstrVal);
       case VT_LPWSTR:  return newVal(pv.pwszVal);
       case VT_LPSTR:   return newVal(pv.pszVal);
-      case VT_I4:      return newVal(pv.lVal);
+      case VT_I4:      return newVal((int)pv.lVal);
       case VT_R8:      return newVal(pv.dblVal);
 
       default: ATLASSERT(0); return R_NilValue;
@@ -1127,9 +1127,11 @@ struct fn
     }
   }
 
+#ifdef RTL_H
   template<class T, class F, F f, class ...A>
   static SEXP R(SEXP self, A... a)
   {
+    //using namespace rtl;
     return fn::wrap({ &rtl::template _member_fn<T, F, f, A...>, self, std::forward<A>(a)...});
   }
 
@@ -1138,6 +1140,7 @@ struct fn
   {
     return fn::wrap({f, std::forward<A>(a)...});
   }
+#endif
 
 private:
   static SEXP wrap(const fn &it);

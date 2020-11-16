@@ -6,11 +6,10 @@
 #include <sstream>
 #include <filesystem>
 #if _HAS_CXX17
-namespace fs = std::experimental::filesystem::v1;
+namespace fs = std::filesystem;
 #else
 namespace fs = std::tr2::sys;
 #endif
-
 
 const rconnect_interface* current_connect();
 extern DWORD g_main_TID;
