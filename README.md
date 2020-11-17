@@ -7,8 +7,13 @@ R-ArcGIS bridge
   + 64-bit version can be used with ArcMap by installing [Background Geoprocessing](http://desktop.arcgis.com/en/desktop/latest/analyze/executing-tools/64bit-background.htm) and configuring scripts to [run in the background](http://desktop.arcgis.com/en/desktop/latest/analyze/executing-tools/foreground-and-background-processing.htm). NOTE: Background geoprocessing only allows using the bridge from ArcGIS, not from within R itself.
 
 #### Installation
+```R
+# Install latest version:
+> install.packages("arcgisbinding", repos="https://r.esri.com", type="win.binary")
+```
 
-For most users, the easiest way to install is using the [installation toolbox](https://github.com/R-ArcGIS/r-bridge-install) which will install and configure the bridge for ArcGIS 10.3.1+ and Pro 1.1+. Alternatively, [downloading the release](https://r.esri.com/bin/) can be manually installed into R, as shown [in this screencast](https://4326.us/R/zipinst/).
+For most users, the easiest way to install is using the [installation toolbox](https://github.com/R-ArcGIS/r-bridge-install) which will install and configure the bridge for ArcGIS 10.3.1+ and Pro 1.1+. 
+Alternatively, [downloading the release](https://r.esri.com/bin/) can be manually installed into R, as shown [in this screencast](https://4326.us/R/zipinst/).
 
 #### Basic GP Tool script
 ```R
