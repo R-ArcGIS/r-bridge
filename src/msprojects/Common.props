@@ -15,19 +15,17 @@
     <YieldDuringToolExecution>true</YieldDuringToolExecution>
     <LinkIncremental>False</LinkIncremental>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
-    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.19041.0</WindowsTargetPlatformVersion>
     <ConfigurationType>DynamicLibrary</ConfigurationType>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)'=='Release-Pro' or '$(Configuration)'=='Debug-Pro' ">
-    <TargetName>$(MSBuildProjectName)_pro</TargetName>
     <LibObjects>libobjects_pro</LibObjects>
     <ProxyName>rarcproxy_pro</ProxyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)'=='Release-Desktop' or '$(Configuration)'=='Debug-Desktop' ">
-    <TargetName>$(MSBuildProjectName)</TargetName>
     <LibObjects>libobjects</LibObjects>
     <ProxyName>rarcproxy</ProxyName>
     <DefineConstants>DESKTOP10</DefineConstants>
@@ -52,13 +50,18 @@
     <configtext>$([system.IO.File]::ReadAllText('$(settings_file)'))</configtext>
   </PropertyGroup>
 
-  <PropertyGroup Label="Set ARCGIS_DESKTOP_PATH" Condition="'$(TargetName)'=='libobjects' ">
-    <ARCGIS_DESKTOP_PATH>$([System.Text.RegularExpressions.Regex]::Match($(configtext), '\bARCGIS_DESKTOP_PATH=(.+)').Groups[1].Value.Trim().Trim('\"'))</ARCGIS_DESKTOP_PATH>
+  <PropertyGroup Label="Set ARCGIS_DESKTOP_KIT_PATH" Condition="'$(ARCGIS_DESKTOP_KIT_PATH)'=='' and '$(LibObjects)'=='libobjects' ">
     <ARCGIS_DESKTOP_KIT_PATH>$([System.Text.RegularExpressions.Regex]::Match($(configtext), '\bARCGIS_DESKTOP_KIT_PATH=(.+)').Groups[1].Value.Trim().Trim('\"'))</ARCGIS_DESKTOP_KIT_PATH>
   </PropertyGroup>
 
-  <PropertyGroup Label="Set ARCGIS_PRO_PATH" Condition="'$(ARCGIS_PRO_PATH)'=='' and '$(TargetName)'=='libobjects_pro' ">
+  <PropertyGroup Label="Set ARCGIS_PRO_PATH" Condition="'$(ARCGIS_PRO_PATH)'=='' and '$(LibObjects)'=='libobjects_pro' ">
     <ARCGIS_PRO_PATH>$([System.Text.RegularExpressions.Regex]::Match($(configtext), '\bARCGIS_PRO_PATH=(.+)').Groups[1].Value.Trim().Trim('\"'))</ARCGIS_PRO_PATH>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Set PRO_VER" Condition="'$(LibObjects)'=='libobjects_pro' ">
+    <buildnumtext>$([system.IO.File]::ReadAllText('$(ARCGIS_PRO_PATH)\SharedArcGIS\Include\buildnum.h'))</buildnumtext>
+    <PRO_VER_MAJOR>$([System.Text.RegularExpressions.Regex]::Match($(buildnumtext), '#define PROD_VER \d(\d),').Groups[1].Value)</PRO_VER_MAJOR>
+    <PRO_VER_MINOR>$([System.Text.RegularExpressions.Regex]::Match($(buildnumtext), '#define PROD_VER \d+,(\d+)').Groups[1].Value)</PRO_VER_MINOR>
   </PropertyGroup>
 
   <PropertyGroup Label="Set R_PATH" Condition="'$(R_PATH)'==''">
@@ -77,11 +80,11 @@
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PreprocessorDefinitions>_USRDLL;DLL_NAME=$(TargetName);LIBRARY_API_NAME=$(LibObjects);$(DefineConstants);%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PreprocessorDefinitions Condition=" '$(TargetName)'=='libobjects' ">ARCGIS_DESKTOP_PATH='$(ARCGIS_DESKTOP_PATH)';ARCGIS_DESKTOP_KIT_PATH='$(ARCGIS_DESKTOP_KIT_PATH)';%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PreprocessorDefinitions Condition=" '$(TargetName)'=='libobjects_pro' ">ARCGIS_PRO_PATH='$(ARCGIS_PRO_PATH)';%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition=" '$(LibObjects)'=='libobjects' ">ARCGIS_DESKTOP_KIT_PATH='$(ARCGIS_DESKTOP_KIT_PATH)';%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition=" '$(LibObjects)'=='libobjects_pro' ">ARCGIS_PRO_PATH='$(ARCGIS_PRO_PATH)';PRO_VER_MAJOR=$(PRO_VER_MAJOR);PRO_VER_MINOR=$(PRO_VER_MINOR);%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories Condition=" '$(ProjectName)'=='rarcproxy' ">$(R_PATH)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AdditionalIncludeDirectories Condition=" '$(TargetName)'=='libobjects' ">$(ARCGIS_DESKTOP_PATH)\com;$(ARCGIS_DESKTOP_KIT_PATH)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AdditionalIncludeDirectories Condition=" '$(TargetName)'=='libobjects_pro' ">$(ARCGIS_PRO_PATH)\com;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition=" '$(LibObjects)'=='libobjects' ">$(ARCGIS_DESKTOP_KIT_PATH)\com;$(ARCGIS_DESKTOP_KIT_PATH)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition=" '$(LibObjects)'=='libobjects_pro' ">$(ARCGIS_PRO_PATH)\com;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MinimalRebuild>false</MinimalRebuild>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>

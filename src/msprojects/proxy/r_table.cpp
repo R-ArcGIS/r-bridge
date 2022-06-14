@@ -232,7 +232,7 @@ std::pair<std::vector<SEXP>, std::vector<std::wstring>> process_cols(tools::prot
         Rf_setAttrib(s, Rf_install(it->attr.second.calpstr.pElems[i]), tools::newVal(it->attr.first.capropvar.pElems[i]));
       }
     }
-    if (it->t == arcobject::column_t2::eDate)
+    if (it->t == arcobject::column_t2::ct::eDate)
     {
       Rf_setAttrib(s, R_ClassSymbol, tools::newVal({ "POSIXt", "POSIXct" }));
     }
@@ -263,7 +263,18 @@ SEXP table::select2(SEXP fields, SEXP sargs)
   bool asJson = false;
   bool asJsonSR = false;
   bool dencify = true;
+  std::wstring transformation;
 
+  const static std::unordered_set<std::string_view> valid_args{
+    "selected",
+    "where_clause", 
+    "sr",
+    "asWKB",
+    "asJson",
+    "asJsonSR",
+    "dencify",
+    "transformation"
+  };
   const auto args = tools::pairlist2args_map(sargs);
   const auto is_args = tools::unpack_args<false>(args,
     std::tie("selected", use_selection),
@@ -272,7 +283,8 @@ SEXP table::select2(SEXP fields, SEXP sargs)
     std::tie("asWKB", asWKB),
     std::tie("asJson", asJson),
     std::tie("asJsonSR", asJsonSR),
-    std::tie("dencify", dencify));
+    std::tie("dencify", dencify),
+    std::tie("transformation", transformation));
 
   if (std::get<0>(is_args) == 2)
     return error_Ret("incorrect type, argument: selected");
@@ -282,7 +294,15 @@ SEXP table::select2(SEXP fields, SEXP sargs)
     return error_Ret("'asWKB' argument is not logical");
   if (std::get<3>(is_args) == 2)
     return error_Ret("'dencify' argument is not logical");
+  if (std::get<7>(is_args) == 2)
+    return error_Ret("incorrect type, argument: transformation");
 
+  //validate unknown arguments
+  for (const auto& kv : args)
+  {
+    if (valid_args.find(kv.first) == valid_args.end())
+      Rf_warning("ignore unknown argument: '%s'", kv.first.c_str());
+  }
   /*
   auto it = args.find("selected");
   if (it != args.end())
@@ -306,7 +326,7 @@ SEXP table::select2(SEXP fields, SEXP sargs)
   */
   std::vector<std::wstring> unique;
   std::unordered_set<std::wstring> set;
-  for (const auto& it : fld)
+  for (const auto &it : fld)
   {
     const auto str = tools::tolower(it);
     if (set.find(str) == set.end())
@@ -321,7 +341,7 @@ SEXP table::select2(SEXP fields, SEXP sargs)
   else if (asJson) kind = arcobject::dataset::geometry_kind::eJson;
   else if (asJsonSR) kind = arcobject::dataset::geometry_kind::eJsonSR;
 
-  auto cols = m_dataset->select(unique, where_clause, use_selection, sp_ref, dencify, kind);
+  auto cols = m_dataset->select(unique, where_clause, use_selection, sp_ref, dencify, kind, transformation);
 
   if (cols.empty())
     return showError<true>("COM error");

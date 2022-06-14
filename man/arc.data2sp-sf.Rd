@@ -9,7 +9,7 @@ arc.data2sf(x, \dots)
 }
 \arguments{
 \item{x}{\code{\link{arc.data}} object, result of \code{\link{arc.select}} or \code{\link{arc.raster}}. }
-\item{\dots}{ optional additional argument such \code{crs} coordinate reference string to assign to return object}
+\item{\dots}{ optional additional argument such \code{wkt} WKT spatial reference or \code{crs} coordinate reference string to assign to return object}
 }
 \value{
   sp::Spatial*DataFrame object.

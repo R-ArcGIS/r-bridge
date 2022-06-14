@@ -16,19 +16,24 @@ arc.data2sf <- function (x, ...)
   info <- arc.shapeinfo(shape)
   stopifnot(!is.null(info))
 
-  crs <- list(...)$crs
-  if (is.null(crs))
-    crs <- arc.fromWktToP4(info$WKT)
-
-  if (info$type == "-Point") #alternative
+  wkt <- list(...)$wkt
+  if (is.null(wkt))
   {
-    d2<-data.frame(df, "Shape.."=shape)
-    coords<-paste0("Shape...", names(shape))
-    #dim<-toupper(paste(names(shape), collapse=""))
-    dim<-.shapeinfo_dim(info)
-    sf::st_as_sf(d2,coords=coords, dim=dim, crs=crs)
+    wkt <- info$WKT
+    #works around for R.3.5 version
+    if (packageVersion("sf") < package_version("0.9.0"))
+      wkt <- arc.fromWktToP4(wkt)
   }
-  sf::st_sf(df, geom=arc.shape2sf(shape, crs=crs))
+
+  #if (info$type == "-Point") #alternative
+  #{
+  #  d2<-data.frame(df, "Shape.."=shape)
+  #  coords<-paste0("Shape...", names(shape))
+  #  #dim<-toupper(paste(names(shape), collapse=""))
+  #  dim<-.shapeinfo_dim(info)
+  #  sf::st_as_sf(d2,coords=coords, dim=dim, crs=wkt)
+  #}
+  return(sf::st_sf(df, geom=arc.shape2sf(shape, wkt=wkt)))
 }
 
 # Convert Esri shape to sfc simple feature geometry
@@ -38,9 +43,9 @@ arc.shape2sf <- function (shape, ...)
   stopifnot(inherits(shape, "arc.shape"))
   info <- arc.shapeinfo(shape)
 
-  crs <- list(...)$crs
-  if (is.null(crs))
-    crs <- arc.fromWktToP4(info$WKT)
+  wkt <- list(...)$wkt
+  if (is.null(wkt))
+    wkt <- info$WKT
 
   t <- .shapeinfo_dim(info)
 
@@ -63,7 +68,7 @@ arc.shape2sf <- function (shape, ...)
   }
   else
     lapply(shape[[1]], function(sh) .shp2sfg(sh, info$type, t))
-  return(sf::st_sfc(sfgs, crs = crs))
+  return(sf::st_sfc(sfgs, crs = wkt))
 }
 
 #create 'sfg' object from Esri shape buffer
@@ -88,7 +93,6 @@ arc.shape2sf <- function (shape, ...)
   stopifnot(has_curve == FALSE)
   #has_Z = (buf[4] & as.raw(0x40)) == 0x40
   #has_M = (buf[4] & as.raw(0x80)) == 0x80
-
 
   nparts <- readBin(buf[37L:40L], integer(), 1L, size = 4L)
   npts <- readBin(buf[41L:44L], integer(), 1L, size = 4L)
@@ -241,7 +245,7 @@ arc.shape2sf <- function (shape, ...)
   hasZ <- (dim %in% c("XYZ", "XYZM"))
   shapeinfo <- list(type=type, hasZ = hasZ, hasM = hasM)
   sr <- sf::st_crs(sfc)
-  wkt <- arc.fromP4ToWkt(sr$proj4string)
+  wkt <- sr$Wkt
   if (!is.null(wkt))
     shapeinfo["WKT"] <- wkt
   #class(shapeinfo) <- append(class(shapeinfo), "arc.shapeinfo")

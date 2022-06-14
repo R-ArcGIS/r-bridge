@@ -74,6 +74,8 @@ if ($increment_build)
 }
 
 $Rcmd="${env:R_PATH}\bin\x64\R.exe"
+$RcmdVer=((Get-Item $Rcmd).VersionInfo.FileVersion  -split ' ')[0]
+Write-Host "R.exe version: $RcmdVer"
 
 $arc_flag=0
 $targets=@()
@@ -90,6 +92,8 @@ if ($target -match "pro")
 }
 
 $new = $desc -replace '^Version:.+$', ('Version: ' + $pkg_main_ver + $build_n)
+$dependsR = "Depends: R (>= $RcmdVer)"
+$new = $new -replace '^Depends:.+$', ($dependsR)
 if ($set_date)
 {
   $new = $new -replace '^Date:.+$', ('Date: '+(Get-Date -uformat "%Y-%m-%d"))
@@ -109,10 +113,9 @@ if ($isbuild)
     }
     else
     {
-      Write-Host "ARCGIS_DESKTOP_PATH=$env:ARCGIS_DESKTOP_PATH"
       Write-Host "ARCGIS_DESKTOP_KIT_PATH=$env:ARCGIS_DESKTOP_KIT_PATH"
     }
-    cmd /c "`"${env:VS_TOOLS}`" && msbuild ${projects_path}\R-bridge.sln /m /p:configuration=${cfg},PostBuildEventUseInBuild=false /t:Rebuild /nologo /clp:NoSummary /verbosity:minimal"
+    & cmd.exe /c """$($env:VS_TOOLS)"" && msbuild ${projects_path}\R-bridge.sln /m /p:configuration=${cfg},PostBuildEventUseInBuild=false /t:Rebuild /nologo /clp:NoSummary /verbosity:minimal"
     if ($lastExitCode -ne 0)
     {
       Write-Host "Build Failed" -foregroundcolor Red
@@ -215,11 +218,27 @@ if ($updateRD -or -Not (Test-Path ../inst/doc/$pkg_name.pdf))
     Write-Host "Skip creating package PDF" -foregroundcolor Red
   }
 }
+$is35 = $env:R_PATH.contains("\R-3.");
+$namespaceFile = "../NAMESPACE"
+if ($is35)
+{
+  Write-Host "Fixing R 3.5 NAMESPACE"
+  $namespace = Get-Content $namespaceFile
+  Move-Item $namespaceFile "$namespaceFile.bk" -Force
+  $namespace = $namespace -replace '^S3method\(leaflet::.+$', ('##')
+  Set-Content $namespaceFile $namespace
+}
 
 $build_html_flag = @("--no-html","--html")[$build_html]
 #push-location -path ../
 & $Rcmd CMD INSTALL --build --clean --preclean $compile_flag $build_html_flag --byte-compile --no-test-load --library=./ ../
 $lec = $lastExitCode
+
+if ($is35)
+{
+  Remove-Item $namespaceFile
+  Move-Item "$namespaceFile.bk" $namespaceFile
+}
 if ($lec -ne 0)
 {
   Write-Host "Build failed" -foregroundcolor Red

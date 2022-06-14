@@ -122,7 +122,11 @@ namespace GNU_GPL
       return status;
     }
 
+#if R_VERSION >= 262656
+    static int readConsole(const char* prompt, unsigned char* buf, int len, int addtohistory)
+#else
     static int readConsole(const char* prompt, char* buf, int len, int addtohistory)
+#endif
     {
       std::wstring* ptr = new std::wstring(fromUtf8(prompt));
       tchannel::value p(tchannel::R_PROMPT, ptr);
@@ -163,7 +167,7 @@ namespace GNU_GPL
             "), finally=rm(.arc_cmd" << id << ", envir=.GlobalEnv)"
             ")\n";
           auto eval = eval_cmd.str();
-          strncpy_s(buf, len, eval.c_str(), eval.length());
+          strncpy_s((char*)buf, len, eval.c_str(), eval.length());
         }
         else //empty command
         {
@@ -507,7 +511,7 @@ namespace GNU_GPL
 #pragma optimize( "", off )
   bool initInProcInterpreter()
   {
-    ATLASSERT(_api == nullptr && get_api != nullptr);
+    ATLASSERT(get_api != nullptr);
     if (get_api == nullptr)
       return false;
     if (g_main_TID != 0) return false;
@@ -515,7 +519,8 @@ namespace GNU_GPL
     g_main_TID = GetCurrentThreadId();
     g_InProc = true;
     //_api = arcobject::api(g_InProc);
-    _api = get_api(g_InProc);
+    if (_api == nullptr)
+      _api = get_api(g_InProc);
     const auto err_msg = _api->getLastComError();
     _api->AoInitialize();
 

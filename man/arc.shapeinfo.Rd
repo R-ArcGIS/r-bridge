@@ -2,6 +2,7 @@
 \alias{arc.shapeinfo}
 \alias{arc.shapeinfo,arc.feature-method}
 \alias{arc.shapeinfo,arc.shape-method}
+\alias{arc.shapeinfo.arc.data}
 \concept{geomery}
 \concept{shape}
 

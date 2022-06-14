@@ -12,7 +12,7 @@ SEXP dataset::open(SEXP rPath)
     return error_Ret("wrong path");
 
   //m_ipDataset.Attach(arcobject::open_dataset(path));
-  m_dataset.reset(_api->open_dataset(path));
+  m_dataset =_api->open_dataset(path);
   if (m_dataset.get() == nullptr)
     return showError<true>("cannot open dataset");
 

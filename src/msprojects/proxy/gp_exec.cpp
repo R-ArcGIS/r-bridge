@@ -29,7 +29,7 @@ int execute_tool2(const wchar_t* script_path, IArray* pParameters)
   if (file_path.length() == 0)
     return 0;
 
-  std::unique_ptr<arcobject::gp_execute> gp(_api->gp_begin_execute(connect, pParameters));
+  auto gp = _api->gp_begin_execute(connect, pParameters);
 
   std::string env_name(".gptool");
 

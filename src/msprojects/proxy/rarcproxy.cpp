@@ -19,6 +19,9 @@ namespace GNU_GPL
 };
 int execute_tool2(const wchar_t* script_path, IArray* pParameters);
 
+extern HMODULE hDllHandle;
+bool load_arcobjectlib(HMODULE hModule);
+
 rconnect_interface* Rconnect(rconnect_interface *connect)
 {
   static int once = 0;
@@ -26,6 +29,9 @@ rconnect_interface* Rconnect(rconnect_interface *connect)
   if (once == 0)
   {
     once = 1;
+    if (_api == nullptr)
+      load_arcobjectlib(hDllHandle);
+
     _current_connect = connect;
     if (GNU_GPL::initInProcInterpreter())
       once = 2;

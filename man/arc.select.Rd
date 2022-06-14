@@ -23,7 +23,7 @@
 \item{where_clause}{SQL where clause}
 \item{selected}{use only selected records (if any) when dataset is a layer or standalone table}
 \item{sr}{transform geometry to Spatial Reference (default: object@sr)}
-\item{\dots}{Additional arguements.}
+\item{\dots}{optional additional arguments such as \code{transformation} - datum transformation string}
 }
 \value{
 \code{arc.select} returns a \code{data.frame} object (type of \code{arc.data}).
@@ -53,6 +53,18 @@ nrow(df)
 ## transform points to "+proj=eqc"
 df <- arc.select(d,"fid", where_clause="fid<5", sr="+proj=eqc")
 arc.shape(df)
+
+## datum transformation, from NAD_1983 to WGS_1984
+## prepare dataset
+x <- c(1455535.149968639, 1446183.62438038, 1447950.6349539757)
+y <- c(478067.64943164587, 484500.4190463871, 479746.6336064786)
+data_path <- file.path(tempdir(), "data.gdb", "test_datum")
+## save as NAD_1983
+arc.write(data_path, coords=cbind(x, y), shape_info=list(type="Point", WKID=2893))
+## read and transform to WGS_1984
+df <- arc.select(arc.open(data_path), sr=4326, transformation='NAD_1983_HARN_To_WGS_1984_2')
+x <- arc.shape(df)$x
+stopifnot(sprintf('\%.8f', x1[1]) == '-76.49626388')
 
 }
 \seealso{

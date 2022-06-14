@@ -2,6 +2,7 @@ S3method("[",arc.data)
 S3method("[",arc.shape)
 
 S3method(print,arc.data)
+S3method(arc.shapeinfo,arc.data)
 
 S3method(format,arc.productinfo)
 S3method(print,arc.productinfo)

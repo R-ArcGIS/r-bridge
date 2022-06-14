@@ -156,8 +156,11 @@ long shape_extractor::init(SEXP sh, SEXP sinfo)
       {
         static bool op(const wchar_t &c) { return c == L'\''; }
       };
-      std::replace_if(wkt.begin(), wkt.end(), eq::op, L'\"');
-      m_geometry_info.second.first = wkt;
+      if (wkt != L"NA")
+      {
+        std::replace_if(wkt.begin(), wkt.end(), eq::op, L'\"');
+        m_geometry_info.second.first = wkt;
+      }
     }
   }
   return S_OK;
@@ -620,10 +623,10 @@ SEXP arc_write(SEXP spath, SEXP sargs)
     if (!cur->next())
       return showError<true>("insert row failed"), R_NilValue;
   }
-  if (const auto warn = cur->warnings(); !warn.empty())
-    Rf_warning(warn.c_str());
+  if (const auto warn = cur->warnings(); warn != nullptr && warn[0] != 0)
+    Rf_warning(warn);
 
-  std::unique_ptr<arcobject::dataset> d(cur->commit());
+  std::ignore = cur->commit();
   //return null
   return R_NilValue;
 }

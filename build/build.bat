@@ -8,9 +8,8 @@ if not exist %~dp0settings.txt (
    echo R_PATH="%ProgramW6432%\R\R-3.3.2"
    echo R_TOOLS=C:\Rtools\bin
    echo VS_TOOLS="C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\Common7\Tools\VsDevCmd.bat"
-   echo ARCGIS_DESKTOP_PATH="C:\Program Files (x86)\ArcGIS\Desktop10.6"
    echo ARCGIS_DESKTOP_KIT_PATH="C:\Program Files (x86)\ArcGIS\DeveloperKit10.3"
-   echo ARCGIS_PRO_PATH="c:\ArcGISPro"
+   echo ARCGIS_PRO_PATH="c:\ArcGIS"
   )> %~dp0settings.txt
 )
 for /f "eol=# tokens=1,2 delims==" %%A in (%~dp0settings.txt) do set %%A=%%~B
@@ -45,7 +44,6 @@ powershell -ExecutionPolicy ByPass -NoProfile -File %scr% -config %config% -isbu
 ENDLOCAL
 set R_PATH=
 set R_TOOLS=
-set ARCGIS_DESKTOP_PATH=
 set ARCGIS_DESKTOP_KIT_PATH=
 set ARCGIS_PRO_PATH=
 exit /b %ERRORLEVEL%

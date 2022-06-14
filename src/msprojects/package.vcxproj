@@ -55,10 +55,10 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{4D291BC3-66DB-4413-AC61-B694F6727867}</ProjectGuid>
     <RootNamespace>arc</RootNamespace>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <ConfigurationType>Utility</ConfigurationType>
     <ProjectName>arcgisbinding (R package)</ProjectName>
-    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.19041.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />

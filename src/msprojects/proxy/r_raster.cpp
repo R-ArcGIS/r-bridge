@@ -76,7 +76,7 @@ bool raster::initialize(SEXP source, SEXP sargs)
       sr);
 
     if (r == nullptr) return false;
-    m_raster.reset(r);
+    m_raster = std::move(r);
 
     update_by(args);
     return true;
@@ -89,7 +89,7 @@ bool raster::initialize(SEXP source, SEXP sargs)
       //this is r$copy()
       auto r0 = rtl::getCObject<raster>(source);
       m_dataset = r0->m_dataset;
-      m_raster.reset(r0->m_raster->clone());
+      m_raster = r0->m_raster->clone();
     }
     else
     {
@@ -101,8 +101,7 @@ bool raster::initialize(SEXP source, SEXP sargs)
       if (std::get<0>(is_bands))
         return error_Ret(std::get<0>(is_bands) == 1 ? "missing argument : bands" : "incorrect type, argument : bands"), false;
 
-      auto r = _api->create_raster(m_dataset.get(), bands);
-      m_raster.reset(r);
+      m_raster = _api->create_raster(m_dataset.get(), bands);
     }
     if (m_raster.get() == nullptr) return false;
     update_by(args);
