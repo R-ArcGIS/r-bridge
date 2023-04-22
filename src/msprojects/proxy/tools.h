@@ -11,7 +11,7 @@
 
 namespace tools
 {
-  class protect
+  class protect final
   {
     int n;
   public:
@@ -19,7 +19,7 @@ namespace tools
     constexpr protect(): n(0) {}
     constexpr protect(SEXP v): n(0) { add (v); }
     ~protect() noexcept { release(); }
-    inline constexpr SEXP add(SEXP v) noexcept
+    constexpr SEXP add(SEXP v) noexcept
     {
       if (v == R_NilValue)
         return v;
@@ -42,7 +42,7 @@ namespace tools
     constexpr preserved() : sexp(R_NilValue) {}
     constexpr preserved(SEXP v) : sexp(R_NilValue) { set(v); }
     ~preserved(){ release(); }
-    inline constexpr void set(SEXP v) noexcept
+    constexpr void set(SEXP v) noexcept
     {
       if (v == sexp) return;
       release();
@@ -51,7 +51,7 @@ namespace tools
         try { ::R_PreserveObject(v); sexp = v;} catch(...){}
       }
     }
-    inline constexpr SEXP release() noexcept
+    constexpr SEXP release() noexcept
     {
       if (sexp == R_NilValue) return R_NilValue;
       SEXP ret = sexp;
@@ -59,7 +59,7 @@ namespace tools
       sexp = R_NilValue;
       return ret;
     }
-    inline constexpr SEXP get() const noexcept { return sexp; }
+    constexpr SEXP get() const noexcept { return sexp; }
   };
 
   inline static const std::wstring tolower(const std::wstring& str)
@@ -69,7 +69,7 @@ namespace tools
     return tmp;
   }
 
-  inline constexpr bool copy_to(const SEXP sexp, std::string &str_out)
+  inline bool copy_to(const SEXP sexp, std::string &str_out)
   {
     if (!sexp) return false;
     if (TYPEOF(sexp) != STRSXP)
@@ -89,7 +89,7 @@ namespace tools
     //str_out.assign(Rf_translateChar(STRING_ELT(sexp, 0)));
     return true;
   }
-  inline constexpr bool copy_to(const SEXP sexp, std::wstring &str_out)
+  inline bool copy_to(const SEXP sexp, std::wstring &str_out)
   {
     if (!sexp) return false;
     std::string str;
@@ -100,8 +100,8 @@ namespace tools
     return true;
   }
 
-  constexpr bool copy_to(const SEXP sexp, int &out);
-  inline constexpr bool copy_to(const SEXP sexp, double &out)
+  inline bool copy_to(const SEXP sexp, int &out);
+  inline bool copy_to(const SEXP sexp, double &out)
   {
     if (!sexp) return false;
     if (TYPEOF(sexp) != REALSXP)
@@ -123,7 +123,7 @@ namespace tools
     return true;
   }
 
-  inline constexpr bool copy_to(const SEXP sexp, int &out)
+  inline bool copy_to(const SEXP sexp, int &out)
   {
     if (!sexp) return false;
     if (TYPEOF(sexp) != INTSXP)
@@ -141,7 +141,7 @@ namespace tools
     return true;
   }
 
-  inline constexpr bool copy_to(const SEXP sexp, bool &out)
+  inline bool copy_to(const SEXP sexp, bool &out)
   {
     if (!sexp) return false;
     //if (TYPEOF(sexp) != LGLSXP && Rf_xlength(sexp) < 1)
@@ -157,7 +157,7 @@ namespace tools
     return true;
   }
 
-  inline constexpr bool copy_to(const SEXP sexp, std::vector<byte>& out)
+  inline bool copy_to(const SEXP sexp, std::vector<byte>& out)
   {
     if (!sexp) return false;
     if (TYPEOF(sexp) != RAWSXP)
@@ -173,7 +173,7 @@ namespace tools
     return true;
   }
 
-  inline constexpr bool copy_to(const SEXP sexp, std::vector<std::string>& out)
+  inline bool copy_to(const SEXP sexp, std::vector<std::string>& out)
   {
     if (!sexp) return false;
     if (TYPEOF(sexp) != STRSXP)
@@ -189,7 +189,7 @@ namespace tools
     return true;
   }
 
-  inline constexpr bool copy_to(const SEXP sexp, std::vector<std::wstring>& out, bool na_as_empty = false)
+  inline bool copy_to(const SEXP sexp, std::vector<std::wstring>& out, bool na_as_empty = false)
   {
     if (!sexp) return false;
     if (TYPEOF(sexp) != STRSXP)
@@ -215,7 +215,7 @@ namespace tools
     return true;
   }
 
-  inline constexpr bool copy_to(const SEXP sexp, std::vector<int>& out)
+  inline bool copy_to(const SEXP sexp, std::vector<int>& out)
   {
     if (!sexp) return false;
     if (TYPEOF(sexp) != INTSXP)
@@ -231,7 +231,7 @@ namespace tools
     return true;
   }
 
-  inline constexpr bool copy_to(const SEXP sexp, std::vector<double>& out)
+  inline bool copy_to(const SEXP sexp, std::vector<double>& out)
   {
     if (!sexp) return false;
     if (TYPEOF(sexp) != REALSXP) return false;
@@ -243,7 +243,7 @@ namespace tools
     return true;
   }
 
-  inline constexpr bool copy_to(const SEXP sexp, std::vector<bool>& out)
+  inline bool copy_to(const SEXP sexp, std::vector<bool>& out)
   {
     if (!sexp) return false;
     if (TYPEOF(sexp) != LGLSXP)
@@ -267,7 +267,7 @@ namespace tools
     return true;
   }
 */
-  static inline constexpr SEXPTYPE vartype2rtype(const VARTYPE vt) noexcept
+  static constexpr SEXPTYPE vartype2rtype(const VARTYPE vt) noexcept
   {
     switch(vt & VT_TYPEMASK)
     {
@@ -290,14 +290,14 @@ namespace tools
     }
   }
 
-  class SafeArrayHelper
+  class SafeArrayHelper final
   {
   private:
       mutable bool m_locked;
       SAFEARRAY* m_psa;
       VARTYPE m_vt;
   public:
-    SafeArrayHelper(SAFEARRAY *psa) : m_locked(false), m_psa(psa)
+    SafeArrayHelper(const SAFEARRAY *psa) : m_locked(false), m_psa(const_cast<SAFEARRAY*>(psa))
     {
       ATLASSERT(psa != nullptr);
       m_vt = VarType(psa);
@@ -362,10 +362,10 @@ namespace tools
     constexpr VARTYPE VarType() const noexcept { return m_vt; }
 
     //dimantion 0
-    static constexpr size_t GetCount(SAFEARRAY* psa)
+    static constexpr size_t GetCount(const SAFEARRAY* psa)
     {
       if (psa == nullptr) return 0;
-      ATLASSERT(::SafeArrayGetDim(psa) == 1);
+      ATLASSERT(::SafeArrayGetDim(const_cast<SAFEARRAY*>(psa)) == 1);
       //LONG lLBound = 0, lUBound = 0;
       //HRESULT hRes = ::SafeArrayGetLBound(psa, 1, &lLBound);
       //ATLASSERT(SUCCEEDED(hRes));
@@ -376,11 +376,11 @@ namespace tools
       return (size_t)psa->rgsabound[0].cElements;
     }
 
-    static constexpr VARTYPE VarType(SAFEARRAY* psa) noexcept
+    static constexpr VARTYPE VarType(const SAFEARRAY* psa) noexcept
     {
       VARTYPE vt = {VT_EMPTY};
       if (psa)
-        ::SafeArrayGetVartype(psa, &vt);
+        ::SafeArrayGetVartype(const_cast<SAFEARRAY*>(psa), &vt);
       return vt;
     }
   };
@@ -445,7 +445,7 @@ namespace tools
       SET_VECTOR_ELT(sexp, i, vals[i]);
     return sexp;
   }
-  inline SEXP newVal(SEXP value) { return value; }
+  constexpr SEXP newVal(SEXP value) { return value; }
 
   inline SEXP newVal(const double* vals, size_t n)
   {
@@ -454,7 +454,7 @@ namespace tools
     std::memcpy(REAL(sexp), vals, n * sizeof(double));
     return sexp;
   }
-  inline SEXP newVal(const double val) { return newVal(&val, 1); }
+  inline SEXP newVal(double val) { return newVal(&val, 1); }
 
   inline SEXP newVal(const int* vals, size_t n)
   {
@@ -463,7 +463,20 @@ namespace tools
     std::memcpy(INTEGER(sexp), vals, n * sizeof(int));
     return sexp;
   }
-  inline SEXP newVal(const int val) { return newVal(&val, 1); }
+  inline SEXP newVal(int val) { return newVal(&val, 1); }
+  inline SEXP newVal(LONGLONG val)
+  {
+    //if ((uint64_t)val >= 0xFFFFFFFFLL)
+    //{
+    protect pt;
+    SEXP ret = pt.add(newVal((const double*)&val, 1));
+    Rf_setAttrib(ret, R_ClassSymbol, newVal("integer64"));
+    return ret;
+    //}
+    //return newVal((int)val);
+  }
+  inline SEXP newVal(LARGE_INTEGER val) { return newVal(val.QuadPart); }
+
   inline SEXP newVal(const long* vals, size_t n)
   {
     static_assert(sizeof(int) == sizeof(long), "TODO");
@@ -599,12 +612,12 @@ namespace tools
     }
     void reset(){ pos = head.get(); }
   };*/
-  class vector_iterator: public preserved
+  class vector_iterator final : public preserved
   {
     vector_iterator(const vector_iterator&) = delete;
     mutable std::vector<std::string> m_names;
   public:
-    vector_iterator(SEXP l = R_NilValue) : preserved(l)
+    constexpr vector_iterator(SEXP l = R_NilValue) : preserved(l)
     {
     }
     constexpr void set(SEXP val){ preserved::set(val); }
@@ -655,7 +668,7 @@ namespace tools
 
   SEXP newVal(const VARIANT &v);
 
-  class listGeneric
+  class listGeneric final
   {
     std::size_t m_capacity;
     std::size_t m_size;
@@ -730,9 +743,9 @@ namespace tools
     }
   };
 
-  SEXP newVal(SAFEARRAY *psa);
+  SEXP newVal(const SAFEARRAY *psa);
 
-  inline SEXP newVal(SAFEARRAY* psaNames, SAFEARRAY* psaVals)
+  inline SEXP newVal(const SAFEARRAY* psaNames, const SAFEARRAY* psaVals)
   {
     auto vtN = SafeArrayHelper::VarType(psaNames);
 
@@ -746,7 +759,7 @@ namespace tools
     return Rf_setAttrib(newVal(psaVals), R_NamesSymbol, newVal(psaNames));
   }
 
-  inline SEXP newVal(SAFEARRAY *psa)
+  inline SEXP newVal(const SAFEARRAY *psa)
   {
     SEXPTYPE st = vartype2rtype(SafeArrayHelper::VarType(psa));
     if (st == NILSXP)
@@ -824,6 +837,7 @@ namespace tools
       case VT_I4:
       case VT_UINT:
       case VT_UI4: return newVal((int)v.lVal);
+      case VT_I8: return newVal(v.llVal);
       case VT_R4: return newVal((double)v.fltVal);
       case VT_R8: return newVal(v.dblVal);
       case VT_BSTR: return newVal(toUtf8(v.bstrVal));
@@ -847,6 +861,41 @@ namespace tools
   {
     return newVal(data.pElems, data.cElems);
   }
+  constexpr bool isAllInt32(const CAH& data)
+  {
+    for (size_t i = 0, n = (size_t)data.cElems; i < n; i++)
+      if ((uint64_t)data.pElems[i].QuadPart >= 0xFFFFFFFFLL)
+        return false;
+    return true;
+  }
+  inline SEXP newVal(const CAH& data)
+  {
+    protect pt;
+    R_xlen_t n = (R_xlen_t)data.cElems;
+    if (isAllInt32(data))
+    {
+      SEXP sexp = pt.add(Rf_allocVector(INTSXP, n));
+      for (R_xlen_t i = 0; i < n; i++)
+      {
+        INTEGER(sexp)[i] = (int)data.pElems[i].QuadPart;
+      }
+      return sexp;
+    }
+    //store int64 as double (64bit) it require `bit64` package
+    SEXP sexp = pt.add(Rf_allocVector(REALSXP, n));
+    for (R_xlen_t i = 0; i < n; i++)
+    {
+      REAL(sexp)[i] = *(double*)&(data.pElems[i].QuadPart);
+    }
+    Rf_setAttrib(sexp, R_ClassSymbol, newVal("integer64"));
+    return sexp;
+  }
+  inline SEXP newVal(const CAUH& data)
+  {
+    ATLASSERT(0);
+    return nullptr;
+  }
+
   inline SEXP newVal(const CADBL &data)
   {
     return newVal(data.pElems, data.cElems);
@@ -883,6 +932,8 @@ namespace tools
       case VT_NULL: return R_NilValue;
       case (VT_UI1|VT_VECTOR):     return newVal(pv.cac);
       case (VT_I4|VT_VECTOR):      return newVal(pv.cal);
+      case (VT_I8 | VT_VECTOR):    return newVal(pv.cah);
+      //case (VT_UI8 | VT_VECTOR):   return newVal(pv.cauh);
       case (VT_R8|VT_VECTOR):      return newVal(pv.cadbl);
       case (VT_BSTR|VT_VECTOR):    return newVal(pv.cabstr);
       case (VT_LPSTR|VT_VECTOR):   return newVal(pv.calpstr);
@@ -893,6 +944,7 @@ namespace tools
       case VT_LPWSTR:  return newVal(pv.pwszVal);
       case VT_LPSTR:   return newVal(pv.pszVal);
       case VT_I4:      return newVal((int)pv.lVal);
+      case VT_I8:      return newVal(pv.hVal);
       case VT_R8:      return newVal(pv.dblVal);
 
       default: ATLASSERT(0); return R_NilValue;
@@ -964,8 +1016,16 @@ namespace tools
       {
         double val = 0.0;
         tools::copy_to(r, val);
-        v.vt = VT_R8;
-        v.dblVal = val;
+        if (Rf_inherits(r, "integer64"))
+        {
+          v.vt = VT_I8;
+          v.llVal = *(LONGLONG*)&val;
+        }
+        else
+        {
+          v.vt = VT_R8;
+          v.dblVal = val;
+        }
       }break;
       case VECSXP://multi values
       {

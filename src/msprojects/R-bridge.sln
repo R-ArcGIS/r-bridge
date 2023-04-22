@@ -19,6 +19,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		..\..\build\build.bat = ..\..\build\build.bat
 		..\..\build\build.ps1 = ..\..\build\build.ps1
+		..\..\build\settings.txt = ..\..\build\settings.txt
 		buildnum.h = buildnum.h
 		src\msprojects\Common.props = src\msprojects\Common.props
 		libobjects_api.h = libobjects_api.h

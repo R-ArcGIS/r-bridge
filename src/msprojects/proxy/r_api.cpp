@@ -16,10 +16,15 @@
 #define REGISTER_EXTERNAL(m, C){ const R_ExternalMethodDef* pm = C; while (pm && pm->name) m.push_back(*pm), pm++; }
 #define REGISTER_EXTERNAL_METHODS(m, C) REGISTER_EXTERNAL(m, C::get_ExtMethods())
 
+#define DEF_FN_WRAP(name, ...) fn::R<decltype(&name), &name, __VA_ARGS__>
+//make fn wrapper and cast to DL_FUNC
+#define DL_FUNC_DEF(name, ...) (DL_FUNC)static_cast<SEXP(*)(__VA_ARGS__)>(DEF_FN_WRAP(name, __VA_ARGS__))
+
+
 static bool register_R_API(DllInfo* dllInfo)
 {
 
-#if DEBUG && 0
+#if DEBUG && defined(CHECK_TOOL)
   auto s = tools::newVal({L"1",L"2"});
   s = tools::newVal({"1", "2"});
   s = tools::newVal({1, 2});
@@ -34,21 +39,20 @@ static bool register_R_API(DllInfo* dllInfo)
   s = tools::newVal(vs0[0]);
 #endif
 
-
 //install interop
   std::vector<R_CallMethodDef> all_methods = 
   {
-    {"arc_write",             (DL_FUNC)(FN2)fn::R<decltype(&arc_write), &arc_write, SEXP, SEXP>, 2},
-    {"arc_fromWkt2P4",        (DL_FUNC)(FN1)fn::R<decltype(&R_fromWkt2P4), &R_fromWkt2P4, SEXP>, 1},
-    {"arc_fromP42Wkt",        (DL_FUNC)(FN1)fn::R<decltype(&R_fromP42Wkt), &R_fromP42Wkt, SEXP>, 1},
+    {"arc_write",             DL_FUNC_DEF(arc_write, SEXP, SEXP), 2},
+    {"arc_fromWkt2P4",        DL_FUNC_DEF(R_fromWkt2P4, SEXP), 1},
+    {"arc_fromP42Wkt",        DL_FUNC_DEF(R_fromP42Wkt, SEXP), 1},
     {"arc_error",             (DL_FUNC)&arc_error, 1},
     {"arc_warning",           (DL_FUNC)&arc_warning, 1},
-    {"arc_getEnv",            (DL_FUNC)(FN0)fn::R<decltype(&R_getEnv), &R_getEnv>, 0},
+    {"arc_getEnv",            DL_FUNC_DEF(R_getEnv), 0},
     {"arc_AoInitialize",      (DL_FUNC)&R_AoInitialize, 0},
     {"arc_progress_label",    (DL_FUNC)&arc_progress_label, 1},
     {"arc_progress_pos",      (DL_FUNC)&arc_progress_pos, 1},
-    {"object.release_internals", (DL_FUNC)(FN1)fn::R<decltype(&rtl::release_internalsT<rtl::object>), &rtl::release_internalsT<rtl::object>, SEXP>, 1},
-    {"arc_delete",            (DL_FUNC)(FN1)fn::R<decltype(&R_delete), &R_delete, SEXP>, 1},
+    {"object.release_internals", DL_FUNC_DEF(rtl::release_internalsT<rtl::object>, SEXP), 1},
+    {"arc_delete",            DL_FUNC_DEF(R_delete, SEXP), 1},
     {"arc_portal",            (DL_FUNC)(FN4)arc_Portal, 4}
   };
   REGISTER_CALLMETHODS(all_methods, rd::dataset);

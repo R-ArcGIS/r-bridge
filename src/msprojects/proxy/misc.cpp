@@ -66,13 +66,12 @@ static void woe_forward(SEXP e, bool is_error)
 {
   std::vector<std::wstring> s;
   tools::copy_to(e, s);
-  try 
+  try
   {
-    tchannel::value p(tchannel::R_TXT_OUT, new std::wstring(1, is_error? L'1' : L'2'));
+    std::wstring data_str(1, is_error ? L'1' : L'2');
     for (size_t i = 0, n = s.size(); i < n; i++)
-      p.data_str->append(s[i]);
-    tchannel& channel = tchannel::singleton();
-    channel.from_thread.push(p);
+      data_str.append(s[i]);
+    tchannel::singleton().from_thread.push_back(tchannel::value{ tchannel::value_type::R_TXT_OUT, data_str });
   }catch(...){}
 }
 SEXP arc_warning(SEXP e)
@@ -351,6 +350,8 @@ SEXP R_AoInitialize()
   if (_api == nullptr)
     return error_Ret("Failed to load '" LIBRARY_API_DLL_NAME ".dll'");
 
+  print_sys_env();
+
   const arcobject::product_info &info = _api->AoInitialize();
 
   tools::listGeneric vals(3);
@@ -375,11 +376,13 @@ SEXP R_AoInitialize()
   if (g_main_TID == 0)
     g_main_TID = GetCurrentThreadId();
 
+  print_sys_env();
   return vals.get();
 }
 
 SEXP arc_Portal(SEXP surl, SEXP suser, SEXP spw, SEXP stoken)
 {
+  print_sys_env();
   if (Rf_isNull(surl))
   {
     auto v = _api->portal_info();
@@ -410,6 +413,8 @@ SEXP arc_Portal(SEXP surl, SEXP suser, SEXP spw, SEXP stoken)
     return showError<true>();
 
   auto v = _api->portal_info();
+
+  print_sys_env();
   return forward_from_keyvalue_variant(v);
 }
 
@@ -437,4 +442,25 @@ std::wstring normalize_path(const std::wstring& path)
     }
   }
   return fs_path;
+}
+
+void print_sys_env()
+{
+#ifdef _DEBUG
+  if (auto h = ::GetEnvironmentStrings(); h)
+  {
+    LPCWSTR ptr = (LPCWSTR)h;
+    while (true)
+    {
+      ::OutputDebugString(L"\n");
+      ::OutputDebugString(ptr);
+      while (ptr[0] != 0) ptr++;
+      if (ptr[0] == 0 && ptr[1] == 0)
+        break;
+      ptr++;
+    }
+    ::FreeEnvironmentStrings(h);
+  }
+  //::SetDllDirectory(L"d:\\ArcGIS\\bin");
+#endif
 }

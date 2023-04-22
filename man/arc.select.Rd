@@ -64,7 +64,7 @@ arc.write(data_path, coords=cbind(x, y), shape_info=list(type="Point", WKID=2893
 ## read and transform to WGS_1984
 df <- arc.select(arc.open(data_path), sr=4326, transformation='NAD_1983_HARN_To_WGS_1984_2')
 x <- arc.shape(df)$x
-stopifnot(sprintf('\%.8f', x1[1]) == '-76.49626388')
+stopifnot(sprintf('\%.8f', x[1]) == '-76.49626388')
 
 }
 \seealso{

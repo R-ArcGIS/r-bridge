@@ -4,6 +4,7 @@
 #define SAFEQ_H
 
 #include <list>
+#include <variant>
 
 template <class T>
 class safeQ
@@ -11,25 +12,25 @@ class safeQ
 public:
   typedef T value_type;
 
-  safeQ()
+  constexpr safeQ()
   {
     ::InitializeCriticalSectionAndSpinCount(&m_cs, 0x80000400);
-    m_hDataIn = ::CreateEvent(NULL, TRUE, FALSE, NULL);
+    m_hDataIn = ::CreateEvent(nullptr, TRUE, FALSE, nullptr);
   }
-  ~safeQ()
+  constexpr ~safeQ()
   {
     ATLASSERT(m_list.empty());//call clear(pred)
     ::DeleteCriticalSection(&m_cs);
     ::CloseHandle(m_hDataIn);
   }
-  size_t push(const T& v)
+  size_t push_back(T&& v)
   {
     ::EnterCriticalSection(&m_cs);
 
     size_t n = m_list.size();
     try
     {
-      m_list.push_back(v);
+      m_list.push_back(std::move(v));
       n = m_list.size();
       //SetEvent(m_hDataIn);
     }catch(...){ }
@@ -57,7 +58,7 @@ public:
             ::LeaveCriticalSection(&m_cs);
             break;
           }
-          v = m_list.front();
+          v = std::move(m_list.front());
           m_list.pop_front();
 
           if (m_list.empty())
@@ -70,12 +71,12 @@ public:
     return false;
   }
 
-  void lock(){ ::EnterCriticalSection(&m_cs); }
-  void unlock(){ ::LeaveCriticalSection(&m_cs); }
+  constexpr void lock(){ ::EnterCriticalSection(&m_cs); }
+  constexpr void unlock(){ ::LeaveCriticalSection(&m_cs); }
 
-  HANDLE handle() const { return m_hDataIn; }
+  constexpr HANDLE handle() const { return m_hDataIn; }
 
-  void clear()
+  constexpr void clear()
   {
     ::EnterCriticalSection(&m_cs);
     m_list.clear();
@@ -93,8 +94,9 @@ public:
   }*/
 
 private:
+  //TODO use c++ mutex
   CRITICAL_SECTION m_cs;
-  HANDLE  m_hDataIn;
+  HANDLE m_hDataIn;
   std::list<T> m_list;
 };
 
@@ -103,75 +105,91 @@ struct tchannel
 {
   static tchannel& singleton();
 
-  enum {
+  enum class value_type : uint32_t{
     _UNINIT,
-    R_INIT,
-    R_PROMPT,
-    R_CMD,
-    R_TXT_OUT,
-    FN_CALL,
-    FN_CALL_RET,
+    //R_INIT,
+    R_PROMPT, //string
+    R_CMD, //int
+    R_TXT_OUT, //string
+    FN_CALL, //void
+    FN_CALL_RET, //SEXP
     INTERNAL
   };
-  struct value
+  class value
   {
-    int type;
-    union
-    {
-      void* _void;
-      const void* data;
-      SEXP data_sexp;
-      int cmd_id;
-      std::wstring* data_str;
-    };
-    inline bool empty() const { return _void == NULL; }
-    value(): type (_UNINIT), _void(NULL){}
-    explicit value(int t, int val) : type(t), cmd_id(val) {}
-    explicit value(int t, const void* val): type(t), data(val){}
-    explicit value(int t, SEXP val): type(t), data_sexp(val)
-    {
-      if (val) ::R_PreserveObject(val);
-    }
-    explicit value(int t, std::wstring* val) : type(t), data_str(val){}
+  public:
+    value_type type;
+    using value_t = std::variant<std::monostate, SEXP, int, const void*, std::wstring>;
+    explicit value() noexcept : type(value_type::_UNINIT) { }
+    explicit value(value_type t, SEXP val) : type(t), _v(val) { validate(); if (val) ::R_PreserveObject(val); }
+    explicit value(value_type t, int val) noexcept : type(t), _v(val) { validate(); }
+    explicit value(value_type t, const void* val) noexcept : type(t), _v(val){ validate(); }
+    explicit value(value_type t, const std::wstring& val) noexcept : type(t), _v(val) { validate(); }
 
-    value(const value& c) : type(c.type), _void(c._void) //takes ownership
-    { 
-      const_cast<value*>(&c)->type = _UNINIT;
-      const_cast<value*>(&c)->_void = NULL; 
+    value(const value& c) = delete;
+    value(value&& c) noexcept : type(c.type)
+    {
+      move(c._v, _v);
+      c.type = value_type::_UNINIT;
     }
     ~value()
     {
-      replace();
+      if (SEXP ptr = _v.index() == 1 ? std::get<1>(_v) : nullptr; ptr != nullptr)
+        ::R_ReleaseObject(ptr);
     }
 
-    value& operator=(value& c)//takes ownership
+    constexpr bool empty() const noexcept { return _v.index() == 0; }
+    value& operator=(value& c) = delete;
+    value& operator=(value&& c) noexcept
     {
-      replace(c.type, c._void);
-      c.type = _UNINIT; c._void = NULL; 
+      type = c.type;
+      move(c._v, _v);
+      c.type = value_type::_UNINIT;
       return (*this);
     }
+
+    constexpr SEXP data_sexp() const { return _v.index() == 1 ? std::get<1>(_v) : nullptr; }
+    constexpr int cmd_id() const { return _v.index() == 2 ? std::get<2>(_v) : -1; }
+    constexpr const void* data() const { return _v.index() == 3 ? std::get<3>(_v) : nullptr; }
+    constexpr const std::wstring_view data_str() const { return _v.index() == 4 ? std::get<4>(_v) : std::wstring_view{}; }
   private:
-    void replace(int t = _UNINIT, void* newVal = NULL)
+    value_t _v;
+    constexpr void validate() const noexcept
     {
-      if (t == type && newVal == _void)
-        return;
-      if (type == R_PROMPT || type == R_TXT_OUT)
-        delete data_str;
-      else if (type == FN_CALL_RET && data_sexp)
-        ::R_ReleaseObject(data_sexp);
-      type = t;
-      _void = newVal;
+      switch (type)
+      {
+        case value_type::R_PROMPT:
+        case value_type::R_TXT_OUT:
+          ATLASSERT(std::holds_alternative<std::wstring>(_v)); 
+        break;
+        case value_type::R_CMD: ATLASSERT(std::holds_alternative<int>(_v)); break;
+        case value_type::FN_CALL: ATLASSERT(std::holds_alternative<const void*>(_v)); break;
+        case value_type::FN_CALL_RET: ATLASSERT(std::holds_alternative<SEXP>(_v)); break;
+        default: ATLASSERT(false); break;
+      }
+    }
+    static void move(value_t& from, value_t& to) noexcept
+    {
+      try {
+        SEXP ptr_from = from.index() == 1 ? std::get<1>(from) : nullptr;
+        SEXP ptr_to = to.index() == 1 ? std::get<1>(to) : nullptr;
+        to = std::move(from);
+        if (ptr_from != ptr_to && ptr_to != nullptr)
+          ::R_ReleaseObject(ptr_to);
+      }
+      catch (...) { }
+      from = value_t();
     }
   };
   safeQ<value> to_thread;
   safeQ<value> from_thread;
   std::string all_errors_text;
 public:
-  static bool try_process(tchannel::value &p)
+  static bool try_process(const tchannel::value &p)
   {
-    if (p.type == INTERNAL)
+    if (p.type == value_type::INTERNAL)
     {
-      ((const gp_eval*)p.data)->_call();
+      ((const gp_eval*)p.data())->_call();
       return true;
     }
     return false;
@@ -191,7 +209,7 @@ private:
   struct gp_eval
   {
     using Fn = std::function<void()>;
-    gp_eval(Fn fn) :m_fn(fn), m_h(::CreateEvent(NULL, TRUE, FALSE, NULL)){ }
+    gp_eval(Fn fn) :m_fn(fn), m_h(::CreateEvent(NULL, TRUE, FALSE, nullptr)){ }
     ~gp_eval() { ::CloseHandle(m_h); }
     void _call() const
     {
@@ -202,9 +220,7 @@ private:
     HANDLE m_h;
     void wait()
     {
-      tchannel::value p(INTERNAL, (const void*)this);
-      tchannel& channel = singleton();
-      channel.from_thread.push(p);
+      singleton().from_thread.push_back(tchannel::value{ value_type::INTERNAL, (const void*)this });
       ::WaitForSingleObject(m_h, INFINITE);
     }
   };

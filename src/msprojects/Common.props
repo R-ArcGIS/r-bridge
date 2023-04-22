@@ -1,6 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+
   <PropertyGroup>
+    <ReadOnlyProject>true</ReadOnlyProject>
     <Configuration Condition=" '$(Configuration)' == '' ">Release-Pro</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
     <BuildPath>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\..\build))</BuildPath>
@@ -9,6 +12,7 @@
     <IntDir>$(BuildPath)\obj\$(ProjectName)-$(Configuration)-$(Platform)\</IntDir>
     <settings_file>$(BuildPath)\settings.txt</settings_file>
     <output_package_path>$(BuildPath)\arcgisbinding</output_package_path>
+    <VCToolsVersion>14.31.31103</VCToolsVersion>
   </PropertyGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
@@ -17,19 +21,10 @@
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
-    <WindowsTargetPlatformVersion>10.0.19041.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.20348.0</WindowsTargetPlatformVersion>
     <ConfigurationType>DynamicLibrary</ConfigurationType>
   </PropertyGroup>
 
-  <PropertyGroup Condition=" '$(Configuration)'=='Release-Pro' or '$(Configuration)'=='Debug-Pro' ">
-    <LibObjects>libobjects_pro</LibObjects>
-    <ProxyName>rarcproxy_pro</ProxyName>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)'=='Release-Desktop' or '$(Configuration)'=='Debug-Desktop' ">
-    <LibObjects>libobjects</LibObjects>
-    <ProxyName>rarcproxy</ProxyName>
-    <DefineConstants>DESKTOP10</DefineConstants>
-  </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)'=='Debug-Desktop' or '$(Configuration)'=='Debug-Pro' ">
     <DefineConstants>DEBUG;_DEBUG;$(DefineConstants)</DefineConstants>
     <DefineDebug>true</DefineDebug>
@@ -50,18 +45,21 @@
     <configtext>$([system.IO.File]::ReadAllText('$(settings_file)'))</configtext>
   </PropertyGroup>
 
-  <PropertyGroup Label="Set ARCGIS_DESKTOP_KIT_PATH" Condition="'$(ARCGIS_DESKTOP_KIT_PATH)'=='' and '$(LibObjects)'=='libobjects' ">
-    <ARCGIS_DESKTOP_KIT_PATH>$([System.Text.RegularExpressions.Regex]::Match($(configtext), '\bARCGIS_DESKTOP_KIT_PATH=(.+)').Groups[1].Value.Trim().Trim('\"'))</ARCGIS_DESKTOP_KIT_PATH>
-  </PropertyGroup>
-
-  <PropertyGroup Label="Set ARCGIS_PRO_PATH" Condition="'$(ARCGIS_PRO_PATH)'=='' and '$(LibObjects)'=='libobjects_pro' ">
-    <ARCGIS_PRO_PATH>$([System.Text.RegularExpressions.Regex]::Match($(configtext), '\bARCGIS_PRO_PATH=(.+)').Groups[1].Value.Trim().Trim('\"'))</ARCGIS_PRO_PATH>
-  </PropertyGroup>
-
-  <PropertyGroup Label="Set PRO_VER" Condition="'$(LibObjects)'=='libobjects_pro' ">
+  <PropertyGroup Condition=" '$(Configuration)'=='Release-Pro' or '$(Configuration)'=='Debug-Pro' ">
+    <LibObjects>libobjects_pro</LibObjects>
+    <ProxyName>rarcproxy_pro</ProxyName>
+    <ARCGIS_PRO_PATH Condition="'$(ARCGIS_PRO_PATH)'==''">$([System.Text.RegularExpressions.Regex]::Match($(configtext), '\bARCGIS_PRO_PATH=(.+)').Groups[1].Value.Trim().Trim('\"'))</ARCGIS_PRO_PATH>
     <buildnumtext>$([system.IO.File]::ReadAllText('$(ARCGIS_PRO_PATH)\SharedArcGIS\Include\buildnum.h'))</buildnumtext>
     <PRO_VER_MAJOR>$([System.Text.RegularExpressions.Regex]::Match($(buildnumtext), '#define PROD_VER \d(\d),').Groups[1].Value)</PRO_VER_MAJOR>
     <PRO_VER_MINOR>$([System.Text.RegularExpressions.Regex]::Match($(buildnumtext), '#define PROD_VER \d+,(\d+)').Groups[1].Value)</PRO_VER_MINOR>
+    <LibObjects Condition=" '$(PRO_VER_MAJOR)' == '3' ">$(LibObjects)$(PRO_VER_MAJOR)</LibObjects>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)'=='Release-Desktop' or '$(Configuration)'=='Debug-Desktop' ">
+    <LibObjects>libobjects</LibObjects>
+    <ProxyName>rarcproxy</ProxyName>
+    <DefineConstants>DESKTOP10;$(DefineConstants)</DefineConstants>
+    <ARCGIS_DESKTOP_KIT_PATH Condition="'$(ARCGIS_DESKTOP_KIT_PATH)'==''">$([System.Text.RegularExpressions.Regex]::Match($(configtext), '\bARCGIS_DESKTOP_KIT_PATH=(.+)').Groups[1].Value.Trim().Trim('\"'))</ARCGIS_DESKTOP_KIT_PATH>
   </PropertyGroup>
 
   <PropertyGroup Label="Set R_PATH" Condition="'$(R_PATH)'==''">
@@ -80,11 +78,12 @@
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PreprocessorDefinitions>_USRDLL;DLL_NAME=$(TargetName);LIBRARY_API_NAME=$(LibObjects);$(DefineConstants);%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PreprocessorDefinitions Condition=" '$(LibObjects)'=='libobjects' ">ARCGIS_DESKTOP_KIT_PATH='$(ARCGIS_DESKTOP_KIT_PATH)';%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PreprocessorDefinitions Condition=" '$(LibObjects)'=='libobjects_pro' ">ARCGIS_PRO_PATH='$(ARCGIS_PRO_PATH)';PRO_VER_MAJOR=$(PRO_VER_MAJOR);PRO_VER_MINOR=$(PRO_VER_MINOR);%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories Condition=" '$(ProjectName)'=='rarcproxy' ">$(R_PATH)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AdditionalIncludeDirectories Condition=" '$(LibObjects)'=='libobjects' ">$(ARCGIS_DESKTOP_KIT_PATH)\com;$(ARCGIS_DESKTOP_KIT_PATH)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AdditionalIncludeDirectories Condition=" '$(LibObjects)'=='libobjects_pro' ">$(ARCGIS_PRO_PATH)\com;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>ProxyName='$(ProxyName)';LibObjects='$(LibObjects)';VCToolsVersion='$(VCToolsVersion)';%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories Condition=" '$(TargetName)'== '$(ProxyName)' ">$(R_PATH)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition=" '$(ARCGIS_PRO_PATH)'!= ''">ARCGIS_PRO_PATH='$(ARCGIS_PRO_PATH)';PRO_VER_MAJOR=$(PRO_VER_MAJOR);PRO_VER_MINOR=$(PRO_VER_MINOR);%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories Condition=" '$(ARCGIS_PRO_PATH)' != '' ">$(ARCGIS_PRO_PATH)\com;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition=" '$(ARCGIS_DESKTOP_KIT_PATH)' != '' ">$(ARCGIS_DESKTOP_KIT_PATH)\com;$(ARCGIS_DESKTOP_KIT_PATH)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+
       <MinimalRebuild>false</MinimalRebuild>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
@@ -118,6 +117,7 @@
   <ItemDefinitionGroup Condition="'$(Platform)'=='Win32'">
     <ClCompile>
       <PreprocessorDefinitions>WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>ARCGIS_DESKTOP_KIT_PATH='$(ARCGIS_DESKTOP_KIT_PATH)';%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <PostBuildEvent>
       <Command>copy $(OutDir)$(TargetName)$(TargetExt) $(output_package_path)\libs\i386\</Command>
@@ -131,7 +131,5 @@
       <Command>copy $(OutDir)$(TargetName)$(TargetExt) $(output_package_path)\libs\x64\</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
-
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
 
 </Project>

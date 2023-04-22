@@ -5,36 +5,33 @@
 #include <limits>
 #include <memory>
 
-class shape_extractor
+class shape_extractor final
 {
-  SEXP m_shape;
-  SEXP m_parts[4];
+  SEXP m_shape = nullptr;
+  SEXP m_parts[4] {nullptr, nullptr, nullptr, nullptr};
   std::pair<std::string, std::pair<std::wstring, int>> m_geometry_info;
-  size_t m_len;
-  bool m_hasZ;
-  bool m_hasM;
-  bool m_as_matrix;
-  bool m_points;
+  size_t m_len = 0;
+  bool m_hasZ = false;
+  bool m_hasM = false;
+  bool m_as_matrix = false;
+  bool m_points = false;
   std::vector<std::wstring> m_ref_fields;
 public:
-  shape_extractor() :
-        m_shape(NULL),
-        m_len(0), m_hasZ(false), m_hasM(false),m_points(false),
-        m_as_matrix(false){}
+  shape_extractor() = default;
 
   long init(SEXP shape, SEXP shape_info);
-  size_t size() const { return m_len;}
-  bool is_data_reference() const { return m_ref_fields.empty(); }
-  const std::vector<std::wstring>& ref_fields() const { return m_ref_fields; }
-  const std::pair<std::string, std::pair<std::wstring, int>>& geometry_info() const { return m_geometry_info; }
-  bool isPoints() const {return m_points; }
+  constexpr size_t size() const { return m_len;}
+  constexpr bool is_data_reference() const { return m_ref_fields.empty(); }
+  constexpr const std::vector<std::wstring>& ref_fields() const { return m_ref_fields; }
+  constexpr const std::pair<std::string, std::pair<std::wstring, int>>& geometry_info() const { return m_geometry_info; }
+  constexpr bool isPoints() const {return m_points; }
   std::vector<double> /*shape_extractor::*/getPoint(size_t i);
   std::vector<byte> /*shape_extractor::*/getShape(size_t i);
 };
 
 long shape_extractor::init(SEXP sh, SEXP sinfo)
 {
-  if (sh == NULL || Rf_isNull(sh))
+  if (sh == nullptr || Rf_isNull(sh))
     return S_FALSE;
   if (Rf_isNull(sinfo))
     return S_FALSE;
@@ -71,10 +68,10 @@ long shape_extractor::init(SEXP sh, SEXP sinfo)
     if (Rf_isMatrix(m_shape))
     {
       if (TYPEOF(m_shape) != REALSXP)
-        return showError<false>("expected type of double for shape list"), E_FAIL;E_FAIL;
+        return showError<false>("expected type of double for shape list"), E_FAIL;
 
       m_as_matrix = true;
-      //return showError<false>("for Point geometry 'shape' shoud be matrix"), E_FAIL;E_FAIL;
+      //return showError<false>("for Point geometry 'shape' shoud be matrix"), E_FAIL;
       SEXP dims = Rf_getAttrib(sh, R_DimSymbol);
       size_t ndim = tools::size(dims);
       if (ndim != 2)
@@ -245,17 +242,21 @@ public:
 };
 
 template <class T, int sub = 0>
-class cols_wrap : public cols_base
+class cols_wrap final : public cols_base
 {
   SEXP vect;
   size_t len;
 public:
   cols_wrap(SEXP sexp):vect(sexp), len(tools::size(sexp)) {}
-  bool get(size_t i, VARIANT &v) const override;
+  inline bool get(size_t i, VARIANT &v) const final;
 };
 
+//
+//cols_wrap<> class specializations
+//
+
 template <>
-class cols_wrap<int, VT_BSTR> : public cols_base
+class cols_wrap<int, VT_BSTR> final : public cols_base
 {
   SEXP vect;
   size_t len;
@@ -266,7 +267,7 @@ public:
     auto lev = Rf_getAttrib(sexp, R_LevelsSymbol);
     tools::copy_to(lev, levels, true);
   }
-  bool get(size_t i, VARIANT &v) const override
+  constexpr bool get(size_t i, VARIANT &v) const final
   {
     if (i >= len)
     {
@@ -289,8 +290,11 @@ public:
   }
 };
 
-template <>
-bool cols_wrap<bool>::get(size_t i, VARIANT &v) const
+//
+//cols_wrap<>::get() specializations
+//
+
+inline bool cols_wrap<bool>::get(size_t i, VARIANT &v) const
 {
   if (i >= len)
     v.vt = VT_NULL;
@@ -304,8 +308,7 @@ bool cols_wrap<bool>::get(size_t i, VARIANT &v) const
   return true;
 }
 
-template <>
-bool cols_wrap<int>::get(size_t i, VARIANT &v) const
+inline bool cols_wrap<int>::get(size_t i, VARIANT &v) const
 {
   if (i >= len)
     v.vt = VT_NULL;
@@ -319,8 +322,22 @@ bool cols_wrap<int>::get(size_t i, VARIANT &v) const
   return true;
 }
 
-template <>
-bool cols_wrap<double, VT_R8>::get(size_t i, VARIANT &v) const
+inline bool cols_wrap<long long, VT_I8>::get(size_t i, VARIANT& v) const
+{
+  if (i >= len)
+    v.vt = VT_NULL;
+  else
+  {
+    v.vt = VT_I8;
+    double d = REAL(vect)[i];
+    v.llVal = *(long long*)(double*)&d;
+    //TODO handle NA if (v.intVal == NA_INTEGER)
+    //  v.vt = VT_NULL;
+  }
+  return true;
+}
+
+inline bool cols_wrap<double, VT_R8>::get(size_t i, VARIANT &v) const
 {
   if (i >= len)
     v.vt = VT_NULL;
@@ -334,8 +351,7 @@ bool cols_wrap<double, VT_R8>::get(size_t i, VARIANT &v) const
   return true;
 }
 
-template <>
-bool cols_wrap<double, VT_DATE>::get(size_t i, VARIANT &v) const
+inline bool cols_wrap<double, VT_DATE>::get(size_t i, VARIANT &v) const
 {
   if (i >= len)
     v.vt = VT_NULL;
@@ -351,8 +367,7 @@ bool cols_wrap<double, VT_DATE>::get(size_t i, VARIANT &v) const
   return true;
 }
 
-template <>
-bool cols_wrap<std::string>::get(size_t i, VARIANT &v) const
+inline bool cols_wrap<std::string>::get(size_t i, VARIANT &v) const
 {
   if (i >= len)
   {
@@ -436,6 +451,11 @@ static std::unique_ptr<cols_base> setup_field(arcobject::cursor* cur, SEXP it, c
          item = std::make_unique<cols_wrap<double, VT_DATE>>(it);
          item->pos = cur->add_field(str, "Date");
        }
+       else if (Rf_inherits(it, "integer64"))
+       {
+         item = std::make_unique<cols_wrap<long long, VT_I8>>(it);
+         item->pos = cur->add_field(str, "Integer64");
+       }
        else
        {
          item = std::make_unique<cols_wrap<double, VT_R8>>(it);
@@ -494,10 +514,10 @@ SEXP arc_write(SEXP spath, SEXP sargs)
     if (!overwrite)
       return showError<false>("dataset already exists"), R_NilValue;
     if (!_api->delete_dataset(path))
-      return showError<false>("failed to overwrite existing dataset. use arc.delete(path) or add overwrite=TRUE argument"), R_NilValue;
+      return showError<true>("failed to overwrite existing dataset"), R_NilValue;
   }
 
-  struct _cleanup
+  struct _cleanup final
   {
     typedef std::vector<std::unique_ptr<cols_base>> c_type;
     std::vector<std::wstring> name;
@@ -540,34 +560,25 @@ SEXP arc_write(SEXP spath, SEXP sargs)
     //return showError<false>("length of shape != data.frame"), R_NilValue;
 
   std::unique_ptr<arcobject::cursor> acur(_api->create_insert_cursor(path, extractor.geometry_info(), simplify));
-  if (acur.get() == NULL)
+  if (acur.get() == nullptr)
     return showError<true>(), R_NilValue;
   arcobject::cursor* cur = acur.get();
 
   std::vector<const cols_base*> week_refs(extractor.ref_fields().size(), nullptr);
-  for (size_t i = 0; i < cols.name.size(); i++)
+  for (size_t i = 0, n = cols.name.size(); i < n; i++)
   {
     const auto &c_name = cols.name[i];
     ATLASSERT(!c_name.empty());
     SEXP it = VECTOR_ELT(dataframe, i);
-    bool skip = false;
-    if (isShape)//if(gt == esriGeometryPolygon || gt == esriGeometryLine)
+    auto item = setup_field(cur, it, c_name);
+    if (item.get() == nullptr)
+      Rf_warning("unsupported data.field column type");//return showError<false>(L"unsupported data.field column type"), R_NilValue;
+    else
     {
-      skip = c_name == L"Shape_Area";
-      skip = !skip ? c_name == L"Shape_Length" : true;
-    }
-    if (!skip)
-    {
-      auto item = setup_field(cur, it, c_name);
-      if (item.get() == nullptr)
-        Rf_warning("unsupported data.field column type");//return showError<false>(L"unsupported data.field column type"), R_NilValue;
-      else
-      {
-        const auto it = std::find(extractor.ref_fields().begin(), extractor.ref_fields().end(), c_name);
-        if (it != extractor.ref_fields().end())
-          week_refs[std::distance(extractor.ref_fields().begin(), it)] = item.get();
-        cols.c.emplace_back(std::move(item));
-      }
+      const auto it = std::find(extractor.ref_fields().begin(), extractor.ref_fields().end(), c_name);
+      if (it != extractor.ref_fields().end())
+        week_refs[std::distance(extractor.ref_fields().begin(), it)] = item.get();
+      cols.c.emplace_back(std::move(item));
     }
   }
 
@@ -623,7 +634,7 @@ SEXP arc_write(SEXP spath, SEXP sargs)
     if (!cur->next())
       return showError<true>("insert row failed"), R_NilValue;
   }
-  if (const auto warn = cur->warnings(); warn != nullptr && warn[0] != 0)
+  if (const auto warn = cur->warnings(); warn[0] != 0)
     Rf_warning(warn);
 
   std::ignore = cur->commit();

@@ -45,6 +45,7 @@ namespace arcobject
     {
       eNone = 0,
       eInt,
+      eInt64,
       eDouble,
       eDate,
       eString,

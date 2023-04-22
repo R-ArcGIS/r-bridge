@@ -21,7 +21,7 @@ arc.data2sf <- function (x, ...)
   {
     wkt <- info$WKT
     #works around for R.3.5 version
-    if (packageVersion("sf") < package_version("0.9.0"))
+    if (utils::packageVersion("sf") < package_version("0.9.0"))
       wkt <- arc.fromWktToP4(wkt)
   }
 

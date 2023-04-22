@@ -12,11 +12,6 @@
 #error ArcGISPro 64bit only"
 #endif
 
-#if defined(DESKTOP10)
-#pragma message("##### rarcproxy for ArcGIS Desktop")
-#else
-#pragma message("##### rarcproxy for ArcGIS Pro")
-#endif
 
 #define asSTR(s) #s
 #define toSTR(s) asSTR(s)
@@ -24,9 +19,18 @@
 #define LIBRARY_API_DLL_NAME toSTR(LIBRARY_API_NAME)
 #define R_PATH_SRT toSTR(R_PATH)
 
-#pragma message("R-HOME =" R_PATH_SRT)
-#pragma message("LIBRARY_API_DLL_NAME =" LIBRARY_API_DLL_NAME)
-#pragma message("DLL_NAME_STR =" DLL_NAME_STR)
+#if defined(DESKTOP10)
+#pragma message("##### " toSTR(ProxyName) " for ArcGIS Desktop")
+#else
+#pragma message("##### " toSTR(ProxyName) " for ArcGIS Pro")
+#endif
+
+#pragma message("  R-HOME =" R_PATH_SRT)
+#pragma message("  LIBRARY_API_DLL_NAME =" LIBRARY_API_DLL_NAME)
+#pragma message("  DLL_NAME_STR =" DLL_NAME_STR)
+#pragma message("  VCToolsVersion = " toSTR(VCToolsVersion))
+
+#pragma message("##### ")
 
 #define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
 #define VC_EXTRALEAN

@@ -11,7 +11,7 @@ namespace rtl
 }
 #include "tools.h"
 
-#define SLOT_PTR_NAME ".ptr"
+constexpr char SLOT_PTR_NAME[] = ".ptr";
 //#define SLOT_CLASS_NAME ".ptr_class"
 namespace rtl
 {

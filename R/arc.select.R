@@ -22,7 +22,7 @@
   if (any(fields == "*"))
   {
     fields <- all_fields
-    skip_idx <- grep("\\.?(shape_length|shape_area)$", ignore.case = T, fields)
+    skip_idx <- grep("\\.?(shape_+length|shape_+area)$", ignore.case = TRUE, fields)
     skip_idx <- c(skip_idx, which(object@fields %in% c("Blob", "Raster")))
     if (length(skip_idx) > 0)
     {
@@ -66,6 +66,11 @@
               where_clause = as.character(where_clause),
               sr = sr, ...)
   ret_list <- .call_proxy("table.select", object, fields, as.pairlist(args))
+  if (any(vapply(ret_list, inherits, logical(1), "integer64")))
+  {
+    if (!requireNamespace("bit64", quietly = TRUE))
+      stop("The result contains integer 64 bit and requires the 'bit64' package.")
+  }
 
   if (is(object, "arc.feature"))
   {
