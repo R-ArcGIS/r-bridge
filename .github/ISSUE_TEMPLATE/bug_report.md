@@ -3,8 +3,6 @@ name: Bug report
 about: Create a report to help us improve R-ArcGIS Bridge
 title: ''
 labels: ''
-assignees: orhuna
-
 ---
 
 **Describe the bug**
